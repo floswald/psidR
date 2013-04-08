@@ -1,1 +1,3 @@
-exportPattern("^[[:alpha:]]+")
+export(build.panel)
+export(make.char)
+export(makeids)

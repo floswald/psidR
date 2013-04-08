@@ -1,9 +1,20 @@
 Package: psidR
 Type: Package
-Title: What the package does (short line)
+Title: Build panel data sets from PSID raw data
 Version: 1.0
 Date: 2013-04-05
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Florian Oswald
+Maintainer: Florian Oswald <florian.oswald@gmail.com>
+Description: Makes it easy to build panel data in wide format from PSID
+    delivered raw data. The package takes care of merging data from each wave
+    onto a cross-period index file, so that individuals can be followed over
+    time. The user must specifiy which years they are interested, and the PSID
+    variable names (e.g. ER21003) for each year (they differ in each year).
+    There are different panel data designs and two popular subsetting criteria
+    (heads only and core sample only) implemented.
+Depends:
+    data.table,
+    foreign
+License: GPL
+Collate:
+    'psidR.r'

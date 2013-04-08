@@ -1,0 +1,19 @@
+\name{makeids}
+\alias{makeids}
+\title{ID list for mergeing PSID}
+\usage{
+  makeids()
+}
+\description{
+  this list is taken from
+  http://ideas.repec.org/c/boc/bocode/s457040.html
+}
+\details{
+  this function hardcodes the PSID variable names of
+  "interview number" from both family and individual file
+  for each wave, as well as "sequence number", "relation to
+  head" and numeric value x of that variable such that
+  "relation to head" == x means the individual is the head.
+  Varies over time.
+}
+
