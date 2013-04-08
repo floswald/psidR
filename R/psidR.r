@@ -11,7 +11,7 @@ library(data.table)
 #' @param fam.vars named list of variable names to retrieve from family files
 #' @param ind.vars named list of variable names to retrieve form individual file
 #' @param years numeric vector of years to consider
-build.panel <- function(datadir,years,fam.vars,ind.vars,heads.only,core,design,missing.vars,verbose){
+build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=NULL,heads.only,core,design,missing.vars,verbose){
 
 	
 fam.vars = data.frame(year=c(1999,2001),cleaning=c("ER13027","ER17030"),oth.services=c("ER13028","ER17031"))
@@ -25,23 +25,37 @@ fam.vars = data.frame(year=c(1999,2001),cleaning=c("ER13027","ER17030"),oth.serv
 		setkey(fam.vars,year)
 	}
 
-	fam.dta <- paste(datadir,"/FAM",years,".dta",sep="")
-	ind.dta <- paste(datadir,"/IND2009ER.dta",sep="")	# needs to be updated with next data delivery.
+	#     if (!is.null(fam.files) & !is.null(ind.file)){
+	#         if (strsplit(fam.files[1],"\\.")[[1]][2] == "dta"){
+	#             stata    <- TRUE
+	#             ind      <- read.dta(file=ind.file)
+	#             ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
+	#             ind      <- data.table(ind)
+	#         
+	#         } else if (strsplit(fam.files[1],"\\.")[[1]][2] == "csv") {
+	#             csv      <- TRUE
+	#             ind      <- fread(file=ind.file)
+	#             warning('no data dictionary from csv file')
+	# 
+	#         }
+	#     } else {
+		# default to stata data in datadir
+	#         default <- TRUE
+		fam.dta <- paste(datadir,"/FAM",years,".dta",sep="")
+		ind.dta <- paste(datadir,"/IND2009ER.dta",sep="")	# needs to be updated with next data delivery.
+		ind      <- read.dta(file=ind.dta)
+		ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
+		ind      <- data.table(ind)
+		#     }
 
 	# data dictionaries
 	fam.dicts <- vector("list",length(years))
 
-	# load individual file
-	# caution: this is a 623MB data.table
-	ind      <- read.dta(file=ind.dta)
-	ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
-	ind      <- data.table(ind)
-	
 	if (verbose){
 		cat('loaded individual file:',ind.dta,'\n')
 		cat('total memory load in MB:\n')
 		vvs = ceiling(object.size(ind)/1024^2)
-		print(sum(vs)+as.numeric(vvs))
+		print(as.numeric(vvs))
 	}
 
 	# make an index of interview numbers for each year
@@ -97,10 +111,17 @@ fam.vars = data.frame(year=c(1999,2001),cleaning=c("ER13027","ER17030"),oth.serv
 
 		# bring in family files, subset them
 		# load data for current year, make data dictionary for subsets and save data as data.table
-		tmp <- read.dta(file=fam.dta[iy])
-		fam.dicts[[f]] <- data.frame(code=names(tmp),label=attr(tmp,"var.labels"))
-		tmp <- data.table(tmp)
-		}
+		#         if (stata) {
+		#                tmp            <- read.dta(file=fam.files[iy])
+		#             fam.dicts[[f]] <- data.frame(code=names(tmp),label=attr(tmp,"var.labels"))
+		#             tmp            <- data.table(tmp)
+		#         } else if (csv) {
+		#             tmp <- fread(file=fam.files[iy])
+		#         } else if (default) {
+		   	tmp            <- read.dta(file=fam.dta[iy])
+			fam.dicts[[iy]] <- data.frame(code=names(tmp),label=attr(tmp,"var.labels"))
+			tmp            <- data.table(tmp)
+			#         }
 
 		if (verbose){
 			cat('loaded family files:',fam.dta,'\n')
