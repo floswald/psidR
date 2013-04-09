@@ -30,6 +30,7 @@ this package attempts to help the task of building a panel data. the user has
 Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Here are the steps to take:
 
 1. Download the zipped family files and cross-period individual files from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx), best into the same folder.
+2. inside each downloaded folder, run the stata, sas or spss routine that comes with it. Fixes the text file up into a rectangular dataset. Save the data as either .dta or .csv. The default of the package requires that you use file names **FAMyyyy.dta** and **IND2009ER.dta** (case sensitive). If you specify file locations by yourself, you can use whatever names you want.
 2. Supply a data.frame **fam.vars** which contains the variable names for each wave from the family file.
 
 ```r

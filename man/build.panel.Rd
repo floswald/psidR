@@ -65,7 +65,8 @@
   \item Accepted input data are stata format .dta or .csv
   files. \item See examples for usage. Note that examples
   use fake data, i.e. this is not real PSID data. Data
-  dictionaries do not work therefore. }
+  dictionaries do not work therefore. \item Similar in
+  usage to stata module \code{psiduse}. }
 }
 \examples{
 
