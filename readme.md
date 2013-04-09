@@ -39,7 +39,16 @@ fam.vars <- data.frame(year=c(2001,2003),
                        education=c("ER20457","ER24148"))
 ```
 
-Stata users may recognize this syntax from module [psiduse](http://ideas.repec.org/c/boc/bocode/s457040.html), which is similar.
+Stata users may recognize this syntax from module [psiduse](http://ideas.repec.org/c/boc/bocode/s457040.html), which is similar. The names are up to you ("house.value" is your choice), but the rest is not, i.e. there must be a column "year". Notice if you knew house.value was missing in year 2001, you could account for that with 
+
+```r
+fam.vars <- data.frame(year=c(2001,2003),
+                       house.value=c(NA,"ER21043"),
+                       total.income=c("ER20456","ER24099"),
+                       education=c("ER20457","ER24148"))
+```
+
+The function will then keep NA as the value of the variable in year 2001 and you can fix this later on. This functionality was needed because NAs have a generic meaning, i.e. a person who does not participate in a given year is kept in the register, but has no replies in the family file, so has NA in all variables of the family file after merging.
 
 3. Specify options for the panel, like *design* or *heads.only*
 4. call the function **build.panel**
