@@ -26,7 +26,21 @@
 #' \item{data}{resulting \code{data.table}. the variable \code{pid} is the unique person identifier, constructed from ID1968 and pernum.}
 #' \item{dict}{data dictionary if stata data was supplied, NULL else}
 #' @export
-#' @example inst/examples.r
+#' @examples \dontrun{
+#' fam.vars = data.frame(year=c(2001,2003),house.value=c("ER17044","ER21043"),total.income=c("ER20456","ER24099"),education=c("ER20457","ER24148"))
+#' d <- build.panel(datadir="~/datasets/PSID/fam-files",fam.vars,design="all")	
+#' ## using small examples manually specyfing paths and files
+#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design="all")
+#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design="balanced")
+#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design=1,heads.only=FALSE,core=FALSE)
+#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/stata-data/short2001.dta","./inst/stata-data/short2003.dta"),ind.file="./inst/stata-data/shortIND.dta",design="all")
+#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/stata-data/short2001.dta","./inst/stata-data/short2003.dta"),ind.file="./inst/stata-data/shortIND.dta",design="balanced")
+#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/stata-data/short2001.dta","./inst/stata-data/short2003.dta"),ind.file="./inst/stata-data/shortIND.dta",design=1) 
+#'  ## you can specify if a variable is missing in some years
+#'  
+#' fam.vars = data.frame(year=c(2001,2003),house.value=c(NA,"ER21043"),total.income=c("ER20456","ER24099"),education=c("ER20457","ER24148"))
+#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design="all")
+#' } 
 build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=NULL,heads.only=TRUE,core=TRUE,design="balanced",verbose=FALSE){
 	
 	stata   <- FALSE
@@ -240,6 +254,8 @@ build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=N
 
 #' Convert factor to character
 #'
+#' @param x a \code{factor}
+#' @return a character
 #' @description helper function to convert factor to character in a data.table
 #' @export
 make.char <- function(x){
