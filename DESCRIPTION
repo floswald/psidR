@@ -12,6 +12,8 @@ Description: Makes it easy to build panel data in wide format from PSID
     variable names (e.g. ER21003) for each year (they differ in each year).
     There are different panel data designs and two popular subsetting criteria
     (heads only and core sample only) implemented.
+URL: https://github.com/floswald/psidR
+
 Depends:
     data.table,
     foreign

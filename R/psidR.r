@@ -1,9 +1,5 @@
 
 
-
-
-
-
 #' Build PSID panel data set
 #' 
 #' @description Builds a panel data set in wide format with id variables \code{personID} and \code{period} from individual PSID family files.
@@ -15,6 +11,7 @@
 #' \item Merge: If there are N individuals in each of T waves, the individual file contains NT rows. If an individual has non-response in a given wave, values in the family file are NA. the variables \code{interview number} in each family file map to the \code{interview number} variable of a given year in the individual file. 
 #' \item Accepted input data are stata format .dta or .csv files.
 #' \item See examples for usage. Note that examples use fake data, i.e. this is not real PSID data. Data dictionaries do not work therefore.
+#' \item Similar in usage to stata module \code{psiduse}. 
 #' }
 #' @param datadir directory containing family files ("FAMyyyy.dta") and individual file ("IND2009ER.dta"). fixed data format required.
 #' @param fam.vars data.frame of variable to retrieve from family files. see example for required format.
