@@ -25,6 +25,16 @@ this package attempts to help the task of building a panel data. the user has
 * subsetting criteria
 * if some variables are not measured in a given wave for whatever reason, the package takes care of that (after you tell it which ones are missing. see examples in package).
 
+### How to install this package
+
+In R do
+
+```r
+install.packages('devtools')
+install_github("psidR",username="floswald")
+```
+
+
 ### Example Usage
 
 Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Here are the steps to take:
