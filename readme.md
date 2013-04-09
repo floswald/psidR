@@ -32,10 +32,12 @@ Suppose the user wants to have a panel with variables "house value", "total inco
 1. Download the zipped family files and cross-period individual files from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx), best into the same folder.
 2. Supply a data.frame **fam.vars** which contains the variable names for each wave from the family file.
 
-    fam.vars <- data.frame(year=c(2001,2003),
-                           house.value=c("ER17044","ER21043"),
-                           total.income=c("ER20456","ER24099"),
-                           education=c("ER20457","ER24148"))
+```r
+fam.vars <- data.frame(year=c(2001,2003),
+                       house.value=c("ER17044","ER21043"),
+                       total.income=c("ER20456","ER24099"),
+                       education=c("ER20457","ER24148"))
+```
 
 Stata users may recognize this syntax from module [psiduse](http://ideas.repec.org/c/boc/bocode/s457040.html), which is similar.
 
