@@ -16,6 +16,6 @@ URL: https://github.com/floswald/psidR
 Depends:
     data.table,
     foreign
-License: GPL
+License: GPL-3
 Collate:
     'psidR.r'
