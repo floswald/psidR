@@ -15,7 +15,11 @@ Description: Makes it easy to build panel data in wide format from PSID
 URL: https://github.com/floswald/psidR
 Depends:
     data.table,
-    foreign
+    foreign,
+    RCurl,
+    SAScii
 License: GPL-3
 Collate:
-    'psidR.r'
+    'build.panel.r'
+    'makeids.r'
+    'psidR-package.r'
