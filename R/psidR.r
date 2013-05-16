@@ -4,87 +4,130 @@
 #' 
 #' @description Builds a panel data set in wide format with id variables \code{personID} and \code{period} from individual PSID family files.
 #' @details 
-#' \itemize{
-#' \item Default behaviour: takes family files for specified years in folder \code{datadir} and merges using the id information in \code{ind.vars}, which must be in the same directory. 
-#' \item Alternative: location of files may be manually specified. 
-#' \item in both: the user can change subsetting criteria as well as sample designs. 
-#' \item Merge: If there are N individuals in each of T waves, the individual file contains NT rows. If an individual has non-response in a given wave, values in the family file are NA. the variables \code{interview number} in each family file map to the \code{interview number} variable of a given year in the individual file. 
-#' \item Accepted input data are stata format .dta or .csv files.
-#' \item See examples for usage. Note that examples use fake data, i.e. this is not real PSID data. Data dictionaries do not work therefore.
-#' \item Similar in usage to stata module \code{psiduse}. 
-#' }
-#' @param datadir directory containing family files ("FAMyyyy.dta") and individual file ("IND2009ER.dta"). fixed data format required.
+#' takes family files for specified years in folder \code{datadir} and merges using the id information in \code{ind.vars}, which must be in the same directory. 
+#' There is an option to directly download the data from the PSID server to folder \code{datadir}.
+#' The user can change subsetting criteria as well as sample designs. If there are N individuals in each of T waves, the individual file contains NT rows. 
+#' If an individual has non-response in a given wave, values in the family file are NA. the variables \code{interview number} in each family file map to 
+#' the \code{interview number} variable of a given year in the individual file. 
+#' Accepted input data are stata format .dta, .csv files or R data formats .rda and RData. Similar in usage to stata module \code{psiduse}.
+#' @param datadir directory containing family files ("FAMyyyy.dta") and individual file ("IND2009ER.dta") in Stata or other admissible formats (naming convention required for stata files)
 #' @param fam.vars data.frame of variable to retrieve from family files. see example for required format.
 #' @param ind.vars optional data.frame of non-default variables to get from individual file.
-#' @param fam.files optional character vector of file locations of family files
-#' @param ind.file optional character vector of file location of individual file
+#' @param SAScii logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.
 #' @param heads.only logical TRUE if user wants household heads only. if FALSE, data contains a row with value of "relation to head" variable.
 #' @param core logical TRUE if user wants core sample only. if FALSE, data will oversample poverty sample.
 #' @param design either character "balanced" or "all" or integer. "Balanced" means only individuals who appear in each wave are considered. "All" means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means at least 3 waves.
 #' @param verbose logical TRUE if you want verbose output.
+#' @import SAScii RCurl data.table
 #' @return
 #' \item{data}{resulting \code{data.table}. the variable \code{pid} is the unique person identifier, constructed from ID1968 and pernum.}
 #' \item{dict}{data dictionary if stata data was supplied, NULL else}
 #' @export
 #' @examples \dontrun{
-#' fam.vars = data.frame(year=c(2001,2003),house.value=c("ER17044","ER21043"),total.income=c("ER20456","ER24099"),education=c("ER20457","ER24148"))
+#' fam.vars = data.frame(year=c(2001,2003),age=c("ER17013","ER21017"),house.value=c("ER17044","ER21043"),total.income=c("ER20456","ER24099"),education=c("ER20457","ER24148"))
+#' fam.vars2 = data.frame(year=c(1986,1987),house.value=c("V12524","V13725"),total.income=c("V13623","V14670"),education=c("V13640","V14687"))
+#' famvars3 <- data.frame(year=c(1985,1986),faminc=c("V12371","V13623"),house.value=c("V11125","V12524"),educ=c("V12400","V13640"))
 #' d <- build.panel(datadir="~/datasets/PSID/fam-files",fam.vars,design="all")	
-#' ## using small examples manually specyfing paths and files
-#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design="all")
-#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design="balanced")
-#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design=1,heads.only=FALSE,core=FALSE)
-#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/stata-data/short2001.dta","./inst/stata-data/short2003.dta"),ind.file="./inst/stata-data/shortIND.dta",design="all")
-#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/stata-data/short2001.dta","./inst/stata-data/short2003.dta"),ind.file="./inst/stata-data/shortIND.dta",design="balanced")
-#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/stata-data/short2001.dta","./inst/stata-data/short2003.dta"),ind.file="./inst/stata-data/shortIND.dta",design=1) 
+#' d <- build.panel(datadir="~/datasets/PSID/fam-files",fam.vars2,design="balanced")	
+#' d <- build.panel(datadir="~/datasets/PSID/fam-files",fam.vars2,heads.only=FALSE,core=FALSE)	
+#' d <- build.panel(datadir="~/datasets/PSID/psidR-test/",famvars3)	
+#'  ## 
 #'  ## you can specify if a variable is missing in some years
-#'  
+#'  ##
 #' fam.vars = data.frame(year=c(2001,2003),house.value=c(NA,"ER21043"),total.income=c("ER20456","ER24099"),education=c("ER20457","ER24148"))
-#' d <- build.panel(datadir=NULL,fam.vars,fam.files=c("./inst/short2001.csv","./inst/short2003.csv"),ind.file="./inst/shortIND.csv",design="all")
+#' d <- build.panel(datadir="~/datasets/PSID/fam-files",fam.vars,design="all")
 #' } 
-build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=NULL,heads.only=TRUE,core=TRUE,design="balanced",verbose=FALSE){
+build.panel <- function(datadir,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.only=TRUE,core=TRUE,design="balanced",verbose=FALSE){
 	
-	stata   <- FALSE
-	csv     <- FALSE
-	default <- FALSE
+
+	ftype <- "stata"
 
 	years <- fam.vars$year
+
+	# data acquisition
+	# ----------------
+
+	if (SAScii){
+    	confirm <- readline("This can take several hours/days to download.\n want to go ahead? give me 'yes' or 'no'.")
+		if (confirm=="yes"){
+
+			if (is.null(datadir)) stop("please supply datadir argument. will store datasets there.")
+			ftype <- "Rdata"
+			
+			user <- readline("please enter your PSID username: ")
+			pass <- readline("please enter your PSID password: ")
+			
+			library(SAScii)
+			library(RCurl)
+
+			curl = getCurlHandle()
+			curlSetOpt(cookiejar = 'cookies.txt', followlocation = TRUE, autoreferer = TRUE, curl = curl)
+
+			html <- getURL('http://simba.isr.umich.edu/u/Login.aspx', curl = curl)
+
+			viewstate <- as.character(sub('.*id="__VIEWSTATE" value="([0-9a-zA-Z+/=]*).*', '\\1', html))
+
+			params <- list(
+				'ctl00$ContentPlaceHolder3$Login1$UserName'    = paste(user),
+				'ctl00$ContentPlaceHolder3$Login1$Password'    = paste(pass),
+				'ctl00$ContentPlaceHolder3$Login1$LoginButton' = 'Log In',
+				'__VIEWSTATE'                                  = viewstate
+				)
+				
+			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2009 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152 ))
+			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2009" ),file=c(family[family$year %in% years,]$file, 1053))
+
+			for ( i in seq( nrow(psidFiles ) -1 )) get.psid( psidFiles[ i , 'file' ] ,name= paste0(datadir, "/FAM" , psidFiles[ i , 'year' ], "ER") , params , curl )
+			get.psid( psidFiles[ nrow(psidFiles ) , 'file' ] ,name= paste0(datadir, "/IND" , psidFiles[ nrow(psidFiles ) , 'year' ], "ER") , params , curl )
+
+			cat('finished downloading files to', datadir,'. continuing now to build the dataset.\n')
+						
+		} else if (confirm=="no") {
+			break
+		}
+	}
+
 
 	# work out file types
 	# -------------------
 
-	if (is.null(datadir)){
-		# user specifies file locations
-		stopifnot(!is.null(fam.files) | !is.null(ind.file))
-		stopifnot(is.character(fam.files) | is.character(ind.file))
+	# if last char of datadir is not "/", add it
+	if (substr(datadir,nchar(datadir),nchar(datadir))!="/") datadir <- paste0(datadir,"/")
 
-		# get file type: .dta or .csv
-		# load ind file. load fam file only at the point we need it to keep memory small.
-		if (tail(strsplit(fam.files[1],"\\.")[[1]],1) == "dta"){
-			stata    <- TRUE
-			ind      <- read.dta(file=ind.file)
-			ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
-			ind      <- data.table(ind)
-		} else if (tail(strsplit(fam.files[1],"\\.")[[1]],1) == "csv") {
-			csv      <- TRUE
-			ind      <- fread(input=ind.file)
-			warning('no data dictionary from csv file')
-		}
-	} else {
-		# default to stata data in datadir
-		default <- TRUE
-		fam.dta <- paste(datadir,"/FAM",years,".dta",sep="")
-		ind.dta <- paste(datadir,"/IND2009ER.dta",sep="")	# needs to be updated with next data delivery.
-		ind      <- read.dta(file=ind.dta)
+	# figure out filestypes in datadir
+	l <- list.files(datadir)
+	if (tail(strsplit(l[1],"\\.")[[1]],1) == "dta") ftype <- "stata"
+	if (tail(strsplit(l[1],"\\.")[[1]],1) == "rda") ftype <- "Rdata"
+	if (tail(strsplit(l[1],"\\.")[[1]],1) == "RData") ftype <- "Rdata"
+	if (tail(strsplit(l[1],"\\.")[[1]],1) == "csv") ftype <- "csv"
+
+	if (ftype=="stata"){
+		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
+    fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
+		ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		ind      <- read.dta(file=ind.file)
 		ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
 		ind      <- data.table(ind)
+	} else if (ftype=="Rdata") {
+		# data downloaded directly into a dataframe
+		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
+		fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
+		ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		tmp.env <- new.env()
+		load(file=ind.file,envir=tmp.env)
+		ind      <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
+		ind.dict <- NULL
+		ind      <- data.table(ind)
+	} else if (ftype=="csv") {
+		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
+		fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
+		ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		ind      <- fread(input=ind.file)
+		ind.dict <- NULL
 	}
 	
 	if (verbose){
-		if (!is.null(datadir)) {
-			cat('loaded individual file:',ind.dta,'\n')
-		} else {
-			cat('loaded individual file:',ind.file,'\n')
-		}
+		cat('loaded individual file:',ind.file,'\n')
 		cat('total memory load in MB:\n')
 		vvs = ceiling(object.size(ind)/1024^2)
 		print(as.numeric(vvs))
@@ -141,6 +184,7 @@ build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=N
 			   cat('full',years[iy],'sample has',n,'obs\n')
 			   cat('dropping non-core individuals leaves',nrow(yind),'obs\n')
 		   }
+		   if (nrow(yind)==0) stop('you dropped all observations by selecting core only.\n This means you supplied a family file only from the poor sample. unusual.')
 		}
 
 		if (heads.only) {
@@ -163,16 +207,18 @@ build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=N
 
 		# bring in family files, subset them
 		# load data for current year, make data dictionary for subsets and save data as data.table
-		if (stata) {
-			tmp             <- read.dta(file=fam.files[iy])
+		if (ftype=="stata") {
+			tmp             <- read.dta(file=fam.dat[iy])
 			fam.dicts[[iy]] <- data.frame(code=names(tmp),label=attr(tmp,"var.labels"))
 			tmp             <- data.table(tmp)
-		} else if (csv) {
-			tmp <- fread(input=fam.files[iy])
+		} else if (ftype=="csv") {
+			tmp <- fread(input=fam.dat[iy])
 			fam.dicts[[iy]] <- NULL
-		} else if (default) {
-		   	tmp             <- read.dta(file=fam.dta[iy])
-			fam.dicts[[iy]] <- data.frame(code=names(tmp),label=attr(tmp,"var.labels"))
+		} else if (ftype=="Rdata") {
+			rm(list=ls(all=T,envir=tmp.env),envir=tmp.env)
+		   	load(file=fam.dat[iy],envir=tmp.env)
+			tmp             <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
+			fam.dicts[[iy]] <- NULL
 			tmp             <- data.table(tmp)
 		}
 
@@ -207,7 +253,7 @@ build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=N
 			setnames(tmp,curnames)
 			setkey(tmp,interview)
 		}
-
+		
 		# merge
 		m <- copy(tmp[yind])
 		m[,year := years[iy] ]
@@ -257,7 +303,6 @@ build.panel <- function(datadir,fam.vars,ind.vars=NULL,fam.files=NULL,ind.file=N
 #' @param x a \code{factor}
 #' @return a character
 #' @description helper function to convert factor to character in a data.table
-#' @export
 make.char <- function(x){
 	if (is.factor(x)){
 		return(as.character(x))
@@ -274,7 +319,6 @@ make.char <- function(x){
 #' ID list for mergeing PSID
 #'
 #' @description this list is taken from http://ideas.repec.org/c/boc/bocode/s457040.html
-#' @export
 #' @details this function hardcodes the PSID variable names of "interview number" from both family and individual file for each wave, as well as "sequence number", "relation to head" and numeric value x of that variable such that "relation to head" == x means the individual is the head. Varies over time.
 makeids <- function(){
 
@@ -351,6 +395,38 @@ makeids <- function(){
 
 	  
 	  
+#' get.psid connects to PSID database and downloads into Rda
+#'
+#' see \url{http://www.asdfree.com/} for other usage and \url{http://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
+#' @author Anthony Damico <ajdamico@@gmail.com>
+get.psid <- function( file , name , params , curl ){
+
+		html = postForm('http://simba.isr.umich.edu/u/Login.aspx', .params = params, curl = curl)
+		
+		if ( !grepl('Logout', html) ) stop( 'no longer logged in' )
+
+	
+		tf <- tempfile() ; td <- tempdir()
+		
+		file <- getBinaryURL( paste0( "http://simba.isr.umich.edu/Zips/GetFile.aspx?file=" , file ) , curl = curl )
+		writeBin( file , tf )
+		z <- unzip( tf , exdir = td )
+		fn <- z[ grepl( ".txt" , tolower( z ) , fixed = TRUE ) & ! grepl( "_vdm|readme|doc|errata" , tolower( z ) ) ]
+		sas_ri <- z[ grepl( '.sas' , z , fixed = TRUE ) ]
+
+		cat('now reading SAS file',name,'into R\n')
+		x <- read.SAScii( fn , sas_ri )
+
+		save( x , file = paste0( name , '.rda' ) )
+	
+		file.remove( tf , z )
+	
+		rm( x )
+		
+		gc()
+
+		TRUE
+	}
 	  
 	  
 	  

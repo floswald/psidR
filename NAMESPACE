@@ -1,3 +1,4 @@
 export(build.panel)
-export(make.char)
-export(makeids)
+import(data.table)
+import(RCurl)
+import(SAScii)
