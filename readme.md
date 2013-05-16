@@ -17,6 +17,7 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 ### psidR
 
 this package attempts to help the task of building a panel data. the user can either
+
 1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
 2. there is an option to directly download into an R data.frame via SAScii (caution it takes long).
 
