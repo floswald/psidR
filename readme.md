@@ -16,8 +16,13 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 
 ### psidR
 
-this package attempts to help the task of building a panel data. the user has 
-* to specify the variable names in each wave of the questionnaire
+this package attempts to help the task of building a panel data. the user can either
+1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
+2. there is an option to directly download into an R data.frame via SAScii (caution it takes long).
+
+To build the panel, the user must specify the variable names in each wave of the questionnaire.
+
+In case you go for option 1,
 * download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
   * run any of the contained program statements in each of the downloaded folders
 * download the cross-year individual file
@@ -36,6 +41,15 @@ install_github("psidR",username="floswald")
 
 
 ### Example Usage
+
+the main function in the package has a reproducible example which you can look at by typing
+
+```r
+require(psidR)
+example(build.panel)
+```
+
+By way of explaining:
 
 Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Here are the steps to take:
 
