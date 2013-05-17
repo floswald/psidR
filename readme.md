@@ -19,11 +19,12 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 this package attempts to help the task of building a panel data. the user can either
 
 1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
-2. there is an option to directly download into an R data.frame via SAScii (caution it takes long).
+2. there is an option to directly download into an R data.frame via SAScii (*caution* it takes long: the individual index has about 280MB in ASCII)
 
 To build the panel, the user must specify the variable names in each wave of the questionnaire.
 
-In case you go for option 1,
+#### In case you go for option 1
+
 * download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
   * run any of the contained program statements in each of the downloaded folders
 * download the cross-year individual file
@@ -52,10 +53,10 @@ example(build.panel)
 
 By way of explaining:
 
-Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Here are the steps to take:
+Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Here are the steps to take if you go for **option 1**:
 
 1. Download the zipped family files and cross-period individual files from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx), best into the same folder.
-2. inside each downloaded folder, run the stata, sas or spss routine that comes with it. Fixes the text file up into a rectangular dataset. Save the data as either .dta or .csv. The default of the package requires that you use file names **FAMyyyy.dta** and **IND2009ER.dta** (case sensitive). If you specify file locations by yourself, you can use whatever names you want.
+2. inside each downloaded folder, run the stata, sas or spss routine that comes with it. Fixes the text file up into a rectangular dataset. Save the data as either .dta or .csv. The default of the package requires that you use file names **FAMyyyy.dta** and **IND2009ER.dta** (case sensitive). 
 2. Supply a data.frame **fam.vars** which contains the variable names for each wave from the family file.
 
 ```r
