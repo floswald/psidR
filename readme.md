@@ -25,7 +25,7 @@ To build the panel, the user must specify the variable names in each wave of the
 
 #### In case you go for option 1
 
-There are several prelimiary steps you have to take before using **psidR**. They all have to with acquiring the data and storing it in a certain format. I'll explain below in examples.
+There are several prelimiary steps you have to take before using **psidR**. They all have to do with acquiring the data and storing it in a certain format. I'll explain below in examples.
 
 #### If you go for option 2
 
