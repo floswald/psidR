@@ -25,6 +25,13 @@ To build the panel, the user must specify the variable names in each wave of the
 
 #### In case you go for option 1
 
+There are several prelimiary steps you have to take before using **psidR**. They all have to with acquiring the data and storing it in a certain format. I'll explain below in examples.
+
+#### If you go for option 2
+
+You don't have to prepare anything: just enough time (you should think about leaving your machine on over night/the weekend, depending on how many waves you want to use).
+
+
 * download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
   * run any of the contained program statements in each of the downloaded folders
 * download the cross-year individual file
@@ -44,27 +51,37 @@ install_github("psidR",username="floswald")
 
 ### Example Usage
 
-the main function in the package has a reproducible example which you can look at by typing
+the main function in the package is `build.panel` and it has a reproducible example which you can look at by typing
 
 ```r
 require(psidR)
 example(build.panel)
 ```
 
-By way of explaining:
+#### Usage Outline
 
-Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Here are the steps to take if you go for **option 1**:
+Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Steps 1 and 2 are relevant only for **option 1**, **option 2** requires only step 3 and 4:
 
-1. Download the zipped family files and cross-period individual files from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx), best into the same folder.
+1. Download the zipped family files and cross-period individual files from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx), best into the same folder. This folder will be the function argument `datadir`.
 2. inside each downloaded folder, run the stata, sas or spss routine that comes with it. Fixes the text file up into a rectangular dataset. Save the data as either .dta or .csv. The default of the package requires that you use file names **FAMyyyy.dta** and **IND2009ER.dta** (case sensitive). 
-2. Supply a data.frame **fam.vars** which contains the variable names for each wave from the family file.
+3. Supply a data.frame **fam.vars** which contains the variable names for each wave from the family file.
 
 ```r
-fam.vars <- data.frame(year=c(2001,2003),
+myvars <- data.frame(year=c(2001,2003),
                        house.value=c("ER17044","ER21043"),
                        total.income=c("ER20456","ER24099"),
                        education=c("ER20457","ER24148"))
 ```
+
+4. call the function, with `SAScii=TRUE` or `SAScii=FALSE` depending on your choice:
+
+```r
+option.1 <- build.panel(datadir=mydir,fam.vars=myvars,SAScii=FALSE)
+option.2 <- build.panel(datadir=mydir,fam.vars=myvars,SAScii=TRUE)
+```
+
+note that you must specify a datadir for option 2 as well. The downloaded data will be stored there.
+
 
 Stata users may recognize this syntax from module [psiduse](http://ideas.repec.org/c/boc/bocode/s457040.html), which is similar. The names are up to you ("house.value" is your choice), but the rest is not, i.e. there must be a column "year". Notice if you knew house.value was missing in year 2001, you could account for that with 
 
