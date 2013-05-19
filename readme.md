@@ -19,7 +19,7 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 this package attempts to help the task of building a panel data. the user can either
 
 1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
-2. there is an option to directly download into an R data.frame via SAScii (*caution* it takes long: the individual index has about 280MB in ASCII)
+2. there is an option to directly download into an R data.frame via SAScii (**caution** it takes long: the individual index has about 280MB in ASCII)
 
 To build the panel, the user must specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. This will in almost all cases contain the **survey weights** you want to use. 
 
