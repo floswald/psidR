@@ -21,15 +21,17 @@ this package attempts to help the task of building a panel data. the user can ei
 1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
 2. there is an option to directly download into an R data.frame via SAScii (*caution* it takes long: the individual index has about 280MB in ASCII)
 
-To build the panel, the user must specify the variable names in each wave of the questionnaire.
+To build the panel, the user must specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. This will in almost all cases contain the **survey weights** you want to use. 
 
-#### In case you go for option 1
+Please check out [the R survey package](http://cran.r-project.org/web/packages/survey/index.html) for analyzing complex survey's with R. Also go to [http://www.asdfree.com/](http://www.asdfree.com/) for a range of tutorials and tips for using survey data with R.
+
+#### In case you go for psidR option 1
 
 There are several prelimiary steps you have to take before using **psidR**. They all have to do with acquiring the data and storing it in a certain format. I'll explain below in examples.
 
-#### If you go for option 2
+#### If you go for psidR option 2
 
-You don't have to prepare anything: just enough time (you should think about leaving your machine on over night/the weekend, depending on how many waves you want to use).
+You don't have to prepare anything: just enough time (you should think about leaving your machine on over night/the weekend, depending on how many waves you want to use. The individual index file is very big).
 
 
 * download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
@@ -65,19 +67,21 @@ Suppose the user wants to have a panel with variables "house value", "total inco
 1. Download the zipped family files and cross-period individual files from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx), best into the same folder. This folder will be the function argument `datadir`.
 2. inside each downloaded folder, run the stata, sas or spss routine that comes with it. Fixes the text file up into a rectangular dataset. Save the data as either .dta or .csv. The default of the package requires that you use file names **FAMyyyy.dta** and **IND2009ER.dta** (case sensitive). 
 3. Supply a data.frame **fam.vars** which contains the variable names for each wave from the family file.
+4. Supply a data.frame **ind.vars** which contains the variable names for each wave from the individual index file.
 
 ```r
 myvars <- data.frame(year=c(2001,2003),
                        house.value=c("ER17044","ER21043"),
                        total.income=c("ER20456","ER24099"),
                        education=c("ER20457","ER24148"))
+indvars1 = data.frame(year=c(2001,2003),longitud.wgt=c("ER33637","ER33740"))
 ```
 
 4. call the function, with `SAScii=TRUE` or `SAScii=FALSE` depending on your choice:
 
 ```r
-option.1 <- build.panel(datadir=mydir,fam.vars=myvars,SAScii=FALSE)
-option.2 <- build.panel(datadir=mydir,fam.vars=myvars,SAScii=TRUE)
+option.1 <- build.panel(datadir=mydir,fam.vars=myvars,ind.vars=indvars,SAScii=FALSE)
+option.2 <- build.panel(datadir=mydir,fam.vars=myvars,ind.vars=indvars,SAScii=TRUE)
 ```
 
 note that you must specify a datadir for option 2 as well. The downloaded data will be stored there.
