@@ -28,11 +28,7 @@ Please check out [the R survey package](http://cran.r-project.org/web/packages/s
 
 There are several prelimiary steps you have to take before using **psidR**. They all have to do with acquiring the data and storing it in a certain format. I'll explain below in examples.
 
-#### In case you go for psidR option 1
-
-You don't have to prepare anything: just enough time (you should think about leaving your machine on over night/the weekend, depending on how many waves you want to use. The individual index file is very big).
-
-#### If you go for psidR option 2
+#### In case you go for psidR option 1 (recommended)
 
 * download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
   * run any of the contained program statements in each of the downloaded folders
@@ -40,6 +36,10 @@ You don't have to prepare anything: just enough time (you should think about lea
 * the user can set some sample design options
 * subsetting criteria
 * if some variables are not measured in a given wave for whatever reason, the package takes care of that (after you tell it which ones are missing. see examples in package).
+
+#### If you go for psidR option 2
+
+You don't have to prepare anything: just enough time (you should think about leaving your machine on over night/the weekend, depending on how many waves you want to use. The individual index file is very big).
 
 ### How to install this package
 
