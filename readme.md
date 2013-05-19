@@ -25,14 +25,14 @@ To build the panel, the user must specify the variable names in each wave of the
 
 Please check out [the R survey package](http://cran.r-project.org/web/packages/survey/index.html) for analyzing complex survey's with R. Also go to [http://www.asdfree.com/](http://www.asdfree.com/) for a range of tutorials and tips for using survey data with R.
 
-#### In case you go for psidR option 1
 
 There are several prelimiary steps you have to take before using **psidR**. They all have to do with acquiring the data and storing it in a certain format. I'll explain below in examples.
 
-#### If you go for psidR option 2
+#### In case you go for psidR option 1
 
 You don't have to prepare anything: just enough time (you should think about leaving your machine on over night/the weekend, depending on how many waves you want to use. The individual index file is very big).
 
+#### If you go for psidR option 2
 
 * download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
   * run any of the contained program statements in each of the downloaded folders
@@ -77,14 +77,12 @@ myvars <- data.frame(year=c(2001,2003),
 indvars1 = data.frame(year=c(2001,2003),longitud.wgt=c("ER33637","ER33740"))
 ```
 
-4. call the function, with `SAScii=TRUE` or `SAScii=FALSE` depending on your choice:
+5. call the function, with `SAScii=TRUE` or `SAScii=FALSE` depending on your choice:
 
 ```r
 option.1 <- build.panel(datadir=mydir,fam.vars=myvars,ind.vars=indvars,SAScii=FALSE)
 option.2 <- build.panel(datadir=mydir,fam.vars=myvars,ind.vars=indvars,SAScii=TRUE)
 ```
-
-note that you must specify a datadir for option 2 as well. The downloaded data will be stored there.
 
 
 Stata users may recognize this syntax from module [psiduse](http://ideas.repec.org/c/boc/bocode/s457040.html), which is similar. The names are up to you ("house.value" is your choice), but the rest is not, i.e. there must be a column "year". Notice if you knew house.value was missing in year 2001, you could account for that with 
