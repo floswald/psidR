@@ -97,7 +97,7 @@ get.psid <- function( file , name , params , curl ){
 		fn <- z[ grepl( ".txt" , tolower( z ) , fixed = TRUE ) & ! grepl( "_vdm|readme|doc|errata" , tolower( z ) ) ]
 		sas_ri <- z[ grepl( '.sas' , z , fixed = TRUE ) ]
 
-		cat('now reading SAS file',name,'into R\n')
+		cat('now reading and processing SAS file',name,'into R\n')
 		x <- read.SAScii( fn , sas_ri )
 
 		save( x , file = paste0( name , '.rda' ) )
