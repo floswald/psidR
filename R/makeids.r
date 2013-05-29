@@ -82,6 +82,10 @@ makeids <- function(){
 #'
 #' see \url{http://www.asdfree.com/} for other usage and \url{http://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
 #' @author Anthony Damico <ajdamico@@gmail.com>
+#' @param file string psid file number
+#' @param name string of filename on disc
+#' @param params postForm{RCurl} parameters
+#' @param curl postForm{RCurl} curl handle
 get.psid <- function( file , name , params , curl ){
 
 		html = postForm('http://simba.isr.umich.edu/u/Login.aspx', .params = params, curl = curl)

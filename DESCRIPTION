@@ -19,6 +19,7 @@ Depends:
     RCurl,
     SAScii
 License: GPL-3
+Suggest: survey
 Collate:
     'build.panel.r'
     'makeids.r'
