@@ -146,14 +146,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	if (is.null(datadir)){
 		datadir <- tempdir()	
 		datadir <- paste0(datadir,s)
-		if (verbose){
-			cat("saving data to tmp dir",datadir,"\n")
-		}
 	} else {
 		if (substr(datadir,nchar(datadir),nchar(datadir))!=s) datadir <- paste0(datadir,s)
-		if (verbose){
-			cat("saving data to",datadir,"\n")
-		}
 	}
 
 	# data acquisition
