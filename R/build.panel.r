@@ -334,7 +334,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		}
 
 		if (verbose){
-			cat('loaded family file:',fam.dat,'\n')
+			cat('loaded family file:',fam.dat[iy],'\n')
 			cat('current memory load in MB:\n')
 			vs = ceiling(object.size(tmp))
 			print(vs,units="Mb")
