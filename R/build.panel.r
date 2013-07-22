@@ -128,7 +128,9 @@
 #'                  verbose=FALSE,design="all")	
 #' print(d$data[order(pid)],nrow=Inf)
 #' 
-#' file.remove(paste0(my.dir,"/FAM1985ER.rda"),paste0(my.dir,"/FAM1986ER.RData"),paste0(my.dir,"/IND2009ER.RData"))
+#' file.remove(paste0(my.dir,"/FAM1985ER.rda"),
+#'             paste0(my.dir,"/FAM1986ER.RData"),
+#'             paste0(my.dir,"/IND2009ER.RData"))
 #' 
 #' # END psidR example
 #' 
