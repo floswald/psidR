@@ -176,9 +176,8 @@ file.remove(paste0(my.dir,"/FAM1985ER.rda"),paste0(my.dir,"/FAM1986ER.RData"),pa
 
 # END psidR example
 
-# ######################################################
-# Please see inst/example-calls.r for more example usage
-# or go to https://github.com/floswald/psidR
-# ######################################################
+# #####################################################################
+# Please go to https://github.com/floswald/psidR for more example usage
+# #####################################################################
 }
 

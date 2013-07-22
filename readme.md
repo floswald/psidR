@@ -28,7 +28,7 @@ Please check out [the R survey package](http://cran.r-project.org/web/packages/s
 
 There are several prelimiary steps you have to take before using **psidR**. They all have to do with acquiring the data and storing it in a certain format. I'll explain below in examples.
 
-#### In case you go for psidR option 1 (recommended)
+#### In case you go for psidR option 1 
 
 * download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
   * run any of the contained program statements in each of the downloaded folders
@@ -104,5 +104,6 @@ The function will then keep NA as the value of the variable in year 2001 and you
 ### Future Developments
 
 * allow to merge [supplemental datasets](http://simba.isr.umich.edu/Zips/zipSupp.aspx), not only family files.
+* allow more complex panel designs, like accounting for wider family structure (i.e. using the family splitoff indicator to follow households that split up).
 
 

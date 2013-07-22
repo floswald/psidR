@@ -132,12 +132,16 @@
 #' 
 #' # END psidR example
 #' 
-#' # ######################################################
-#' # Please see inst/example-calls.r for more example usage
-#' # or go to https://github.com/floswald/psidR
-#' # ######################################################
+#' # #####################################################################
+#' # Please go to https://github.com/floswald/psidR for more example usage
+#' # #####################################################################
 build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.only=TRUE,core=TRUE,design="balanced",verbose=FALSE){
 	
+
+	# locally bind all variables to be used in a data.table
+
+	. <- interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- NULL
+
 	years <- fam.vars$year
 
 	s <- .Platform$file.sep

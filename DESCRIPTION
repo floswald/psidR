@@ -6,12 +6,13 @@ Date: 2013-04-05
 Author: Florian Oswald
 Maintainer: Florian Oswald <florian.oswald@gmail.com>
 Description: Makes it easy to build panel data in wide format from PSID
-    delivered raw data. The package takes care of merging data from each wave
-    onto a cross-period index file, so that individuals can be followed over
-    time. The user must specifiy which years they are interested, and the PSID
-    variable names (e.g. ER21003) for each year (they differ in each year).
-    There are different panel data designs and two popular subsetting criteria
-    (heads only and core sample only) implemented.
+    delivered raw data. Deals with data downloaded and pre-processed by stata or SAS,
+    or can optionally download directly from the PSID server using the SAScii package.
+    psidR takes care of merging data from each wave onto a cross-period index file,
+    so that individuals can be followed over time. The user must specifiy which years
+    they are interested in, and the PSID variable names (e.g. ER21003) for each year
+    (they differ in each year). There are different panel data designs and two 
+    popular subsetting criteria (heads only and core sample only) implemented.
 URL: https://github.com/floswald/psidR
 Depends:
     data.table,
@@ -19,7 +20,7 @@ Depends:
     RCurl,
     SAScii
 License: GPL-3
-Suggest: survey
+Suggests: survey
 Collate:
     'build.panel.r'
     'makeids.r'
