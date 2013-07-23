@@ -43,7 +43,13 @@ You don't have to prepare anything: just enough time (you should think about lea
 
 ### How to install this package
 
-In R do
+The package is on CRAN, so just type
+
+```r
+install.packages('psidR')
+```
+
+Alternatively to get the development version from this repository,
 
 ```r
 install.packages('devtools')
