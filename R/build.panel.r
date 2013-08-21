@@ -4,7 +4,7 @@
 #' 
 #' @description Builds a panel data set in wide format with id variables \code{personID} and \code{period} from individual PSID family files.
 #' @details 
-#' takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2009ER.xyz}, which must be in the same directory. 
+#' takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2011ER.xyz}, which must be in the same directory. Note that only one IND file may be present in the directory (each PSID shipping comes with a new IND file).
 #' There is an option to directly download the data from the PSID server to folder \code{datadir} or \code{tmpdir}.
 #' The user can change subsetting criteria as well as sample designs. 
 #' Merge: the variables \code{interview number} in each family file map to 
@@ -142,8 +142,9 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 	# locally bind all variables to be used in a data.table
 
-	. <- interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- NULL
+	interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- NULL
 
+	stopifnot(is.numeric(fam.vars$year))
 	years <- fam.vars$year
 
 	s <- .Platform$file.sep
@@ -183,8 +184,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 				'__VIEWSTATE'                                  = viewstate
 				)
 				
-			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2009 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152 ))
-			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2009" ),file=c(family[family$year %in% years,]$file, 1053))
+			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2009 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156 ))
+			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2011" ),file=c(family[family$year %in% years,]$file, 1053))
 
 			for ( i in seq( nrow(psidFiles ) -1 )) get.psid( psidFiles[ i , 'file' ] ,name= paste0(datadir, "FAM" , psidFiles[ i , 'year' ], "ER") , params , curl )
 			get.psid( psidFiles[ nrow(psidFiles ) , 'file' ] ,name= paste0(datadir, "IND" , psidFiles[ nrow(psidFiles ) , 'year' ], "ER") , params , curl )
@@ -208,10 +209,17 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	if (tail(strsplit(l[1],"\\.")[[1]],1) == "RData") ftype <- "Rdata"
 	if (tail(strsplit(l[1],"\\.")[[1]],1) == "csv") ftype   <- "csv"
 
+	if (verbose) cat('psidR: loading data\n')
 	if (ftype=="stata"){
 		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
         fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
-		ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		tmp <- grep("IND",l,value=TRUE)
+		if (length(tmp)>1) {
+		    warning(cat("Warning: you have more than one IND file in your datadir.\nI take the last one:",tail(tmp,1),"\n"))
+			ind.file <- paste0(datadir,tail(tmp,1))	# needs to be updated with next data delivery.
+		} else {
+			ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		}
 		ind      <- read.dta(file=ind.file)
 		ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
 		ind      <- data.table(ind)
@@ -219,7 +227,13 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		# data downloaded directly into a dataframe
 		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
 		fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
-		ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		tmp <- grep("IND",l,value=TRUE)
+		if (length(tmp)>1) {
+		    warning(cat("Warning: you have more than one IND file in your datadir.\nI take the last one:",tail(tmp,1),"\n"))
+			ind.file <- paste0(datadir,tail(tmp,1))	# needs to be updated with next data delivery.
+		} else {
+			ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		}
 		tmp.env  <- new.env()
 		load(file=ind.file,envir=tmp.env)
 		ind      <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
@@ -228,7 +242,13 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	} else if (ftype=="csv") {
 		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
 		fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
-		ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		tmp <- grep("IND",l,value=TRUE)
+		if (length(tmp)>1) {
+		    warning(cat("Warning: you have more than one IND file in your datadir.\nI take the last one:",tail(tmp,1),"\n"))
+			ind.file <- paste0(datadir,tail(tmp,1))	# needs to be updated with next data delivery.
+		} else {
+			ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+		}
 		ind      <- fread(input=ind.file)
 		ind.dict <- NULL
 	}
@@ -248,20 +268,16 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 	# convert fam.vars to data.table
 	stopifnot(is.data.frame(fam.vars))
-	if (!is.data.table(fam.vars)) {
-		fam.vars <- data.table(fam.vars)
-		fam.vars <- copy(fam.vars[,lapply(.SD,make.char)])
-		setkey(fam.vars,year)
-	}
+	fam.vars <- data.table(fam.vars)
+	fam.vars <- copy(fam.vars[,lapply(.SD,make.char)])
+	setkey(fam.vars,year)
 	
 	# convert ind.vars to data.table if not null
 	if (!is.null(ind.vars)){
 		stopifnot(is.data.frame(ind.vars))
-		if (!is.data.table(ind.vars)) {
-			ind.vars <- data.table(ind.vars)
-			ind.vars <- copy(ind.vars[,lapply(.SD,make.char)])
-			setkey(ind.vars,year)
-		}
+		ind.vars <- data.table(ind.vars)
+		ind.vars <- copy(ind.vars[,lapply(.SD,make.char)])
+		setkey(ind.vars,year)
 	}
 
 
@@ -289,10 +305,10 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 		# keeping only relevant columns from individual file
 		# subset for core sample and heads only if requested.
-		curr <- ids[.(years[iy])]
+		curr <- ids[list(years[iy])]
 		ind.subsetter <- as.character(curr[,list(ind.interview,ind.head)])	# keep from ind file
 		def.subsetter <- c("ER30001","ER30002")	# must keep those in all years
-		yind <- copy(ind[,c(def.subsetter,unique(c(ind.subsetter,as.character(ind.vars[.(years[iy]),which(names(ind.vars)!="year"),with=FALSE])))),with=FALSE])
+		yind <- copy(ind[,c(def.subsetter,unique(c(ind.subsetter,as.character(ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE])))),with=FALSE])
 
 		if (core) {
 		   n    <- nrow(yind)
@@ -309,7 +325,6 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		   yind <- yind[,headyes := yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]]
 		   yind <- copy(yind[headyes==TRUE])
 		   if (verbose){
-			   cat(years[iy],'sample with heads has',n,'obs\n')
 			   cat('dropping non-heads leaves',nrow(yind),'obs\n')
 		   }
 		   yind[,c(curr[,ind.head],"headyes") := NULL]
@@ -348,7 +363,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	
 
 		# add vars from from file that the user requested.
-		curvars <- fam.vars[.(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
+		curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
 		curnames <- names(curvars)
 		# current set of variables
 		# caution if there are specified NAs
@@ -372,7 +387,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		m[,year := years[iy] ]
 	
 		# note: a person who does not respond in wave x has an interview number in that wave, but NAs in the family file variables. remove does records.
-		idx <- which(!is.na(unlist(fam.vars[.(years[iy])][,curnames,with=FALSE])))[1]	# index of first non NA variable
+		idx <- which(!is.na(unlist(fam.vars[list(years[iy])][,curnames,with=FALSE])))[1]	# index of first non NA variable
 		m[,isna := is.na(m[,curnames[idx],with=FALSE])]
 		m <- copy(m[isna == FALSE])
 		m[,isna := NULL]
@@ -392,13 +407,17 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 	data2[,present := length(year), by=pid]
 	if (design == "balanced"){
+		n <- nrow(data2)
 		data2[,always := max(present) == length(years),by=pid]
 		data2 <- copy(data2[always==TRUE])
 		data2[,always := NULL]
+		if (verbose) cat("balanced design reduces sample from",n,"to",nrow(data2),"\n")
 	} else if (is.numeric(design)){
+		n <- nrow(data2)
 		data2[,enough := max(present) >= design,by=pid]
 		data2 <- copy(data2[enough==TRUE])
 		data2[,enough := NULL]
+		if (verbose) cat("design choice reduces sample from",n,"to",nrow(data2),"\n")
 	} else if (design=="all"){
 		# do nothing
 	}

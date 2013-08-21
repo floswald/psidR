@@ -5,7 +5,7 @@
 #' @details this function hardcodes the PSID variable names of "interview number" from both family and individual file for each wave, as well as "sequence number", "relation to head" and numeric value x of that variable such that "relation to head" == x means the individual is the head. Varies over time.
 makeids <- function(){
 
-	id.list <- data.table(year=c(1968:1997,seq(1999,2009,by=2)))
+	id.list <- data.table(year=c(1968:1997,seq(1999,2011,by=2)))
 	id.list$ind.interview <- c("ER30001","ER30020","ER30043","ER30067",
 									"ER30091","ER30117","ER30138","ER30160", 
 									"ER30188","ER30217","ER30246","ER30283",
@@ -14,14 +14,14 @@ makeids <- function(){
 									"ER30570","ER30606","ER30642","ER30689",
 									"ER30733","ER30806","ER33101","ER33201",
 									"ER33301","ER33401","ER33501","ER33601",
-									"ER33701","ER33801","ER33901","ER34001")
+									"ER33701","ER33801","ER33901","ER34001","ER34101")
 
 	id.list$ind.seq <- c(NA,"ER30021","ER30044","ER30068","ER30092","ER30118","ER30139",
 						 "ER30161","ER30189","ER30218","ER30247","ER30284","ER30314", 
 						 "ER30344","ER30374","ER30400","ER30430","ER30464","ER30499", 
 						 "ER30536","ER30571","ER30607","ER30643","ER30690","ER30734", 
 						 "ER30807","ER33102","ER33202","ER33302","ER33402","ER33502", 
-						 "ER33602","ER33702","ER33802","ER33902","ER34002")
+						 "ER33602","ER33702","ER33802","ER33902","ER34002","ER34102")
 	
 	# name of variable "relationship to head"
 	id.list$ind.head <- c("ER30003",
@@ -59,10 +59,11 @@ makeids <- function(){
 						  "ER33703",
 						  "ER33803",
 						  "ER33903",
-						  "ER34003")
+						  "ER34003",
+						  "ER34103")
 						  
 	# numeric code for "i am the head"
-	id.list$ind.head.num <- c(rep(1,15),rep(10,21))
+	id.list$ind.head.num <- c(rep(1,15),rep(10,22))
 
 	id.list$fam.interview <- c("V3"      , "V442"    , "V1102"   , "V1802"   , "V2402"    , "V3002" ,
 							   "V3402"   , "V3802"   , "V4302"   , "V5202"   , "V5702"    ,
@@ -70,7 +71,7 @@ makeids <- function(){
 							   "V10002"  , "V11102"  , "V12502"  , "V13702"  , "V14802"   ,
 							   "V16302"  , "V17702"  , "V19002"  , "V20302"  , "V21602"   ,
 							   "ER2002"  , "ER5002"  , "ER7002"  , "ER10002" , "ER13002"  ,
-							   "ER17002" , "ER21002" , "ER25002" , "ER36002" , "ER42002")
+							   "ER17002" , "ER21002" , "ER25002" , "ER36002" , "ER42002"  , "ER47302")
 	setkey(id.list,year)
 	return(id.list)
 }

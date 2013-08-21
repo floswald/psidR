@@ -55,8 +55,10 @@
 \details{
   takes desired variables from family files for specified
   years in folder \code{datadir} and merges using the id
-  information in \code{IND2009ER.xyz}, which must be in the
-  same directory. There is an option to directly download
+  information in \code{IND2011ER.xyz}, which must be in the
+  same directory. Note that only one IND file may be
+  present in the directory (each PSID shipping comes with a
+  new IND file). There is an option to directly download
   the data from the PSID server to folder \code{datadir} or
   \code{tmpdir}. The user can change subsetting criteria as
   well as sample designs. Merge: the variables
