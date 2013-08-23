@@ -1,0 +1,7 @@
+
+# News in Version 1.1
+* updated index file to latest PSID delivery 2011
+* accomodates mutliple index files in datadir, with a warning
+* improved verbose mode
+* fixed a bug from using J() inside a data.table
+* added a not run example to help file

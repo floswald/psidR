@@ -70,8 +70,45 @@
   usage to stata module \code{psiduse}.
 }
 \examples{
+\dontrun{
+# specify variables from family files you want
+
+myvars <- data.frame(year=c(2001,2003),
+                     house.value=c("ER17044","ER21043"),
+                     total.income=c("ER20456","ER24099"),
+                     education=c("ER20457","ER24148"))
+
+# specify variables from individual index file
+
+indvars = data.frame(year=c(2001,2003),
+                     longitud.wgt=c("ER33637","ER33740"))
+
+# call builder
+# mydir is a directory that contains FAM2001ER.dta,
+# FAM2003ER.dta and IND2011ER.dta
+
+# default
+d <- build.panel(datadir=mydir,
+                fam.vars=myvars,
+                ind.vars=indvars)
+
+# also non-heads
+d <- build.panel(datadir=mydir,
+                fam.vars=myvars,
+                ind.vars=indvars,
+                heads.only=FALSE)
+
+# non-balanced panel design
+d <- build.panel(datadir=mydir,
+                fam.vars=myvars,
+                ind.vars=indvars,
+                heads.only=FALSE,
+                design=2) # keep if stay 2+ periods
+}
+
 # ######################################
-# reproducible example on artifical data
+# reproducible example on artifical data.
+# run this with example(build.panel).
 # ######################################
 
 ## make reproducible family data sets for 2 years

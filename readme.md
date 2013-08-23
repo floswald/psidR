@@ -106,10 +106,27 @@ The function will then keep NA as the value of the variable in year 2001 and you
 4. call the function **build.panel**
 5. the result is a wide data.table where the id colums are *pid* (person identifier) and *year*. 
 
+### Supplemental Datasets
+
+The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. Just subset panel to the relevant year and do something like that (not tested):
+
+```r
+# suppose d is the result of an example call from above
+# suppose variable V is in supplement X2001 and X2003 as a data.table
+panel <- d$data	 	# get the data
+setkey(d,year,interview) 	# set key
+X2001[,year := 2001]	# add year column
+X2003[,year := 2003]
+setkey(X2001,year,interview)
+setkey(X2003,year,interview)
+
+# join X2001 to d (i.e. "merge")
+d <- copy( d[X2001] )	# should add NA for year 2003
+d <- copy( d[X2003] )
+```
 
 ### Future Developments
 
-* allow to merge [supplemental datasets](http://simba.isr.umich.edu/Zips/zipSupp.aspx), not only family files.
 * allow more complex panel designs, like accounting for wider family structure (i.e. using the family splitoff indicator to follow households that split up).
 
 
