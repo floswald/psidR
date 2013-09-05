@@ -221,7 +221,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 				'__VIEWSTATE'                                  = viewstate
 				)
 				
-			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2009 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156 ))
+			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2011 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156 ))
 			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2011" ),file=c(family[family$year %in% years,]$file, 1053))
 
 			for ( i in seq( nrow(psidFiles ) -1 )) get.psid( psidFiles[ i , 'file' ] ,name= paste0(datadir, "FAM" , psidFiles[ i , 'year' ], "ER") , params , curl )
