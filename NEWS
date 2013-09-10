@@ -1,5 +1,16 @@
 
-# News in Version 1.1
+*********************
+* News in Version 1.2
+*********************
+
+* fixed bug in SAScii downloader. Dates were not adjusted for
+  2011 PSID data delivery. Thanks to wmjones for reporting.
+  https://github.com/floswald/psidR/issues/1
+
+*********************
+* News in Version 1.1
+*********************
+
 * updated index file to latest PSID delivery 2011
 * accomodates mutliple index files in datadir, with a warning
 * improved verbose mode

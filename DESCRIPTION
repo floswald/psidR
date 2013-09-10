@@ -1,7 +1,7 @@
 Package: psidR
 Type: Package
 Title: Build panel data sets from PSID raw data
-Version: 1.1
+Version: 1.2
 Date: 2013-09-23
 Author: Florian Oswald
 Maintainer: Florian Oswald <florian.oswald@gmail.com>
@@ -16,8 +16,8 @@ Description: Makes it easy to build panel data in wide format from PSID
 URL: https://github.com/floswald/psidR
 Depends:
     data.table,
-    foreign,
     RCurl,
+    foreign,
     SAScii
 License: GPL-3
 Suggests: survey
