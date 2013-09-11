@@ -1,6 +1,0 @@
-This package is licensed under GPL-3. Please cite this software when using parts of it.
-
-
-license text:
-
-http://www.r-project.org/Licenses/GPL-3
