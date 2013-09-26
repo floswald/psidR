@@ -476,8 +476,6 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 
 
-
-
 	  
 	  
 	  
