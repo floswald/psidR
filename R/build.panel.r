@@ -248,28 +248,28 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 	if (verbose) cat('psidR: loading data\n')
 	if (ftype=="stata"){
-		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
+		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE,ignore.case=TRUE))
         fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
-		tmp <- grep("IND",l,value=TRUE)
+		tmp <- grep("IND",l,value=TRUE,ignore.case=TRUE)
 		if (length(tmp)>1) {
 		    warning(cat("Warning: you have more than one IND file in your datadir.\nI take the last one:",tail(tmp,1),"\n"))
 			ind.file <- paste0(datadir,tail(tmp,1))	# needs to be updated with next data delivery.
 		} else {
-			ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+			ind.file <- paste0(datadir,grep("IND",l,value=TRUE,ignore.case=TRUE))	# needs to be updated with next data delivery.
 		}
 		ind      <- read.dta(file=ind.file)
 		ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
 		ind      <- data.table(ind)
 	} else if (ftype=="Rdata") {
 		# data downloaded directly into a dataframe
-		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
+		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE,ignore.case=TRUE))
 		fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
-		tmp <- grep("IND",l,value=TRUE)
+		tmp <- grep("IND",l,value=TRUE,ignore.case=TRUE)
 		if (length(tmp)>1) {
 		    warning(cat("Warning: you have more than one IND file in your datadir.\nI take the last one:",tail(tmp,1),"\n"))
 			ind.file <- paste0(datadir,tail(tmp,1))	# needs to be updated with next data delivery.
 		} else {
-			ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+			ind.file <- paste0(datadir,grep("IND",l,value=TRUE,ignore.case=TRUE))	# needs to be updated with next data delivery.
 		}
 		tmp.env  <- new.env()
 		load(file=ind.file,envir=tmp.env)
@@ -277,14 +277,14 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		ind.dict <- NULL
 		ind      <- data.table(ind)
 	} else if (ftype=="csv") {
-		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE))
+		fam.dat  <- paste0(datadir,grep("FAM",l,value=TRUE,ignore.case=TRUE))
 		fam.dat  <- grep(paste(years,collapse="|"),fam.dat,value=TRUE)
-		tmp <- grep("IND",l,value=TRUE)
+		tmp <- grep("IND",l,value=TRUE,ignore.case=TRUE)
 		if (length(tmp)>1) {
 		    warning(cat("Warning: you have more than one IND file in your datadir.\nI take the last one:",tail(tmp,1),"\n"))
 			ind.file <- paste0(datadir,tail(tmp,1))	# needs to be updated with next data delivery.
 		} else {
-			ind.file <- paste0(datadir,grep("IND",l,value=TRUE))	# needs to be updated with next data delivery.
+			ind.file <- paste0(datadir,grep("IND",l,value=TRUE,ignore.case=TRUE))	# needs to be updated with next data delivery.
 		}
 		ind      <- fread(input=ind.file)
 		ind.dict <- NULL
@@ -398,9 +398,23 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 			print(vs,units="Mb")
 		}
 	
+		# caution: check if names on data file and in names list are both upper or lower case!
+		if (length(grep(pattern="[[:upper:]]",x=names(tmp)[1])) > 0){
+			# add vars from from file that the user requested.
+			curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
+			tmpnms = toupper(as.character(curvars))
+			for (i in 1:length(tmpnms)){
+				curvars[[i]] <- tmpnms[i]
+			}
+		} else if (length(grep(pattern="[[:lower:]]",x=names(tmp)[1])) > 0){
+			# add vars from from file that the user requested.
+			curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
+			tmpnms = tolower(as.character(curvars))
+			for (i in 1:length(tmpnms)){
+				curvars[[i]] <- tmpnms[i]
+			}
+		}
 
-		# add vars from from file that the user requested.
-		curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
 		curnames <- names(curvars)
 		# current set of variables
 		# caution if there are specified NAs
