@@ -274,6 +274,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		tmp.env  <- new.env()
 		load(file=ind.file,envir=tmp.env)
 		ind      <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
+		setnames(ind,names(ind), sapply(names(ind), toupper))	## convert all column names to uppercase
 		ind.dict <- NULL
 		ind      <- data.table(ind)
 	} else if (ftype=="csv") {
