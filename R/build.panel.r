@@ -241,10 +241,14 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	# figure out filestypes in datadir
 	l <- list.files(datadir)
 	if (length(l)==0) stop('there is something wrong with the data directory. please check path')
-	if (tail(strsplit(l[1],"\\.")[[1]],1) == "dta") ftype   <- "stata"
-	if (tail(strsplit(l[1],"\\.")[[1]],1) == "rda") ftype   <- "Rdata"
-	if (tail(strsplit(l[1],"\\.")[[1]],1) == "RData") ftype <- "Rdata"
-	if (tail(strsplit(l[1],"\\.")[[1]],1) == "csv") ftype   <- "csv"
+	
+	for (i in 1:length(l)) {
+  		if (tail(strsplit(l[i],"\\.")[[1]],1) == "dta") {ftype   <- "stata"; break}
+  		if (tail(strsplit(l[i],"\\.")[[1]],1) == "rda") {ftype   <- "Rdata"; break}
+  		if (tail(strsplit(l[i],"\\.")[[1]],1) == "RData") {ftype <- "Rdata"; break}
+  		if (tail(strsplit(l[i],"\\.")[[1]],1) == "csv") {ftype   <- "csv"; break}
+	}
+	if (!(exists("ftype"))) stop("No .dta, .rda, .RData or .csv files found in directory")
 
 	if (verbose) cat('psidR: loading data\n')
 	if (ftype=="stata"){
