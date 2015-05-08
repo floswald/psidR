@@ -136,13 +136,15 @@ make.char <- function(x){
 #' Create a test PSID dataset
 #'
 #' makes artifical PSID data with variables \code{age} and \code{income}
-#' for two consecutive years 1985 and 1986. 
+#' for two consecutive years 1985 and 1986.
 #' @param N how many people per wave
-#' @param N.attr number of people lost to attrition 
+#' @param N.attr number of people lost to attrition
 #' @return list with (fake) individual index file IND2009ER and
 #' family files for 1985 and 1986
 #' @export
 testPSID <-function(N=10,N.attr = 0){
+
+	interview85 <- NULL  # R CHECK
 
   # you would download files like those two data.frames:
 	fam1985 <- data.frame(interview85 = 1:N,

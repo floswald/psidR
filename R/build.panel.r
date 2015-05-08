@@ -14,9 +14,9 @@
 #' @param fam.vars data.frame of variable to retrieve from family files. see example for required format.
 #' @param ind.vars data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.
 #' @param SAScii logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.
-#' @param heads.only logical TRUE if user wants household heads only. if FALSE, data contains a row with value of "relation to head" variable.
+#' @param heads.only logical TRUE if user wants household heads only. if FALSE, data contains a row with value of \emph{relation to head} variable.
 #' @param core logical TRUE if user wants core sample only. if FALSE, data will oversample poverty sample.
-#' @param design either character "balanced" or "all" or integer. "Balanced" means only individuals who appear in each wave are considered. "All" means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.
+#' @param design either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.
 #' @param verbose logical TRUE if you want verbose output.
 #' @import SAScii RCurl data.table
 #' @return
@@ -66,7 +66,7 @@
 #' # ######################################
 #' 
 #' ## make reproducible family data sets for 2 years
-#' ## variables are: family income (Money) and age 
+#' ## variables are: family income (Money) and age
 #' 
 #' ## Data acquisition step: you download data or
 #' ## run build.panel with sascii=TRUE
@@ -79,10 +79,10 @@
 #' 
 #' # create a temporary datadir
 #' my.dir <- tempdir()
-#' # save those in the datadir
+#' #save those in the datadir
 #' # notice different R formats admissible
 #' save(fam1985,file=paste0(my.dir,"/FAM1985ER.rda"))
-#' save(fam1986,file=paste0(my.dir,"/FAM1986ER.RData"))	
+#' save(fam1986,file=paste0(my.dir,"/FAM1986ER.RData"))
 #' save(IND2009ER,file=paste0(my.dir,"/IND2009ER.RData"))
 #' 
 #' ## end Data acquisition step.
@@ -92,7 +92,7 @@
 #'                       money=c("Money85","Money86"),
 #'                       age=c("age85","age86"))
 #' 
-#' # create ind.vars 
+#' # create ind.vars
 #' indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
 #' 
 #' # call the builder
@@ -138,7 +138,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 	# locally bind all variables to be used in a data.table
 
-	interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- NULL
+	interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- ind.seq <- NULL
 
 	stopifnot(is.numeric(fam.vars$year))
 	years <- fam.vars$year
@@ -286,7 +286,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	}
 
 
-	# make an index of interview numbers for each year
+	# make an index of interview numbers for each year
 	ids <- makeids()
 	if (verbose){
 		cat('here is the list of hardcoded PSID variables\n')

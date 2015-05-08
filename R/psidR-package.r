@@ -9,6 +9,7 @@
 #' @import data.table
 #' @import SAScii 
 #' @import RCurl
+#' @import foreign
 #' @docType package
 #' @name psidR
 #' 
