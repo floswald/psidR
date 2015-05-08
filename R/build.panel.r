@@ -92,7 +92,7 @@
 #'                       money=c("Money85","Money86"),
 #'                       age=c("age85","age86"))
 #' 
-#' # and ind.vars 
+#' # create ind.vars 
 #' indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
 #' 
 #' # call the builder
