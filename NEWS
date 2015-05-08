@@ -4,11 +4,13 @@
 *********************
 
 * added unit tests
+* added travis CI
 * example dataset now created in a function. allows for
   attrition now.
 * fixed bugs:
   https://github.com/floswald/psidR/issues/2
   https://github.com/floswald/psidR/issues/5
+
 
 
 *********************
