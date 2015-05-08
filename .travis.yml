@@ -5,6 +5,6 @@ warnings_are_errors: true
 
 r_packages:
  - testthat
- - data.table,
- - RCurl,
+ - data.table
+ - RCurl
  - SAScii
