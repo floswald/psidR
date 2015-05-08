@@ -220,6 +220,10 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		} else {
 			ind.file <- paste0(datadir,grep("IND",l,value=TRUE,ignore.case=TRUE))	# needs to be updated with next data delivery.
 		}
+		# TODO
+		# maybe should use 
+		# ind      <- read.dta13(file=ind.file)
+		# if version 13?
 		ind      <- read.dta(file=ind.file)
 		ind.dict <- data.frame(code=names(ind),label=attr(ind,"var.labels"))
 		ind      <- data.table(ind)
