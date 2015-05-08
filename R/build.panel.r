@@ -115,6 +115,13 @@
 #'                             size=2*N,replace=TRUE)	
 #' IND2009ER$ER30500 <- sample(c(10,20),prob=c(0.9,0.1),
 #'                            size=2*N,replace=TRUE)
+#' 
+#' # as well as the sequence number: 1 for current heads, > 50 for movers
+#' # 90% prob of being current head
+#' IND2009ER$ER30464 <- sample(c(1,20),prob=c(0.95,0.05),
+#'                             size=2*N,replace=TRUE)	
+#' IND2009ER$ER30499 <- sample(c(1,20),prob=c(0.95,0.05),
+#'                            size=2*N,replace=TRUE)
 #' # and a survey weight
 #' IND2009ER$ER30497 <- runif(20)
 #' IND2009ER$ER30534 <- runif(20)
@@ -344,8 +351,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 			cat('=============================================\n')
 			cat('currently working on data for year',years[iy],'\n')
 		}
-
-		# keeping only relevant columns from individual file
+ 
+    # keeping only relevant columns from individual file
 		# subset for core sample and heads only if requested.
 		curr <- ids[list(years[iy])]
 		ind.subsetter <- as.character(curr[,list(ind.interview,ind.head,ind.seq)])	# keep from ind file
@@ -373,10 +380,10 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		   }
 		   yind[,c(curr[,ind.head],"headyes") := NULL]
 			# set names on individual index
-			setnames(yind,c("ID1968","pernum","interview",names(ind.vars)[-1]))
+			setnames(yind,c("ID1968","pernum","interview","sequence",names(ind.vars)[-1]))
 		} else {
 			# set names on individual index
-			setnames(yind,c("ID1968","pernum","interview","relation.head",names(ind.vars)[-1]))
+			setnames(yind,c("ID1968","pernum","interview","sequence","relation.head",names(ind.vars)[-1]))
 		}
 		yind[,pid := ID1968*1000 + pernum]	# unique person identifier
 		setkey(yind,interview)
@@ -408,6 +415,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		# caution: check if names on data file and in names list are both upper or lower case!
 		if (length(grep(pattern="[[:upper:]]",x=names(tmp)[1])) > 0){
 			# add vars from from file that the user requested.
+			browser()
 			curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
 			tmpnms = toupper(as.character(curvars))
 			for (i in 1:length(tmpnms)){

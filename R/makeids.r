@@ -130,3 +130,74 @@ make.char <- function(x){
 		return(x)
 	}
 }
+
+
+
+#' Create a test PSID dataset
+#'
+#' makes artifical PSID data with variables \code{age} and \code{income}
+#' for two consecutive years 1985 and 1986. 
+#' @param N how many people per wave
+#' @param perc.attr percent of attrition from one wave to the next
+#' @return list with (fake) individual index file IND2009ER and
+#' family files for 1985 and 1986
+testPSID <-function(N=10,perc.attr = 0){
+
+  # you would download files like those two data.frames:
+	fam1985 <- data.frame(interview85 = 1:N,
+	                 Money85=rlnorm(n=N,10,1),
+	                 age85=sample(20:80,size=N,replace=TRUE))
+	fam1986 <- data.frame(interview86 = sample(1:N,size=N,replace=FALSE))
+	fam1986$Money86 <- subset(fam1985,interview85 %in% fam1986$interview86)$Money85+rnorm(nrow(fam1986),500,30)
+	fam1986$age86 <- subset(fam1985,interview85 %in% fam1986$interview86)$age85+1
+
+	# assign correct PSID varname of "family interview 1985/86"
+	names(fam1985)[1] <- "V11102"	
+	names(fam1986)[1] <- "V12502"
+	
+	# construct an Individual index file: that would be IND2009ER
+	# needs to have a 1968 interview and person number (ER30001, ER30002) 
+	# and an indicator for whether from core etc, 
+	# as well as the interview number for each year
+	# 
+	# for sake of illustration, suppose the PSID has a total
+	# of 2N people (i.e. N are neither in year1 nor year2, 
+	# but in some other years)
+	IND2009ER <- data.frame(ER30001=sample((2*N):(4*N),size=2*N),
+	                        ER30002=sample(1:(2*N),size=2*N))
+	
+	# if a person is observed, they have an interview number 
+	# in both years. if not observed, its zero. 
+  tmp = data.frame(interview85=fam1985[,1], interview86=fam1986[,1])
+  tmp = rbind(tmp,data.frame(interview85=rep(0,N), interview86=rep(0,N)))
+	IND2009ER <- cbind(IND2009ER,tmp[sample(1:(2*N)),])
+  if (perc.attr>0){
+    out = sample(which(IND2009ER[["interview85"]] != 0),size=floor(N*perc.attr),replace=FALSE)
+    IND2009ER[out,"interview86"] <- 0
+  }
+	
+	names(IND2009ER)[3:4] <- c("ER30463","ER30498")
+	
+	# also need relationship to head in each year in the index
+	# 50% prob of being head in year1
+	IND2009ER$ER30465 <- sample(c(10,20),prob=c(0.5,0.5),
+	                            size=2*N,replace=TRUE)	
+	IND2009ER$ER30500 <- sample(c(10,20),prob=c(0.9,0.1),
+	                           size=2*N,replace=TRUE)
+	
+	# as well as the sequence number: 1 for current heads, > 50 for movers
+	# 90% prob of being current head
+	IND2009ER$ER30464 <- sample(c(1,20),prob=c(0.95,0.05),
+	                            size=2*N,replace=TRUE)	
+	IND2009ER$ER30499 <- sample(c(1,20),prob=c(0.95,0.05),
+	                           size=2*N,replace=TRUE)
+	# and a survey weight
+	IND2009ER$ER30497 <- runif(20)
+	IND2009ER$ER30534 <- runif(20)
+	IND2009ER
+	
+	# setup the ind.vars data.frame
+	indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
+  
+  return(list(famvars1985=fam1985,famvars1986=fam1986,IND2009ER=IND2009ER))
+}

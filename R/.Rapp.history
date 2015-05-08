@@ -1,0 +1,250 @@
+owner.tmp
+p$nA.pos
+g$nA.pos
+A
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+Q
+solve.model(m,1)
+m$dims$o
+m$dims
+m$inds$aopos
+m$inds$apos
+length(m$inds$apos)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+solve.model(m,1)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+solve.model(m,1)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-fun.solve.r")
+a=solve.model(m,1)
+a[[1]]
+m$cols
+a=solve.model(m,1)
+a[[1]]
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+a=solve.model(m,1)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+a=solve.model(m,1)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+a=solve.model(m,1)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+a=solve.model(m,1)
+a[[1]]
+a[[2]]
+a[[3]]
+a[[4]]
+a[[4]][,cash.L1>0]
+a[[5]]
+a[[6]]
+a[[7]]
+ss <- ss.setup.all(m,educ)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+ss <- ss.setup.all(m,educ)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+ss <- ss.setup.all(m,educ)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-init.ss.r")
+ss <- ss.setup.all(m,educ)
+base::source("/tmp/r-plugin-florianoswald/Rsource-2945-fun.solve.r")
+a=solve.model(m,1)
+a
+m$maxage
+m$p$maxage
+setwd("/Users/florianoswald/git/psidR/R")
+a=1
+a=1
+a = 10
+a = 10
+a = 10
+a = 11
+id.list <- data.table(year=c(1968:1997,seq(1999,2011,by=2)))
+id.list
+source("/Users/florianoswald/git/bankruptcy/bkPackage/R/init.model.r")
+initiate a model
+a "model" is a list with elements that depend on the parameter vector p
+this list must initialize all the stuff needed to compute a solution
+period state spaces: data.tables
+*) owner.tmp
+*) owner.pos
+*) renter.tmp
+*) renter.pos
+other stuff
+*) transition matrices y,p
+*) grids
+*) indices
+*) spline spaces
+*) column names
+*) savings matrices
+init.model <- function(p){
+library(rutils)
+library(MASS)
+library(gridR)
+library(splines)
+library(data.table)
+library(Matrix)
+grids <- list()
+inds <- list()
+inds$a <- 1:p$nA
+inds$z <- 1:p$nZ
+inds$p <- 1:p$nP
+inds$h <- 1:p$nH
+inds$m <- 1:p$nM
+inds$L <- 1:p$nL
+inds$F <- 1:p$nF
+inds$educ <- 1:p$nE
+make column names for labor supply
+cols <- colmaker(inds)
+house price transition matrix and grid
+--------------------------------------
+hps <- rouwenhorst(0.99,sigma=p$sigma.p,mu=0,n=p$nP)	# parameters from campbell and cocco 2010
+Gp <- hps$Pmat	# house price transition matrix
+income profiles
+===============
+load PSID age profiles
+load(file="~/git/bankruptcy/data/psidinc.RData")
+medinc <- meaninc[,mean.inc.2005]	# mean income in 2005 dollars
+SCALING: income (and all other dollar valued variables in the model)
+are scaled relative to median income "medinc". If you want to go from
+model to 2009 dollars on variable x, do x * medinc
+choose years:
+from.age     <- 30L
+ages         <- from.age:(from.age+(p$maxage-2L))
+means        <- preds[age %in% ages]
+sigma.nus <- p[grep("sigma.hi|sigma.lo",names(unlist(p)))]
+Rouwen    <- lapply(inds$educ, function(i) rouwenhorst(rho=0.99,sigma=sigma.nus[[i]],mu=0,n=p$nZ) )
+G         <- lapply(Rouwen,function(j) j$Pmat)
+log and income profiles
+zlog    <- lapply(1:(p$maxage-1), function(i) lapply(inds$educ,function(j) Rouwen[[j]]$zgrid + means[i,c("loginc.lo","loginc.hi")[j],with=FALSE][[1]]) )
+grids$z <- lapply(1:(p$maxage-1), function(i) lapply(inds$educ,function(j) exp(zlog[[i]][[j]])/medinc) )
+grids$pfun  <- c(p$kappa,1)	# "price function".
+grids$a     <- grid.maker(c(p$low.a,p$high.a),num.points=p$nA,spacing="hyp.sine")
+grids$a     <- grids$a - with(grids,min(a[a>0]))	# center on zero
+grids$apos  <- grids$a[grids$a>=0]
+grids$abk   <- grids$apos	# smaller asset grid for people in bk state.
+grids$aneg  <- grids$a[grids$a<0]
+p.high <- (exp(p$p0)/medinc) * p$high.p
+p.low  <- (exp(p$p0)/medinc) * p$low.p   # there could be a 70% price drop
+grids$ph <- qunif(seq(0,1,le=p$nP),min=p.low,max=p.high)	# this is HOUSE price
+move initial price up a bit: too many young buyers!
+p.init <- (p$p0 + 0.2)	this for previous log scale
+grids$p.init <- range(grids$ph)[2] * 0.85
+grids$L           <- seq(from=0,to=1,length=p$nL)
+grids$m           <- sapply(inds$h, function(i) grid.maker(c(0,max(grids$ph)*grids$pfun[i]*(1-p$down)),num.points=p$nM,spacing="beta.grid",shape1=1,shape2=0.7,ncp=0) )
+colnames(grids$m) <- c(paste("house",inds$h))
+rownames(grids$m) <- c(paste("mdebt",inds$m))
+grids$a.zero <- head(inds$a[grids$a>=0],1)
+grids$nA.pos <- length(grids$apos)
+grids$nA.neg <- length(grids$aneg)
+grids$nA.bk  <- length(grids$abk)
+inds$abk     <- 1:grids$nA.bk
+inds$apos    <- grids$a.zero:p$nA
+inds$aneg    <- 1:(grids$a.zero-1)
+inds$a.abk   <- inds$a[!is.na(match(grids$a,grids$abk))]
+if (p$b < p$eta*max(grids$ph)) {
+cat('your minimum income level is not enough to guarantee pos cons in renter bankruptcy\nI set min inc to 120% of rent now\nThat means you have 20% of rent left to consume after paying rent.\n')
+p$b <- 1.2 * p$eta*max(grids$ph)
+}
+overview data.tables
+====================
+mort.tab: mapping from current state (h,m) into next.debt
+grids$mort.tab            <- data.table(expand.grid(im=inds$m,ih=inds$h,iit=1:(p$maxage-1)))
+grids$mort.tab[,curr.debt := rep(as.numeric(grids$m),times=(p$maxage-1))]
+grids$mort.tab[,payment   := pay(age=iit,debt=curr.debt,interest=p$rmGross)]
+grids$mort.tab[,next.debt := next.m(age=iit,debt=curr.debt)]
+setkey(grids$mort.tab,iit,ih,im)
+buy.tab: what is initial expenditure and future debt if I buy a house at state (h,p)?
+grids$buy.tab            <- data.table(expand.grid(ip=inds$p,ih=inds$h,iit=1:(p$maxage-1)))
+grids$buy.tab[,init.debt := grids$ph[ip]*grids$pfun[ih]*(1-p$down)]
+grids$buy.tab[,payment   := init.debt*p$rmGross/(p$maxage-iit)]
+grids$buy.tab[,next.debt := init.debt*(1 - 1/(p$maxage - iit))]
+setkey(grids$buy.tab,iit,ih,ip)
+eq.tab: what is equity at each level of size, price and debt?
+grids$eq.tab <- data.table(expand.grid(ih=inds$h,ip=inds$p,im = inds$m))
+setkey(grids$eq.tab,ih,im)
+tmp <- data.table(ih=rep(inds$h,each=p$nM),im=rep(inds$m,2),curr.debt=as.numeric(grids$m),key=c("ih","im"))
+grids$eq.tab <- tmp[grids$eq.tab]
+grids$eq.tab[,net.equity := p$sell.cost * grids$pfun[ih] * grids$ph[ip] - curr.debt]
+grids$eq.tmp <- owner.def.tmp[,unique(net.equity)]
+warning("grids$eq.tmp is a dummy value right now.")
+grids$eq.tmp <- -1:10
+grids$eq.tmp <- grids$eq.tmp[order(grids$eq.tmp)]
+spline spaces for continuous approximation
+==========================================
+sp <- list()	# list of lists of spline parameters
+sp$A <- list()	# list for each var
+sp$M <- list()
+sp$Z <- list()
+sp$P <- list()
+sp$E <- list()	# negative equity space
+degrees
+sp$A$degree <- 1
+sp$M$degree <- 1
+sp$Z$degree <- 1
+sp$P$degree <- 1
+sp$E$degree <- 1
+number of basis functions
+sp$A$num.basis <- 9
+sp$M$num.basis <- 4
+sp$Z$num.basis <- 5
+sp$P$num.basis <- 4
+sp <- spline.setup(sp,grids,inds)
+sp$sparse <- sspline.setup(sp,p,inds)
+sp$ibases <- ibase.setup(sp,inds)
+discrete choice descriptors
+===========================
+dchoices <- list()
+dchoices$renter           <- 1:4
+names(dchoices$renter)    <- c("rent","buy","fi.7","fi.13")
+dchoices$owner            <- 1:7
+names(dchoices$owner)     <- c("stay","sell","def","fi.7","fi.13","evict","fi.def")
+dchoices$renter.bk        <- 1
+names(dchoices$renter.bk) <- c("rent")
+dchoices$owner.bk         <- 1:3
+names(dchoices$owner.bk)  <- c("stay","sell","def")
+dchoices$total <- length(unlist(dchoices))*p$nL
+dimension descriptors
+dims <- dim.descript(p,grids)
+Savings grid matrices
+=====================
+full savings support
+saving    <-  p$R*grids$apos
+borrowing <-  p$R*grids$aneg
+dAZPF      <- p$nA*p$nZ*p$nP*p$nF
+dAposZPF   <- grids$nA.pos*p$nZ*p$nP*p$nF
+dAZPFH     <- p$nA*p$nZ*p$nP*p$nF*p$nH
+dAZPHMF    <- p$nA*p$nZ*p$nP*p$nF*p$nH*p$nM
+dAposZPHMF <- grids$nA.pos*p$nZ*p$nP*p$nF*p$nH*p$nM
+smat <- list()
+renter. dimensions: nA*nZ*nPby nA.
+smat$smatr    <- matrix(c(borrowing,saving),nrow=dAZPF,ncol=p$nA,byrow=T)
+smat$smatrneg <- matrix(grids$aneg,nrow=dAZPF,ncol=grids$nA.neg,byrow=T)
+smat$smatrpos <- p$R * matrix(grids$apos,nrow=dAZPF,ncol=grids$nA.pos,byrow=T)
+renter bk
+smat$smatrbk <- p$R * matrix(grids$abk,nrow=dAposZPF,ncol=grids$nA.pos,byrow=T)
+buyer. dimensions: nA*nZ*nP*nH by nA.
+smat$smatbuy  <- matrix(c(borrowing,saving),nrow=dAZPFH,ncol=p$nA,byrow=T)
+smat$smatbpos <- p$R * matrix(grids$apos,nrow=dAZPFH,ncol=grids$nA.pos,byrow=T)
+smat$smatbpos <- p$R * matrix(grids$apos,nrow=dAZPFH,ncol=grids$nA.pos,byrow=T)
+smat$smatbneg <- matrix(grids$aneg,nrow=dAZPFH,ncol=grids$nA.neg,byrow=T)
+smat$smato    <- matrix(c(borrowing,saving),nrow=dAZPHMF,ncol=p$nA,byrow=T)
+smat$smatopos <- p$R * matrix(grids$apos,nrow=dAZPHMF,ncol=grids$nA.pos,byrow=T)
+smat$smatoneg <- matrix(grids$aneg,nrow=dAZPHMF,ncol=grids$nA.neg,byrow=T)
+smat$smatobk  <- p$R * matrix(grids$abk,nrow  =dAposZPHMF,ncol = grids$nA.bk,byrow=T)
+model <- list(grids=grids,inds=inds,Gp=Gp,G=G,sp=sp,smat=smat,p=p,dims=dims,cols=cols)
+setup state spaces for all types and education groups
+=====================================================
+return(model)
+}
+ss
+a = ss.setup.all(m,1)
+str(a)
+names(a)
+a$owner
+length(m$smat)
+names(m$smat)
+m$dims
+ss
+a$owner
+a$owner[,newcol = "oasch"]
+a$owner[,newcol := "oasch"]
+a$owner
+50*5^3*4
