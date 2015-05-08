@@ -9,8 +9,7 @@
 #' @import data.table
 #' @import SAScii 
 #' @import RCurl
-#' @suggest survey
-#' @doctype package
+#' @docType package
 #' @name psidR
 #' 
 NULL

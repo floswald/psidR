@@ -14,14 +14,14 @@ Description: Makes it easy to build panel data in wide format from PSID
     (they differ in each year). There are different panel data designs and two 
     popular subsetting criteria (heads only and core sample only) implemented.
 URL: https://github.com/floswald/psidR
-Depends:
+Depends: 
     data.table,
     RCurl,
     foreign,
     SAScii
 License: GPL-3
-Suggests: survey
-Collate:
+Collate: 
     'build.panel.r'
     'makeids.r'
     'psidR-package.r'
+Suggests: testthat

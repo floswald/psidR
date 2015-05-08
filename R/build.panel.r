@@ -343,7 +343,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		# keeping only relevant columns from individual file
 		# subset for core sample and heads only if requested.
 		curr <- ids[list(years[iy])]
-		ind.subsetter <- as.character(curr[,list(ind.interview,ind.head)])	# keep from ind file
+		ind.subsetter <- as.character(curr[,list(ind.interview,ind.head,ind.seq)])	# keep from ind file
 		def.subsetter <- c("ER30001","ER30002")	# must keep those in all years
 		yind <- copy(ind[,c(def.subsetter,unique(c(ind.subsetter,as.character(ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE])))),with=FALSE])
 
@@ -357,12 +357,14 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		   if (nrow(yind)==0) stop('you dropped all observations by selecting core only.\n This means you supplied a family file only from the poor sample. unusual.')
 		}
 
+		# issue number 2: for current heads only need to subset "relationship to head" AS WELL AS "sequence number" == 1 
+		# otherwise a head who died between last and this wave is still head, so there would be two heads in that family.
 		if (heads.only) {
 		   n    <- nrow(yind)
-		   yind <- yind[,headyes := yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]]
+		   yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]) & (yind[,curr[,ind.seq],with=FALSE]== 1)]
 		   yind <- copy(yind[headyes==TRUE])
 		   if (verbose){
-			   cat('dropping non-heads leaves',nrow(yind),'obs\n')
+			   cat('dropping non-current-heads leaves',nrow(yind),'obs\n')
 		   }
 		   yind[,c(curr[,ind.head],"headyes") := NULL]
 			# set names on individual index
