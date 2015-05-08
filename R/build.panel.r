@@ -68,67 +68,14 @@
 #' ## make reproducible family data sets for 2 years
 #' ## variables are: family income (Money) and age 
 #' 
-#' # suppose there are N individuals in year 1 and year 2. 
-#' # zero attrition. 
+#' ## Data acquisition step: you download data or
+#' ## run build.panel with sascii=TRUE
 #' 
-#' N <- 10
-#' 
-#' fam <- data.frame(int85 = 1:N,int86=sample(1:N),
-#'                  Money85=rlnorm(n=N,10,1),
-#'                  age85=sample(20:80,size=N,replace=TRUE))
-#' fam$Money86 <- fam$Money85+rnorm(N,500,30)
-#' fam$age86 <- fam$age85+1
-#' fam
-#' 
-#' # separate into data.frames.
-#' # you would download files like those two:
-#' fam1985 <- subset(fam,select = c(int85,Money85,age85))
-#' fam1986 <- subset(fam,select = c(int86,Money86,age86))
-#' 
-#' # assign correct PSID varname of "family interview 1985"
-#' names(fam1985)[1] <- "V11102"	
-#' names(fam1986)[1] <- "V12502"
-#' 
-#' 
-#' # construct an Individual index file: that would be IND2009ER
-#' # needs to have a unique person number (ER30001) 
-#' # and an indicator for whether from core etc, 
-#' # as well as the interview number for each year
-#' # 
-#' # for sake of illustration, suppose the PSID has a total
-#' # of 2N people (i.e. N are neither in year1 nor year2, 
-#' # but in some other years)
-#' IND2009ER <- data.frame(ER30001=sample((2*N):(4*N),size=2*N),
-#'                         ER30002=sample(1:(2*N),size=2*N))
-#' 
-#' # if a person is observed, they have an interview number 
-#' # in both years. if not observed, it's zero. 
-#' # randomly allocate persons to ER30001.
-#' tmp <- rbind(fam[,1:2],data.frame(int85=rep(0,N),int86=rep(0,N)))
-#' 
-#' IND2009ER <- cbind(IND2009ER,tmp[sample(1:(2*N)),])
-#' names(IND2009ER)[3:4] <- c("ER30463","ER30498")
-#' 
-#' # also need relationship to head in each year in the index
-#' # 50% prob of being head in year1
-#' IND2009ER$ER30465 <- sample(c(10,20),prob=c(0.5,0.5),
-#'                             size=2*N,replace=TRUE)	
-#' IND2009ER$ER30500 <- sample(c(10,20),prob=c(0.9,0.1),
-#'                            size=2*N,replace=TRUE)
-#' 
-#' # as well as the sequence number: 1 for current heads, > 50 for movers
-#' # 90% prob of being current head
-#' IND2009ER$ER30464 <- sample(c(1,20),prob=c(0.95,0.05),
-#'                             size=2*N,replace=TRUE)	
-#' IND2009ER$ER30499 <- sample(c(1,20),prob=c(0.95,0.05),
-#'                            size=2*N,replace=TRUE)
-#' # and a survey weight
-#' IND2009ER$ER30497 <- runif(20)
-#' IND2009ER$ER30534 <- runif(20)
-#' IND2009ER
-#' 
-#' # setup the ind.vars data.frame
-#' indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
+#' # testPSID creates artifical PSID data
+#' td <- testPSID(N=10,N.attr=0)
+#' fam1985 <- copy(td$famvars1985)
+#' fam1986 <- copy(td$famvars1986)
+#' IND2009ER <- copy(td$IND2009ER)
 #' 
 #' # create a temporary datadir
 #' my.dir <- tempdir()
@@ -138,10 +85,15 @@
 #' save(fam1986,file=paste0(my.dir,"/FAM1986ER.RData"))	
 #' save(IND2009ER,file=paste0(my.dir,"/IND2009ER.RData"))
 #' 
-#' # now famvars
+#' ## end Data acquisition step.
+#' 
+#' # now define which famvars
 #' famvars <- data.frame(year=c(1985,1986),
 #'                       money=c("Money85","Money86"),
 #'                       age=c("age85","age86"))
+#' 
+#' # and ind.vars 
+#' indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
 #' 
 #' # call the builder
 #' # need to set core==FALSE because person numbering indicates
@@ -151,7 +103,7 @@
 #' 
 #' d <- build.panel(datadir=my.dir,fam.vars=famvars,
 #'                  ind.vars=indvars,core=FALSE,
-#'                  heads=FALSE,verbose=TRUE)	
+#'                  heads.only=FALSE,verbose=TRUE)	
 #'
 #' # notice: all 2*N individuals are present
 #' print(d$data[order(pid)],nrow=Inf)	# check the age column
@@ -352,12 +304,31 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 			cat('currently working on data for year',years[iy],'\n')
 		}
  
-    # keeping only relevant columns from individual file
+   		# keeping only relevant columns from individual file
 		# subset for core sample and heads only if requested.
 		curr <- ids[list(years[iy])]
 		ind.subsetter <- as.character(curr[,list(ind.interview,ind.head,ind.seq)])	# keep from ind file
 		def.subsetter <- c("ER30001","ER30002")	# must keep those in all years
-		yind <- copy(ind[,c(def.subsetter,unique(c(ind.subsetter,as.character(ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE])))),with=FALSE])
+
+		# TODO
+		# how to allow for NA in ind.vars?
+		# def.names <- c(def.subsetter,ind.subsetter)
+		# yind <- copy(ind[,def.names,with=FALSE])	
+		# # are there NA's in the ind.vars?
+		# curvars <- ind.vars[list(years[iy]),which(!(names(ind.vars) %in% c("year",def.names))),with=FALSE]
+		# curnames <- names(curvars)
+		# if (ind.vars[,any(is.na(.SD))]){
+		# 	na      <- curvars[,which(is.na(.SD))]
+		# 	codes   <- as.character(curvars)
+		# 	nanames <- curnames[na]
+		# 	tmp     <- copy(ind[,codes[-na],with=FALSE])
+		# 	tmp[,nanames := NA_real_,with=FALSE]
+		# 	setnames(tmp,c(curnames[-na],nanames))
+		# 	setkey(tmp,interview)
+
+		# }
+
+		yind <- copy(ind[,c(def.subsetter,unique(c(ind.subsetter,as.character(ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE])))),with=FALSE])	
 
 		if (core) {
 		   n    <- nrow(yind)
@@ -411,25 +382,15 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 			vs = ceiling(object.size(tmp))
 			print(vs,units="Mb")
 		}
-	
-		# caution: check if names on data file and in names list are both upper or lower case!
-		if (length(grep(pattern="[[:upper:]]",x=names(tmp)[1])) > 0){
-			# add vars from from file that the user requested.
-			browser()
-			curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
-			tmpnms = toupper(as.character(curvars))
-			for (i in 1:length(tmpnms)){
-				curvars[[i]] <- tmpnms[i]
-			}
-		} else if (length(grep(pattern="[[:lower:]]",x=names(tmp)[1])) > 0){
-			# add vars from from file that the user requested.
-			curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
-			tmpnms = tolower(as.character(curvars))
-			for (i in 1:length(tmpnms)){
-				curvars[[i]] <- tmpnms[i]
-			}
-		}
 
+		# convert all variable names to lower case in both fam.vars and data file
+		curvars <- fam.vars[list(years[iy]),which(names(fam.vars)!="year"),with=FALSE]
+		tmpnms = tolower(as.character(curvars))
+		for (i in 1:length(tmpnms)){
+			curvars[[i]] <- tmpnms[i]
+		}
+		setnames(tmp,tolower(names(tmp)))
+	
 		curnames <- names(curvars)
 		# current set of variables
 		# caution if there are specified NAs

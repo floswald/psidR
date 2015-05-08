@@ -138,10 +138,11 @@ make.char <- function(x){
 #' makes artifical PSID data with variables \code{age} and \code{income}
 #' for two consecutive years 1985 and 1986. 
 #' @param N how many people per wave
-#' @param perc.attr percent of attrition from one wave to the next
+#' @param N.attr number of people lost to attrition 
 #' @return list with (fake) individual index file IND2009ER and
 #' family files for 1985 and 1986
-testPSID <-function(N=10,perc.attr = 0){
+#' @export
+testPSID <-function(N=10,N.attr = 0){
 
   # you would download files like those two data.frames:
 	fam1985 <- data.frame(interview85 = 1:N,
@@ -168,13 +169,13 @@ testPSID <-function(N=10,perc.attr = 0){
 	
 	# if a person is observed, they have an interview number 
 	# in both years. if not observed, its zero. 
-  tmp = data.frame(interview85=fam1985[,1], interview86=fam1986[,1])
-  tmp = rbind(tmp,data.frame(interview85=rep(0,N), interview86=rep(0,N)))
+    tmp = data.frame(interview85=fam1985[,1], interview86=fam1986[,1])
+    tmp = rbind(tmp,data.frame(interview85=rep(0,N), interview86=rep(0,N)))
 	IND2009ER <- cbind(IND2009ER,tmp[sample(1:(2*N)),])
-  if (perc.attr>0){
-    out = sample(which(IND2009ER[["interview85"]] != 0),size=floor(N*perc.attr),replace=FALSE)
-    IND2009ER[out,"interview86"] <- 0
-  }
+    if (N.attr>0){
+        out = sample(which(IND2009ER[["interview85"]] != 0),size=N.attr,replace=FALSE)
+        IND2009ER[out,"interview86"] <- 0
+    }
 	
 	names(IND2009ER)[3:4] <- c("ER30463","ER30498")
 	
@@ -192,8 +193,8 @@ testPSID <-function(N=10,perc.attr = 0){
 	IND2009ER$ER30499 <- sample(c(1,20),prob=c(0.95,0.05),
 	                           size=2*N,replace=TRUE)
 	# and a survey weight
-	IND2009ER$ER30497 <- runif(20)
-	IND2009ER$ER30534 <- runif(20)
+	IND2009ER$ER30497 <- runif(2*N)
+	IND2009ER$ER30534 <- runif(2*N)
 	IND2009ER
 	
 	# setup the ind.vars data.frame
