@@ -1,5 +1,11 @@
 
+
+
 # psidR: make building panel data from PSID easy
+
+
+[![Build Status](https://travis-ci.org/floswald/psidR.svg)](https://travis-ci.org/floswald/psidR)
+
 
 This R package provides a function to easily build panel data from PSID raw data.
 
