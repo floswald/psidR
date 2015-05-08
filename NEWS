@@ -1,5 +1,17 @@
 
 *********************
+* News in Version 1.3
+*********************
+
+* added unit tests
+* example dataset now created in a function. allows for
+  attrition now.
+* fixed bugs:
+  https://github.com/floswald/psidR/issues/2
+  https://github.com/floswald/psidR/issues/5
+
+
+*********************
 * News in Version 1.2
 *********************
 
