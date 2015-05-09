@@ -16,11 +16,11 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
 
 \item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.}
 
-\item{heads.only}{logical TRUE if user wants household heads only. if FALSE, data contains a row with value of "relation to head" variable.}
+\item{heads.only}{logical TRUE if user wants household heads only. if FALSE, data contains a row with value of \emph{relation to head} variable.}
 
 \item{core}{logical TRUE if user wants core sample only. if FALSE, data will oversample poverty sample.}
 
-\item{design}{either character "balanced" or "all" or integer. "Balanced" means only individuals who appear in each wave are considered. "All" means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.}
+\item{design}{either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.}
 
 \item{verbose}{logical TRUE if you want verbose output.}
 }
@@ -95,7 +95,7 @@ IND2009ER <- copy(td$IND2009ER)
 
 # create a temporary datadir
 my.dir <- tempdir()
-# save those in the datadir
+#save those in the datadir
 # notice different R formats admissible
 save(fam1985,file=paste0(my.dir,"/FAM1985ER.rda"))
 save(fam1986,file=paste0(my.dir,"/FAM1986ER.RData"))
@@ -108,7 +108,7 @@ famvars <- data.frame(year=c(1985,1986),
                       money=c("Money85","Money86"),
                       age=c("age85","age86"))
 
-# and ind.vars
+# create ind.vars
 indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
 
 # call the builder
