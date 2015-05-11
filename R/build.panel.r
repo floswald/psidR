@@ -4,14 +4,12 @@
 #' 
 #' @description Builds a panel data set in wide format with id variables \code{personID} and \code{period} from individual PSID family files.
 #' @details 
-#' takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2011ER.xyz}, which must be in the same directory. Note that only one IND file may be present in the directory (each PSID shipping comes with a new IND file).
-#' There is an option to directly download the data from the PSID server to folder \code{datadir} or \code{tmpdir}.
-#' The user can change subsetting criteria as well as sample designs. 
+#' takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2011ER.xyz}, which must be in the same directory. Note that only one IND file may be present in the directory (each PSID shipping comes with a new IND file). The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs. 
 #' Merge: the variables \code{interview number} in each family file map to 
 #' the \code{interview number} variable of a given year in the individual file. Run \code{example(build.panel)} for a demonstration.
 #' Accepted input data are stata format .dta, .csv files or R data formats .rda and RData. Similar in usage to stata module \code{psiduse}.
-#' @param datadir either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention.
-#' @param fam.vars data.frame of variable to retrieve from family files. see example for required format.
+#' @param datadir either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported.
+#' @param fam.vars data.frame of variable to retrieve from family files. Can contain see example for required format.
 #' @param ind.vars data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.
 #' @param SAScii logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.
 #' @param heads.only logical TRUE if user wants household heads only. if FALSE, data contains a row with value of \emph{relation to head} variable.
@@ -27,12 +25,16 @@
 #' \dontrun{
 #' # specify variables from family files you want
 #' 
-#' myvars <- data.frame(year=c(2001,2003),
+#' the family files dataframe can contain NAs.
+#' E.g. if there are years where a variable is missing
+#' and you want to fix that later on somehow.
+#' famvars <- data.frame(year=c(2001,2003),
 #'                      house.value=c("ER17044","ER21043"),
 #'                      total.income=c("ER20456","ER24099"),
-#'                      education=c("ER20457","ER24148"))
+#'                      education=c("ER20457",NA))
 #'                      
 #' # specify variables from individual index file       
+#' # these cannot contain NAs at the moment.
 #'                
 #' indvars = data.frame(year=c(2001,2003),
 #'                      longitud.wgt=c("ER33637","ER33740"))
@@ -43,18 +45,18 @@
 #' 
 #' # default
 #' d <- build.panel(datadir=mydir,
-#'                 fam.vars=myvars,
+#'                 fam.vars=famvars,
 #'                 ind.vars=indvars)
 #'                 
 #' # also non-heads               
 #' d <- build.panel(datadir=mydir,
-#'                 fam.vars=myvars,
+#'                 fam.vars=famvars,
 #'                 ind.vars=indvars,
 #'                 heads.only=FALSE)
 #'                 
 #' # non-balanced panel design               
 #' d <- build.panel(datadir=mydir,
-#'                 fam.vars=myvars,
+#'                 fam.vars=famvars,
 #'                 ind.vars=indvars,
 #'                 heads.only=FALSE,
 #'                 design=2) # keep if stay 2+ periods

@@ -1,10 +1,10 @@
-\\.Rproj\\.user$
-\\.DS_store
+\.Rproj\.user$
+\.DS_store
 psid.Rproj
-\\.gitignore$
-\\.git$
+\.gitignore$
+\.git$
 ^\.travis\.yml$
 readme.md$
-\\.Rhistory$
+\.Rhistory$
 ^.*\.Rproj$
 ^\.Rproj\.user$
