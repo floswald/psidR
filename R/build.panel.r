@@ -338,7 +338,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 		if (core) {
 		   n    <- nrow(yind)
-		   yind <- copy(yind[ER30001>2930])	# individuals 1-2930 are from poor sample
+		   # yind <- copy(yind[ER30001>2930])	# individuals 1-2930 are from poor sample
+		   yind <- copy(yind[ER30001<=3000])	# individuals 1-3000 are from core sample
 		   if (verbose){
 			   cat('full',years[iy],'sample has',n,'obs\n')
 			   cat('dropping non-core individuals leaves',nrow(yind),'obs\n')
@@ -348,6 +349,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 		# issue number 2: for current heads only need to subset "relationship to head" AS WELL AS "sequence number" == 1 
 		# otherwise a head who died between last and this wave is still head, so there would be two heads in that family.
+		# https://psidonline.isr.umich.edu/Guide/FAQ.aspx?Type=ALL#150
 		if (heads.only) {
 		   n    <- nrow(yind)
 		   yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]) & (yind[,curr[,ind.seq],with=FALSE]== 1)]
