@@ -137,70 +137,89 @@ make.char <- function(x){
 #'
 #' makes artifical PSID data with variables \code{age} and \code{income}
 #' for two consecutive years 1985 and 1986.
-#' @param N how many people per wave
+#' @param N number of people in each wave
 #' @param N.attr number of people lost to attrition
 #' @return list with (fake) individual index file IND2009ER and
 #' family files for 1985 and 1986
 #' @export
-testPSID <-function(N=10,N.attr = 0){
+testPSID <-function(N=100,N.attr = 0){
 
-	interview85 <- NULL  # R CHECK
+	# need to bind some vars for R CHECK:
+	ER30001 <- ER30002 <-intnum86 <- intnum85 <- Money85 <- Money86 <- age85 <- age86 <- NULL
 
-  # you would download files like those two data.frames:
-	fam1985 <- data.frame(interview85 = 1:N,
-	                 Money85=rlnorm(n=N,10,1),
-	                 age85=sample(20:80,size=N,replace=TRUE))
-	fam1986 <- data.frame(interview86 = sample(1:N,size=N,replace=FALSE))
-	fam1986$Money86 <- subset(fam1985,interview85 %in% fam1986$interview86)$Money85+rnorm(nrow(fam1986),500,30)
-	fam1986$age86 <- subset(fam1985,interview85 %in% fam1986$interview86)$age85+1
-
-	# assign correct PSID varname of "family interview 1985/86"
-	names(fam1985)[1] <- "V11102"	
-	names(fam1986)[1] <- "V12502"
-	
-	# construct an Individual index file: that would be IND2009ER
-	# needs to have a 1968 interview and person number (ER30001, ER30002) 
-	# and an indicator for whether from core etc, 
-	# as well as the interview number for each year
-	# 
+	stopifnot(N %% 4 == 0)
 	# for sake of illustration, suppose the PSID has a total
 	# of 2N people (i.e. N are neither in year1 nor year2, 
 	# but in some other years)
-	IND2009ER <- data.frame(ER30001=sample((2*N):(4*N),size=2*N),
-	                        ER30002=sample(1:(2*N),size=2*N))
-	
-	# if a person is observed, they have an interview number 
-	# in both years. if not observed, its zero. 
-    tmp = data.frame(interview85=fam1985[,1], interview86=fam1986[,1])
-    tmp = rbind(tmp,data.frame(interview85=rep(0,N), interview86=rep(0,N)))
-	IND2009ER <- cbind(IND2009ER,tmp[sample(1:(2*N)),])
-    if (N.attr>0){
-        out = sample(which(IND2009ER[["interview85"]] != 0),size=N.attr,replace=FALSE)
-        IND2009ER[out,"interview86"] <- 0
-    }
-	
-	names(IND2009ER)[3:4] <- c("ER30463","ER30498")
-	
-	# also need relationship to head in each year in the index
+	# draw interview numbers from realistic range: [1,9308]
+
+	# in each wave, a quarter of observations is from
+	# 1) core sample: interview number < 3000
+	# 2) immigrant sample: interview number in [3000,5000)
+	# 3) poor sample: interview number in [5000,7000)
+	# 4) latino sample: interview number in [7000,9308)
+
+	smpls <- ceiling(1:N / (N/4))
+	IND2009ER <- data.table(smpls=c(smpls,smpls))  # get 2*N inds
+    IND2009ER[, ER30001 := 0L]
+	IND2009ER[smpls==1, ER30001 := sample(1:2999,size=sum(smpls==1))]
+	IND2009ER[smpls==2, ER30001 := sample(3001:4999,size=sum(smpls==2))]
+	IND2009ER[smpls==3, ER30001 := sample(5001:6999,size=sum(smpls==3))]
+	IND2009ER[smpls==4, ER30001 := sample(7001:9308,size=sum(smpls==4))]
+
+    IND2009ER[,c("intnum85","intnum86") := lapply(1:2,function(x) sample(1:(2*N)))]
+	# IND2009ER[smpls==1,c("intnum85","intnum86") := lapply(1:2,function(x) sample(1:2999,size=sum(smpls==1)))]
+	# IND2009ER[smpls==2,c("intnum85","intnum86") := lapply(1:2,function(x) sample(3001:4999,sum(smpls==2)))]
+	# IND2009ER[smpls==3,c("intnum85","intnum86") := lapply(1:2,function(x) sample(5001:6999,sum(smpls==3)))]
+	# IND2009ER[smpls==4,c("intnum85","intnum86") := lapply(1:2,function(x) sample(7001:9308,sum(smpls==4)))]
+  
+    # only N invidividuals show up in 1985 though.
+    IND2009ER[sample(1:(2*N),size=N),c("intnum85") := 0]
+  
+    # and there is potential attrition from 1985 to 1986
+	if (N.attr>0){
+	    out = sample(which(IND2009ER[["intnum85"]] != 0),size=N.attr,replace=FALSE)
+	    IND2009ER[out,"intnum86" := 0]
+	}
+
+    # add 1968 person id
+	IND2009ER[,ER30002 := sample(1:(2*N))]
+
+    # also need relationship to head in each year in the index
 	# 50% prob of being head in year1
-	IND2009ER$ER30465 <- sample(c(10,20),prob=c(0.5,0.5),
-	                            size=2*N,replace=TRUE)	
-	IND2009ER$ER30500 <- sample(c(10,20),prob=c(0.9,0.1),
-	                           size=2*N,replace=TRUE)
+	IND2009ER$ER30465 <- sample(rep(c(10,20),c(N,N)),size=2*N,replace=TRUE)	
+	IND2009ER$ER30500 <- sample(rep(c(10,20),c(N,N)),size=2*N,replace=TRUE)
 	
 	# as well as the sequence number: 1 for current heads, > 50 for movers
-	# 90% prob of being current head
-	IND2009ER$ER30464 <- sample(c(1,20),prob=c(0.95,0.05),
-	                            size=2*N,replace=TRUE)	
-	IND2009ER$ER30499 <- sample(c(1,20),prob=c(0.95,0.05),
-	                           size=2*N,replace=TRUE)
+	# 75% prob of being current head
+	IND2009ER$ER30464 <- sample(rep(c(1,20),c(ceiling(0.75*2*N),ceiling(0.5*N))),size=2*N,replace=TRUE)	
+	IND2009ER$ER30499 <- sample(rep(c(1,20),c(ceiling(0.75*2*N),ceiling(0.5*N))), size=2*N,replace=TRUE)
 	# and a survey weight
 	IND2009ER$ER30497 <- runif(2*N)
 	IND2009ER$ER30534 <- runif(2*N)
-	IND2009ER
-	
-	# setup the ind.vars data.frame
-	indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
   
-  return(list(famvars1985=fam1985,famvars1986=fam1986,IND2009ER=IND2009ER))
+    # you would download files like those two data.frames:
+    fam85 <- data.table(intnum85 = IND2009ER[intnum85>0,sample(intnum85,size=N)],Money85=rlnorm(n=N,10,1),age85=sample(20:80,size=N,replace=TRUE))
+	fam86 <- data.table(intnum86 = IND2009ER[intnum86>0,sample(intnum86,size=sum(intnum86>0))],Money86 = rlnorm(n=IND2009ER[,sum(intnum86>0)],10,1),age86 = sample(20L:80L,size=IND2009ER[,sum(intnum86>0)],replace=TRUE))
+  
+    continuers85 = IND2009ER[intnum85>0 & intnum86>0][["intnum85"]]
+	continuers86 = IND2009ER[intnum85>0 & intnum86>0][["intnum86"]]
+  
+    for (i in 1:nrow(fam86)){
+        if (fam86[i,intnum86] %in% continuers86){
+        int86 = fam86[i,intnum86]
+        fam86[i,Money86 := fam85[intnum85==IND2009ER[intnum86==int86,intnum85], Money85 + rnorm(1,500,30)]]
+        fam86[i,age86 := fam85[intnum85==IND2009ER[intnum86==int86,intnum85], age85 + 1]]
+        }
+    }
+	
+	# assign correct PSID varname of "family interview 1985/86"
+	setnames(fam85,"intnum85", "V11102")
+	setnames(fam86,"intnum86","V12502")
+	
+    # same on index file
+	setnames(IND2009ER,c("intnum85","intnum86"), c("ER30463","ER30498"))
+	IND2009ER
+  
+    return(list(famvars1985=fam85,famvars1986=fam86,IND2009ER=IND2009ER))
 }

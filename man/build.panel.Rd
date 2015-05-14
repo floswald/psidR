@@ -5,7 +5,8 @@
 \title{build.panel: Build PSID panel data set}
 \usage{
 build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
-  heads.only = TRUE, core = TRUE, design = "balanced", verbose = FALSE)
+  heads.only = FALSE, sample = NULL, design = "balanced",
+  verbose = FALSE)
 }
 \arguments{
 \item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported.}
@@ -16,9 +17,9 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
 
 \item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.}
 
-\item{heads.only}{logical TRUE if user wants household heads only. if FALSE, data contains a row with value of \emph{relation to head} variable.}
+\item{heads.only}{logical TRUE if user wants current household heads only.}
 
-\item{core}{logical TRUE if user wants core sample only. if FALSE, data will oversample poverty sample.}
+\item{sample}{string indicating which sample to select: "SRC" (survey research center), "SEO" (survey for economic opportunity), "immigrant" (immigrant sample), "latino" (Latino family sample). Defaults to NULL, so no subsetting takes place.}
 
 \item{design}{either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.}
 
@@ -29,7 +30,7 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
 \item{dict}{data dictionary if stata data was supplied, NULL else}
 }
 \description{
-Builds a panel data set in wide format with id variables \code{personID} and \code{period} from individual PSID family files.
+Builds a panel data set in wide format with id variables \code{pid} (unique person identifier) and \code{year} from individual PSID family files.
 }
 \details{
 takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2011ER.xyz}, which must be in the same directory. Note that only one IND file may be present in the directory (each PSID shipping comes with a new IND file). The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs.
@@ -47,9 +48,7 @@ and you want to fix that later on somehow.
 famvars <- data.frame(year=c(2001,2003),
                      house.value=c("ER17044","ER21043"),
                      total.income=c("ER20456","ER24099"),
-                     education=c("ER20457","ER24148"))
-
-
+                     education=c("ER20457",NA))
 
 # specify variables from individual index file
 # these cannot contain NAs at the moment.
@@ -78,6 +77,12 @@ d <- build.panel(datadir=mydir,
                 ind.vars=indvars,
                 heads.only=FALSE,
                 design=2) # keep if stay 2+ periods
+
+# subset the sample to "latino" only
+d <- build.panel(datadir=mydir,
+                fam.vars=famvars,
+                ind.vars=indvars,
+                sample="latino")
 }
 
 # ######################################
@@ -92,7 +97,7 @@ d <- build.panel(datadir=mydir,
 ## run build.panel with sascii=TRUE
 
 # testPSID creates artifical PSID data
-td <- testPSID(N=10,N.attr=0)
+td <- testPSID(N=12,N.attr=0)
 fam1985 <- copy(td$famvars1985)
 fam1986 <- copy(td$famvars1986)
 IND2009ER <- copy(td$IND2009ER)
@@ -116,31 +121,25 @@ famvars <- data.frame(year=c(1985,1986),
 indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
 
 # call the builder
-# need to set core==FALSE because person numbering indicates
-# that all ids<2931 are not core.
-# set heads to FALSE to have a clear count.
 # data will contain column "relation.head" holding the relationship code.
 
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
-                 ind.vars=indvars,core=FALSE,
+                 ind.vars=indvars,
                  heads.only=FALSE,verbose=TRUE)
-
-# notice: all 2*N individuals are present
-print(d$data[order(pid)],nrow=Inf)	# check the age column
 
 # see what happens if we drop non-heads
 # only the ones who are heads in BOTH years
 # are present (since design='balanced' by default)
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
-                 ind.vars=indvars,core=FALSE,
-                 heads=TRUE,verbose=FALSE)
+                 ind.vars=indvars,
+                 heads.only=TRUE,verbose=FALSE)
 print(d$data[order(pid)],nrow=Inf)
 
 # change sample design to "all":
 # we'll keep individuals if they are head in one year,
 # and drop in the other
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
-                 ind.vars=indvars,core=FALSE,heads=TRUE,
+                 ind.vars=indvars,heads.only=TRUE,
                  verbose=FALSE,design="all")
 print(d$data[order(pid)],nrow=Inf)
 

@@ -4,10 +4,10 @@
 \alias{testPSID}
 \title{Create a test PSID dataset}
 \usage{
-testPSID(N = 10, N.attr = 0)
+testPSID(N = 100, N.attr = 0)
 }
 \arguments{
-\item{N}{how many people per wave}
+\item{N}{number of people in each wave}
 
 \item{N.attr}{number of people lost to attrition}
 }

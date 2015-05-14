@@ -2,7 +2,7 @@
 
 #' build.panel: Build PSID panel data set
 #' 
-#' @description Builds a panel data set in wide format with id variables \code{personID} and \code{period} from individual PSID family files.
+#' @description Builds a panel data set in wide format with id variables \code{pid} (unique person identifier) and \code{year} from individual PSID family files.
 #' @details 
 #' takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2011ER.xyz}, which must be in the same directory. Note that only one IND file may be present in the directory (each PSID shipping comes with a new IND file). The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs. 
 #' Merge: the variables \code{interview number} in each family file map to 
@@ -12,8 +12,8 @@
 #' @param fam.vars data.frame of variable to retrieve from family files. Can contain see example for required format.
 #' @param ind.vars data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.
 #' @param SAScii logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.
-#' @param heads.only logical TRUE if user wants household heads only. if FALSE, data contains a row with value of \emph{relation to head} variable.
-#' @param core logical TRUE if user wants core sample only. if FALSE, data will oversample poverty sample.
+#' @param heads.only logical TRUE if user wants current household heads only. 
+#' @param sample string indicating which sample to select: "SRC" (survey research center), "SEO" (survey for economic opportunity), "immigrant" (immigrant sample), "latino" (Latino family sample). Defaults to NULL, so no subsetting takes place.
 #' @param design either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.
 #' @param verbose logical TRUE if you want verbose output.
 #' @import SAScii RCurl data.table
@@ -60,6 +60,12 @@
 #'                 ind.vars=indvars,
 #'                 heads.only=FALSE,
 #'                 design=2) # keep if stay 2+ periods
+#' 
+#' # subset the sample to "latino" only              
+#' d <- build.panel(datadir=mydir,
+#'                 fam.vars=famvars,
+#'                 ind.vars=indvars,
+#'                 sample="latino")
 #' } 
 #' 
 #' # ######################################
@@ -74,7 +80,7 @@
 #' ## run build.panel with sascii=TRUE
 #' 
 #' # testPSID creates artifical PSID data
-#' td <- testPSID(N=10,N.attr=0)
+#' td <- testPSID(N=12,N.attr=0)
 #' fam1985 <- copy(td$famvars1985)
 #' fam1986 <- copy(td$famvars1986)
 #' IND2009ER <- copy(td$IND2009ER)
@@ -98,31 +104,25 @@
 #' indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
 #' 
 #' # call the builder
-#' # need to set core==FALSE because person numbering indicates
-#' # that all ids<2931 are not core. 
-#' # set heads to FALSE to have a clear count. 
 #' # data will contain column "relation.head" holding the relationship code.
 #' 
 #' d <- build.panel(datadir=my.dir,fam.vars=famvars,
-#'                  ind.vars=indvars,core=FALSE,
+#'                  ind.vars=indvars,
 #'                  heads.only=FALSE,verbose=TRUE)	
-#'
-#' # notice: all 2*N individuals are present
-#' print(d$data[order(pid)],nrow=Inf)	# check the age column
 #' 
 #' # see what happens if we drop non-heads
 #' # only the ones who are heads in BOTH years 
 #' # are present (since design='balanced' by default)
 #' d <- build.panel(datadir=my.dir,fam.vars=famvars,
-#'                  ind.vars=indvars,core=FALSE,
-#'                  heads=TRUE,verbose=FALSE)	
+#'                  ind.vars=indvars,
+#'                  heads.only=TRUE,verbose=FALSE)	
 #' print(d$data[order(pid)],nrow=Inf)
 #' 
 #' # change sample design to "all": 
 #' # we'll keep individuals if they are head in one year,
 #' # and drop in the other
 #' d <- build.panel(datadir=my.dir,fam.vars=famvars,
-#'                  ind.vars=indvars,core=FALSE,heads=TRUE,
+#'                  ind.vars=indvars,heads.only=TRUE,
 #'                  verbose=FALSE,design="all")	
 #' print(d$data[order(pid)],nrow=Inf)
 #' 
@@ -135,7 +135,7 @@
 #' # #####################################################################
 #' # Please go to https://github.com/floswald/psidR for more example usage
 #' # #####################################################################
-build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.only=TRUE,core=TRUE,design="balanced",verbose=FALSE){
+build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.only=FALSE,sample=NULL,design="balanced",verbose=FALSE){
 	
 
 	# locally bind all variables to be used in a data.table
@@ -311,9 +311,9 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		}
  
    		# keeping only relevant columns from individual file
-		# subset for core sample and heads only if requested.
+		# subset only if requested.
 		curr <- ids[list(years[iy])]
-		ind.subsetter <- as.character(curr[,list(ind.interview,ind.head,ind.seq)])	# keep from ind file
+		ind.subsetter <- as.character(curr[,list(ind.interview,ind.seq,ind.head)])	# keep from ind file
 		def.subsetter <- c("ER30001","ER30002")	# must keep those in all years
 
 		# TODO
@@ -334,18 +334,50 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 		# }
 
+    	# ie the default column order is: 
+    	# "ER30001","ER30002", "current year interview var", "current year sequence number", "current year head indicator"
 		yind <- copy(ind[,c(def.subsetter,unique(c(ind.subsetter,as.character(ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE])))),with=FALSE])	
+    
+    	# sample selection
+    	# ----------------
 
-		if (core) {
-		   n    <- nrow(yind)
-		   # yind <- copy(yind[ER30001>2930])	# individuals 1-2930 are from poor sample
-		   yind <- copy(yind[ER30001<=3000])	# individuals 1-3000 are from core sample
-		   if (verbose){
-			   cat('full',years[iy],'sample has',n,'obs\n')
-			   cat('dropping non-core individuals leaves',nrow(yind),'obs\n')
-		   }
-		   if (nrow(yind)==0) stop('you dropped all observations by selecting core only.\n This means you supplied a family file only from the poor sample. unusual.')
-		}
+    	# based on: https://psidonline.isr.umich.edu/Guide/FAQ.aspx?Type=ALL#250
+
+    	if (!is.null(sample)){
+
+    		if (sample == "SRC"){
+			   n    <- nrow(yind)
+			   yind <- copy(yind[ER30001<3000])	# individuals 1-2999 are from SRC sample
+			   if (verbose){
+				   cat('full',years[iy],'sample has',n,'obs\n')
+				   cat(sprintf('you selected %d obs belonging to %s \n',nrow(yind),sample))
+			   }
+    		} else if (sample == "SEO"){
+			   n    <- nrow(yind)
+			   yind <- copy(yind[ER30001<7000 & ER30001>5000])
+			   if (verbose){
+				   cat('full',years[iy],'sample has',n,'obs\n')
+				   cat(sprintf('you selected %d obs belonging to %s \n',nrow(yind),sample))
+			   }
+    		} else if (sample == "immigrant"){
+			   n    <- nrow(yind)
+			   yind <- copy(yind[ER30001<5000 & ER30001>3000])	# individuals 1-2999 are from SRC sample
+			   if (verbose){
+				   cat('full',years[iy],'sample has',n,'obs\n')
+				   cat(sprintf('you selected %d obs belonging to %s \n',nrow(yind),sample))
+			   }
+    		} else if (sample == "latino"){
+			   n    <- nrow(yind)
+			   yind <- copy(yind[ER30001<9309 & ER30001>7000])	# individuals 1-2999 are from SRC sample
+			   if (verbose){
+				   cat('full',years[iy],'sample has',n,'obs\n')
+				   cat(sprintf('you selected %d obs belonging to %s \n',nrow(yind),sample))
+			   }
+    		}
+    	}
+
+    	# heads only selection
+    	# --------------------
 
 		# issue number 2: for current heads only need to subset "relationship to head" AS WELL AS "sequence number" == 1 
 		# otherwise a head who died between last and this wave is still head, so there would be two heads in that family.
@@ -357,13 +389,10 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 		   if (verbose){
 			   cat('dropping non-current-heads leaves',nrow(yind),'obs\n')
 		   }
-		   yind[,c(curr[,ind.head],"headyes") := NULL]
-			# set names on individual index
-			setnames(yind,c("ID1968","pernum","interview","sequence",names(ind.vars)[-1]))
-		} else {
-			# set names on individual index
-			setnames(yind,c("ID1968","pernum","interview","sequence","relation.head",names(ind.vars)[-1]))
+		   yind[,headyes := NULL]
 		}
+
+		setnames(yind,c("ID1968","pernum","interview","sequence","relation.head",names(ind.vars)[-1]))
 		yind[,pid := ID1968*1000 + pernum]	# unique person identifier
 		setkey(yind,interview)
 
