@@ -55,7 +55,7 @@ The package is on CRAN, so just type
 install.packages('psidR')
 ```
 
-Alternatively to get the development version from this repository,
+Alternatively to get the up-t-date version from this repository,
 
 ```r
 install.packages('devtools')
@@ -108,31 +108,17 @@ fam.vars <- data.frame(year=c(2001,2003),
 
 The function will then keep NA as the value of the variable in year 2001 and you can fix this later on. This functionality was needed because NAs have a generic meaning, i.e. a person who does not participate in a given year is kept in the register, but has no replies in the family file, so has NA in all variables of the family file after merging.
 
-3. Specify options for the panel, like *design* or *heads.only*
+3. Specify options for the panel, like *design* or *heads.only* or *sample*
 4. call the function **build.panel**
 5. the result is a wide data.table where the id colums are *pid* (person identifier) and *year*. 
 
 ### Supplemental Datasets
 
-The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. Just subset panel to the relevant year and do something like that (not tested):
-
-```r
-# suppose d is the result of an example call from above
-# suppose variable V is in supplement X2001 and X2003 as a data.table
-panel <- d$data	 	# get the data
-setkey(d,year,interview) 	# set key
-X2001[,year := 2001]	# add year column
-X2003[,year := 2003]
-setkey(X2001,year,interview)
-setkey(X2003,year,interview)
-
-# join X2001 to d (i.e. "merge")
-d <- copy( d[X2001] )	# should add NA for year 2003
-d <- copy( d[X2003] )
-```
+The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. 
 
 ### Future Developments
 
 * allow more complex panel designs, like accounting for wider family structure (i.e. using the family splitoff indicator to follow households that split up).
+* allow user to specify `NA` for missing variables in `indvars`.
 
 
