@@ -175,12 +175,25 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 			viewstate <- as.character(sub('.*id="__VIEWSTATE" value="([0-9a-zA-Z+/=]*).*', '\\1', html))
 
-			params <- list(
-				'ctl00$ContentPlaceHolder3$Login1$UserName'    = paste(user),
-				'ctl00$ContentPlaceHolder3$Login1$Password'    = paste(pass),
-				'ctl00$ContentPlaceHolder3$Login1$LoginButton' = 'Log In',
-				'__VIEWSTATE'                                  = viewstate
+			# extract the `eventvalidation` string
+			eventvalidation <- 
+				as.character(
+					sub(
+						'.*id="__EVENTVALIDATION" value="([0-9a-zA-Z+/=]*).*' , 
+						'\\1' , 
+						html
+					)
 				)
+
+			# construct a list full of parameters to pass to the umich website
+			params <- 
+				list(
+					'ctl00$ContentPlaceHolder1$Login1$UserName'    = user ,
+					'ctl00$ContentPlaceHolder1$Login1$Password'    = pass ,
+					'ctl00$ContentPlaceHolder1$Login1$LoginButton' = 'Log In' ,
+					'__VIEWSTATE'                                  = viewstate ,
+					'__EVENTVALIDATION'                            = eventvalidation
+			    )
 				
 			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2011 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156 ))
 			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2011" ),file=c(family[family$year %in% years,]$file, 1053))
