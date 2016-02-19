@@ -195,8 +195,12 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 					'__EVENTVALIDATION'                            = eventvalidation
 			    )
 				
-			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2011 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156 ))
-			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2011" ),file=c(family[family$year %in% years,]$file, 1053))
+			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 ))
+			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2013" ),file=c(family[family$year %in% years,]$file, 1053))
+
+			# file number 1053 is always the individual cross year index file
+			# it must always be the last file in this list.
+			# you always want to download that.
 
 			for ( i in seq( nrow(psidFiles ) -1 )) get.psid( psidFiles[ i , 'file' ] ,name= paste0(datadir, "FAM" , psidFiles[ i , 'year' ], "ER") , params , curl )
 			get.psid( psidFiles[ nrow(psidFiles ) , 'file' ] ,name= paste0(datadir, "IND" , psidFiles[ nrow(psidFiles ) , 'year' ], "ER") , params , curl )

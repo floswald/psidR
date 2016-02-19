@@ -163,8 +163,8 @@ testPSID <-function(N=100,N.attr = 0){
 	# 3) poor sample: interview number in [5000,7000)
 	# 4) latino sample: interview number in [7000,9308)
 
-	smpls <- ceiling(1:N / (N/4))
-	IND2009ER <- data.table(smpls=c(smpls,smpls))  # get 2*N inds
+	smpl <- ceiling(1:N / (N/4))
+	IND2009ER <- data.table(smpls=c(smpl,smpl))  # get 2*N inds
     IND2009ER[, ER30001 := 0L]
 	IND2009ER[smpls==1, ER30001 := sample(1:2999,size=sum(smpls==1))]
 	IND2009ER[smpls==2, ER30001 := sample(3001:4999,size=sum(smpls==2))]
