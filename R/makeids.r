@@ -107,6 +107,17 @@ get.psid <- function( file , name , params , curl ){
 		sas_ri <- z[ grepl( '.sas' , z , fixed = TRUE ) ]
 
 		cat('now reading and processing SAS file',name,'into R\n')
+
+		# SAScii version check SAScii_fork
+		if (!exists("SAScii_fork",mode="function")){
+			warning("you may run into trouble now. There was a change of file format on some PSID family files. \n If you get the an error \n toupper(SASinput) \n
+				then you need to re-install the SAScii package from my github fork at \n
+				https://github.com/floswald/SAScii \n
+				an easy way to do this is to use the devtools package. then:
+				install_github('floswald/SAScii')")
+		}
+
+
 		x <- read.SAScii( fn , sas_ri )
 
 		save( x , file = paste0( name , '.rda' ) )

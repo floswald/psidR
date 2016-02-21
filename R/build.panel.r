@@ -159,6 +159,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	# ----------------
 
 	if (SAScii){
+
     	confirm <- readline("This can take several hours/days to download.\n want to go ahead? give me 'yes' or 'no'.")
 		if (confirm=="yes"){
 
@@ -195,15 +196,25 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 					'__EVENTVALIDATION'                            = eventvalidation
 			    )
 				
+
+			# all psid family files
 			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 ))
-			psidFiles <- data.frame(year=c(family[family$year %in% years,]$year,"2013" ),file=c(family[family$year %in% years,]$file, 1053))
+
+			# subset to the years we want
+			family <- family[family$year %in% years, ]
 
 			# file number 1053 is always the individual cross year index file
 			# it must always be the last file in this list.
 			# you always want to download that.
 
-			for ( i in seq( nrow(psidFiles ) -1 )) get.psid( psidFiles[ i , 'file' ] ,name= paste0(datadir, "FAM" , psidFiles[ i , 'year' ], "ER") , params , curl )
-			get.psid( psidFiles[ nrow(psidFiles ) , 'file' ] ,name= paste0(datadir, "IND" , psidFiles[ nrow(psidFiles ) , 'year' ], "ER") , params , curl )
+			# check if datadir contains individual index already
+			lf = list.files(datadir)
+			if (!("IND2013ER.rda" %in% lf)) {
+				# download latest individual index
+				get.psid( 1053 ,name= paste0(datadir, "IND2013ER") , params , curl )
+			}
+
+			for ( i in 1:nrow( family )) get.psid( family[ i , 'file' ] ,name= paste0(datadir, "FAM" , family[ i , 'year' ], "ER") , params , curl )
 
 			cat('finished downloading files to', datadir,'. continuing now to build the dataset.\n')
 						
