@@ -145,7 +145,13 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	stopifnot(is.numeric(fam.vars$year))
 	years <- fam.vars$year
 
+	# figure out platform
 	s <- .Platform$file.sep
+	if ( .Platform$OS.type != 'windows' ) {
+		warning("I'm setting your encoding to windows now")
+		options( encoding = "windows-1252" )		# # only macintosh and *nix users need this line
+	}
+	
 	
 	# sort out data storage: either to tmp or datadir
 	if (is.null(datadir)){
@@ -214,7 +220,13 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 				get.psid( 1053 ,name= paste0(datadir, "IND2013ER") , params , curl )
 			}
 
-			for ( i in 1:nrow( family )) get.psid( family[ i , 'file' ] ,name= paste0(datadir, "FAM" , family[ i , 'year' ], "ER") , params , curl )
+			for ( i in 1:nrow( family )) {
+				if (!(paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf)) {
+					get.psid( family[ i , 'file' ] ,name= paste0(datadir, "FAM" , family[ i , 'year' ], "ER") , params , curl )
+				} else {
+					cat('found ',paste0("FAM" , family[ i , 'year' ], "ER.rda"), 'already downloaded \n')
+				}
+			}
 
 			cat('finished downloading files to', datadir,'. continuing now to build the dataset.\n')
 						

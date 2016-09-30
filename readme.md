@@ -6,6 +6,8 @@
 
 [![Build Status](https://travis-ci.org/floswald/psidR.svg)](https://travis-ci.org/floswald/psidR)
 
+[![Rdoc](http://www.rdocumentation.org/badges/version/psidR)](http://www.rdocumentation.org/packages/psidR)
+
 
 This R package provides a function to easily build panel data from PSID raw data.
 
