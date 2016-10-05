@@ -23,49 +23,36 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' # specify variables from family files you want
+#' # ################################################
+#' # Real-world example: not run because takes long.
+#' # Build panel with income, wage, age and education
+#' # ################################################
 #' 
-#' the family files dataframe can contain NAs.
-#' E.g. if there are years where a variable is missing
-#' and you want to fix that later on somehow.
-#' famvars <- data.frame(year=c(2001,2003),
-#'                      house.value=c("ER17044","ER21043"),
-#'                      total.income=c("ER20456","ER24099"),
-#'                      education=c("ER20457",NA))
-#'                      
-#' # specify variables from individual index file       
-#' # these cannot contain NAs at the moment.
-#'                
-#' indvars = data.frame(year=c(2001,2003),
-#'                      longitud.wgt=c("ER33637","ER33740"))
+#' f = fread("inst/famvars.txt")
+#' i = fread("inst/indvars.txt")
 #' 
-#' # call builder
-#' # mydir is a directory that contains FAM2001ER.dta, 
-#' # FAM2003ER.dta and IND2011ER.dta
+#' f[1:37,vgroup := "wage"]
+#' f[38:74,vgroup := "earnings"]
+#' setkey(f,vgroup)
 #' 
-#' # default
-#' d <- build.panel(datadir=mydir,
-#'                 fam.vars=famvars,
-#'                 ind.vars=indvars)
-#'                 
-#' # also non-heads               
-#' d <- build.panel(datadir=mydir,
-#'                 fam.vars=famvars,
-#'                 ind.vars=indvars,
-#'                 heads.only=FALSE)
-#'                 
-#' # non-balanced panel design               
-#' d <- build.panel(datadir=mydir,
-#'                 fam.vars=famvars,
-#'                 ind.vars=indvars,
-#'                 heads.only=FALSE,
-#'                 design=2) # keep if stay 2+ periods
+#' i[1:38, vgroup := "age"]
+#' i[39:76, vgroup := "educ"]  # caution about 2 first years: no educ data
+#' i[77:114, vgroup := "weight"]
+#' setkey(i,vgroup)
 #' 
-#' # subset the sample to "latino" only              
-#' d <- build.panel(datadir=mydir,
-#'                 fam.vars=famvars,
-#'                 ind.vars=indvars,
-#'                 sample="latino")
+#' ind = cbind(i[J("age"),list(year,age=variable)],
+#' 			   i[J("educ"),list(educ=variable)],
+#' 			   i[J("weight"),list(weight=variable)])
+#' fam = cbind(f[J("wage"),list(year,wage=variable)],
+#' 			   f[J("earnings"),list(earnings=variable)])
+#' 
+#' # caution: this step will take many hours
+#' d = build.panel(fam.vars=fam,
+#' 				   ind.vars=ind,
+#'                 SAScii = TRUE, 
+#'                 heads.only = TRUE,
+#'                 sample="SRC",
+#'                 design=2)
 #' } 
 #' 
 #' # ######################################
