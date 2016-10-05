@@ -37,6 +37,7 @@ Please check out [the R survey package](http://cran.r-project.org/web/packages/s
 
 ```R
 # Build panel with income, wage, age and education
+library(psidR)
 f = fread("inst/famvars.txt")
 i = fread("inst/indvars.txt")
 
