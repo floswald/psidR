@@ -1,4 +1,13 @@
 
+
+*********************
+* News in Version 1.4
+*********************
+
+* Added a real world example
+* Illustrates how variables can be constructed from a text file.
+
+
 *********************
 * News in Version 1.3
 *********************
@@ -18,7 +27,7 @@
 *********************
 
 * fixed bug in SAScii downloader. Dates were not adjusted for
-  2011 PSID data delivery. Thanks to wmjones for reporting.
+  2011 PSID data delivery. Thanks to @wmjones for reporting.
   https://github.com/floswald/psidR/issues/1
 
 *********************

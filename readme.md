@@ -33,6 +33,37 @@ To build the panel, the user must specify the variable names in each wave of the
 
 Please check out [the R survey package](http://cran.r-project.org/web/packages/survey/index.html) for analyzing complex survey's with R. Also go to [http://www.asdfree.com/](http://www.asdfree.com/) for a range of tutorials and tips for using survey data with R.
 
+### Real World Example
+
+```R
+# Build panel with income, wage, age and education
+f = fread("inst/famvars.txt")
+i = fread("inst/indvars.txt")
+
+f[1:37, vgroup := "wage"]
+f[38:74,vgroup := "earnings"]
+setkey(f,vgroup)
+
+i[1:38,   vgroup := "age"]
+i[39:76,  vgroup := "educ"]  # caution about 2 first years: no educ data
+i[77:114, vgroup := "weight"]
+setkey(i,vgroup)
+
+ind = cbind(i[J("age"),list(year,age=variable)],
+            i[J("educ"),list(educ=variable)],
+            i[J("weight"),list(weight=variable)])
+fam = cbind(f[J("wage"),list(year,wage=variable)],
+            f[J("earnings"),list(earnings=variable)])
+
+# caution: this step will take many hours
+d = build.panel(fam.vars=fam,
+          ind.vars=ind,
+          SAScii = TRUE, 
+          heads.only = TRUE,
+          sample="SRC",
+          design=2)
+```
+
 
 There are several prelimiary steps you have to take before using **psidR**. They all have to do with acquiring the data and storing it in a certain format. I'll explain below in examples.
 
