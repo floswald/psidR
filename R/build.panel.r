@@ -28,8 +28,9 @@
 #' # Build panel with income, wage, age and education
 #' # ################################################
 #' 
-#' f = fread("inst/famvars.txt")
-#' i = fread("inst/indvars.txt")
+#' r = system.file(package="psidR")
+#' f = fread(file.path(r,"psid-lists","famvars.txt"))
+#' i = fread(file.path(r,"psid-lists","indvars.txt"))
 #' 
 #' f[1:37,vgroup := "wage"]
 #' f[38:74,vgroup := "earnings"]
@@ -193,19 +194,14 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 			# all psid family files
 			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 ))
 
-			# subset to the years we want
+			#subset to the years we want
 			family <- family[family$year %in% years, ]
 
-			# file number 1053 is always the individual cross year index file
-			# it must always be the last file in this list.
-			# you always want to download that.
+			#file number 1053 is always the individual cross year index file
+			#it must always be the last file in this list.
+			#you always want to download that.
 
-			# check if datadir contains individual index already
 			lf = list.files(datadir)
-			if (!("IND2013ER.rda" %in% lf)) {
-				# download latest individual index
-				get.psid( 1053 ,name= paste0(datadir, "IND2013ER") , params , curl )
-			}
 
 			for ( i in 1:nrow( family )) {
 				if (!(paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf)) {
@@ -213,6 +209,12 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 				} else {
 					cat('found ',paste0("FAM" , family[ i , 'year' ], "ER.rda"), 'already downloaded \n')
 				}
+			}
+
+			# check if datadir contains individual index already
+			if (!("IND2013ER.rda" %in% lf)) {
+				#download latest individual index
+				get.psid( 1053 ,name= paste0(datadir, "IND2013ER") , params , curl )
 			}
 
 			cat('finished downloading files to', datadir,'. continuing now to build the dataset.\n')

@@ -5,6 +5,8 @@ psid.Rproj
 \.git$
 ^\.travis\.yml$
 readme.md$
+LICENSE.txt$
+cookies.txt$
 \.Rhistory$
 ^.*\.Rproj$
 ^\.Rproj\.user$

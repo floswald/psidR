@@ -100,6 +100,7 @@ get.psid <- function( file , name , params , curl ){
 	
 		tf <- tempfile() ; td <- tempdir()
 		
+		cat('downloading file ',name,'\n')
 		file <- getBinaryURL( paste0( "http://simba.isr.umich.edu/Zips/GetFile.aspx?file=" , file ) , curl = curl )
 		writeBin( file , tf )
 		z <- unzip( tf , exdir = td )
@@ -108,7 +109,7 @@ get.psid <- function( file , name , params , curl ){
 
 		cat('now reading and processing SAS file',name,'into R\n')
 
-		# SAScii version check SAScii_fork
+		#SAScii version check SAScii_fork
 		if (!exists("SAScii_fork",mode="function")){
 			warning("you may run into trouble now. There was a change of file format on some PSID family files. \n If you get the an error \n toupper(SASinput) \n
 				then you need to re-install the SAScii package from my github fork at \n
@@ -160,7 +161,7 @@ make.char <- function(x){
 testPSID <-function(N=100,N.attr = 0){
 
 	# need to bind some vars for R CHECK:
-	ER30001 <- ER30002 <-intnum86 <- intnum85 <- Money85 <- Money86 <- age85 <- age86 <- NULL
+	ER30001 <- ER30002 <-intnum86 <- intnum85 <- Money85 <- Money86 <- age85 <- age86 <- smpls <- NULL
 
 	stopifnot(N %% 4 == 0)
 	# for sake of illustration, suppose the PSID has a total
