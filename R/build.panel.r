@@ -4,14 +4,14 @@
 #' 
 #' @description Builds a panel data set in wide format with id variables \code{pid} (unique person identifier) and \code{year} from individual PSID family files.
 #' @details 
-#' takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2011ER.xyz}, which must be in the same directory. Note that only one IND file may be present in the directory (each PSID shipping comes with a new IND file). The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs. 
+#' takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2013ER.xyz}, which must be in the same directory. The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs. The package allows the missing variables in certain waves to be accounted for automatically, i.e. the variables are inserted in the missing year as \code{NA}.
 #' Merge: the variables \code{interview number} in each family file map to 
 #' the \code{interview number} variable of a given year in the individual file. Run \code{example(build.panel)} for a demonstration.
 #' Accepted input data are stata format .dta, .csv files or R data formats .rda and RData. Similar in usage to stata module \code{psiduse}.
-#' @param datadir either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported.
+#' @param datadir either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported. Recommended usage is to specify \code{datadir}.
 #' @param fam.vars data.frame of variable to retrieve from family files. Can contain see example for required format.
 #' @param ind.vars data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.
-#' @param SAScii logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.
+#' @param SAScii logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time, but downloads only once if you specify \code{datadir}.
 #' @param heads.only logical TRUE if user wants current household heads only. 
 #' @param sample string indicating which sample to select: "SRC" (survey research center), "SEO" (survey for economic opportunity), "immigrant" (immigrant sample), "latino" (Latino family sample). Defaults to NULL, so no subsetting takes place.
 #' @param design either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.
@@ -32,8 +32,8 @@
 #' f = fread(file.path(r,"psid-lists","famvars.txt"))
 #' i = fread(file.path(r,"psid-lists","indvars.txt"))
 #' 
-#' f[1:37,vgroup := "wage"]
-#' f[38:74,vgroup := "earnings"]
+#' f[1:38,vgroup := "wage"]
+#' f[39:76,vgroup := "earnings"]
 #' setkey(f,vgroup)
 #' 
 #' i[1:38, vgroup := "age"]
@@ -48,7 +48,8 @@
 #' 			   f[J("earnings"),list(earnings=variable)])
 #' 
 #' # caution: this step will take many hours
-#' d = build.panel(fam.vars=fam,
+#' d = build.panel(datadir="~/data",
+#'                 fam.vars=fam,
 #' 				   ind.vars=ind,
 #'                 SAScii = TRUE, 
 #'                 heads.only = TRUE,
@@ -154,74 +155,89 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 
 	if (SAScii){
 
-    	confirm <- readline("This can take several hours/days to download.\n want to go ahead? give me 'yes' or 'no'.")
-		if (confirm=="yes"){
+		lf = list.files(datadir)
 
+		# all psid family files
+		family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 ))
 
-			ftype <- "Rdata"
-			
-			user <- readline("please enter your PSID username: ")
-			pass <- readline("please enter your PSID password: ")
-			
-			curl = getCurlHandle()
-			curlSetOpt(cookiejar = 'cookies.txt', followlocation = TRUE, autoreferer = TRUE, curl = curl)
+		#subset to the years we want
+		family <- family[family$year %in% years, ]
 
-			html <- getURL('http://simba.isr.umich.edu/u/Login.aspx', curl = curl)
-
-			viewstate <- as.character(sub('.*id="__VIEWSTATE" value="([0-9a-zA-Z+/=]*).*', '\\1', html))
-
-			# extract the `eventvalidation` string
-			eventvalidation <- 
-				as.character(
-					sub(
-						'.*id="__EVENTVALIDATION" value="([0-9a-zA-Z+/=]*).*' , 
-						'\\1' , 
-						html
-					)
-				)
-
-			# construct a list full of parameters to pass to the umich website
-			params <- 
-				list(
-					'ctl00$ContentPlaceHolder1$Login1$UserName'    = user ,
-					'ctl00$ContentPlaceHolder1$Login1$Password'    = pass ,
-					'ctl00$ContentPlaceHolder1$Login1$LoginButton' = 'Log In' ,
-					'__VIEWSTATE'                                  = viewstate ,
-					'__EVENTVALIDATION'                            = eventvalidation
-			    )
-				
-
-			# all psid family files
-			family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 ))
-
-			#subset to the years we want
-			family <- family[family$year %in% years, ]
-
-			#file number 1053 is always the individual cross year index file
-			#it must always be the last file in this list.
-			#you always want to download that.
-
-			lf = list.files(datadir)
-
-			for ( i in 1:nrow( family )) {
-				if (!(paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf)) {
-					get.psid( family[ i , 'file' ] ,name= paste0(datadir, "FAM" , family[ i , 'year' ], "ER") , params , curl )
-				} else {
-					cat('found ',paste0("FAM" , family[ i , 'year' ], "ER.rda"), 'already downloaded \n')
-				}
+		families.down <- rep(FALSE,nrow(family))
+		ind.down <- FALSE
+		for ( i in 1:nrow( family )) {
+			if ((paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf)) {
+				families.down[i] <- TRUE
+				cat('found ',paste0("FAM" , family[ i , 'year' ], "ER.rda"), 'already downloaded \n')
 			}
-
-			# check if datadir contains individual index already
-			if (!("IND2013ER.rda" %in% lf)) {
-				#download latest individual index
-				get.psid( 1053 ,name= paste0(datadir, "IND2013ER") , params , curl )
-			}
-
-			cat('finished downloading files to', datadir,'. continuing now to build the dataset.\n')
-						
-		} else if (confirm=="no") {
-			break
 		}
+
+		# check if datadir contains individual index already
+		if (("IND2013ER.rda" %in% lf)) {
+			#download latest individual index
+			ind.down = TRUE
+		}
+		if (all(all(families.down),ind.down)) {
+			cat("everything already downloaded. Build dataset now.\n")
+		} else {
+			cat("Will download missing datasets now.\n")
+	    	confirm <- readline("This can take several hours/days to download.\n want to go ahead? give me 'yes' or 'no'.")
+			if (confirm=="yes"){
+
+				ftype <- "Rdata"
+				
+				user <- readline("please enter your PSID username: ")
+				pass <- readline("please enter your PSID password: ")
+				
+				curl = getCurlHandle()
+				curlSetOpt(cookiejar = 'cookies.txt', followlocation = TRUE, autoreferer = TRUE, curl = curl)
+
+				html <- getURL('http://simba.isr.umich.edu/u/Login.aspx', curl = curl)
+
+				viewstate <- as.character(sub('.*id="__VIEWSTATE" value="([0-9a-zA-Z+/=]*).*', '\\1', html))
+
+				# extract the `eventvalidation` string
+				eventvalidation <- 
+					as.character(
+						sub(
+							'.*id="__EVENTVALIDATION" value="([0-9a-zA-Z+/=]*).*' , 
+							'\\1' , 
+							html
+						)
+					)
+
+				# construct a list full of parameters to pass to the umich website
+				params <- 
+					list(
+						'ctl00$ContentPlaceHolder1$Login1$UserName'    = user ,
+						'ctl00$ContentPlaceHolder1$Login1$Password'    = pass ,
+						'ctl00$ContentPlaceHolder1$Login1$LoginButton' = 'Log In' ,
+						'__VIEWSTATE'                                  = viewstate ,
+						'__EVENTVALIDATION'                            = eventvalidation
+				    )
+
+				#file number 1053 is always the individual cross year index file
+				#it must always be the last file in this list.
+				#you always want to download that.
+
+				for ( i in 1:nrow( family )) {
+					if (!(paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf)) {
+						get.psid( family[ i , 'file' ] ,name= paste0(datadir, "FAM" , family[ i , 'year' ], "ER") , params , curl )
+					}
+				}
+
+				# check if datadir contains individual index already
+				if (!("IND2013ER.rda" %in% lf)) {
+					#download latest individual index
+					get.psid( 1053 ,name= paste0(datadir, "IND2013ER") , params , curl )
+				}
+
+				cat('finished downloading files to', datadir,'. continuing now to build the dataset.\n')
+							
+			} else if (confirm=="no") {
+				break
+			}
+		}  # end download data
 	}
 
 
@@ -341,30 +357,38 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
    		# keeping only relevant columns from individual file
 		# subset only if requested.
 		curr <- ids[list(years[iy])]
-		ind.subsetter <- as.character(curr[,list(ind.interview,ind.seq,ind.head)])	# keep from ind file
+		if (years[iy] == 1968){
+		  # there is no sequence variable
+		  ind.subsetter <- as.character(curr[,list(ind.interview,ind.head)])	# keep from ind file
+		} else {
+		  ind.subsetter <- as.character(curr[,list(ind.interview,ind.seq,ind.head)])	# keep from ind file
+		}
 		def.subsetter <- c("ER30001","ER30002")	# must keep those in all years
 
-		# TODO
-		# how to allow for NA in ind.vars?
-		# def.names <- c(def.subsetter,ind.subsetter)
-		# yind <- copy(ind[,def.names,with=FALSE])	
-		# # are there NA's in the ind.vars?
-		# curvars <- ind.vars[list(years[iy]),which(!(names(ind.vars) %in% c("year",def.names))),with=FALSE]
-		# curnames <- names(curvars)
-		# if (ind.vars[,any(is.na(.SD))]){
-		# 	na      <- curvars[,which(is.na(.SD))]
-		# 	codes   <- as.character(curvars)
-		# 	nanames <- curnames[na]
-		# 	tmp     <- copy(ind[,codes[-na],with=FALSE])
-		# 	tmp[,nanames := NA_real_,with=FALSE]
-		# 	setnames(tmp,c(curnames[-na],nanames))
-		# 	setkey(tmp,interview)
 
-		# }
+		# select required variables from ind 
+		# ----------------------------------
+		# the default column order is: 
+		# "ER30001","ER30002", "current year interview var", "current year sequence number", "current year head indicator"
+		# get a character vector from ind.vars with variable names for this year
+		ind.vars.yr <- ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE]
 
-    	# ie the default column order is: 
-    	# "ER30001","ER30002", "current year interview var", "current year sequence number", "current year head indicator"
-		yind <- copy(ind[,c(def.subsetter,unique(c(ind.subsetter,as.character(ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE])))),with=FALSE])	
+		# issue https://github.com/floswald/psidR/issues/4
+		# ------------------------------------------------
+		# check for NA in ind.vars: these are years when a certain variable isn not available in the individual index file.
+		# adjust for first year (1968) when `sequence` was not available
+		ind.nas <- subset(ind.vars.yr,select=names(ind.vars.yr)[is.na(ind.vars.yr)])
+		yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter,as.character(subset(ind.vars.yr,select=names(ind.vars.yr)[!is.na(ind.vars.yr)])))),with=FALSE])	
+		# add NA columns
+		if (length(ind.nas)>0){
+		    yind[,(names(ind.nas)) := NA]
+		}
+		if (years[iy]==1968){
+		    yind[,sequence := NA]
+		    setcolorder(yind,c(1:3,ncol(yind),4:(ncol(yind)-1)))
+		}
+
+
     
     	# sample selection
     	# ----------------
@@ -407,20 +431,34 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
     	# heads only selection
     	# --------------------
 
-		# issue number 2: for current heads only need to subset "relationship to head" AS WELL AS "sequence number" == 1 
+    	# https://github.com/floswald/psidR/issues/2
+		# for current heads only need to subset "relationship to head" AS WELL AS "sequence number" == 1 
 		# otherwise a head who died between last and this wave is still head, so there would be two heads in that family.
 		# https://psidonline.isr.umich.edu/Guide/FAQ.aspx?Type=ALL#150
 		if (heads.only) {
 		   n    <- nrow(yind)
-		   yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]) & (yind[,curr[,ind.seq],with=FALSE]== 1)]
+		   if (years[iy]==1968){
+		     yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num])]
+		   } else {
+		     yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]) & (yind[,curr[,ind.seq],with=FALSE]== 1)]
+		   }
 		   yind <- copy(yind[headyes==TRUE])
 		   if (verbose){
 			   cat('dropping non-current-heads leaves',nrow(yind),'obs\n')
 		   }
 		   yind[,headyes := NULL]
 		}
+		
 
-		setnames(yind,c("ID1968","pernum","interview","sequence","relation.head",names(ind.vars)[-1]))
+		if (length(ind.nas)>0){
+		    setnames(yind,c("ID1968","pernum","interview","sequence","relation.head",
+		                  (names(ind.vars)[-1])[-which(names(ind.vars)[-1] %in% names(ind.nas))],
+		                  names(ind.nas)))  
+		} else {
+		    setnames(yind,c("ID1968","pernum","interview","sequence","relation.head",
+		                  (names(ind.vars)[-1])))
+		}
+		
 		yind[,pid := ID1968*1000 + pernum]	# unique person identifier
 		setkey(yind,interview)
 
@@ -524,6 +562,37 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 	}
 
 	return(out)
+}
+
+
+
+#' Build full example PSID
+#' 
+#' @description Builds a panel from the full PSID dataset (i.e. all years)
+#' @export
+#' @return a data.table with panel data
+build.psid <- function(){
+	r = system.file(package="psidR")
+	f = fread(file.path(r,"psid-lists","famvars.txt"))
+	i = fread(file.path(r,"psid-lists","indvars.txt"))
+
+	# this is just to make R CMD CHECK happy
+	J <- vgroup <- variable <- NULL
+	f[1:38,vgroup := "wage"]
+	f[39:76,vgroup := "earnings"]
+	setkey(f,vgroup)
+
+	i[1:38, vgroup := "age"]
+	i[39:76, vgroup := "educ"]  # caution about 2 first years: no educ data
+	i[77:114, vgroup := "weight"]
+	setkey(i,vgroup)
+
+	ind = cbind(i[J("age"),list(year,age=variable)],i[J("educ"),list(educ=variable)],i[J("weight"),list(weight=variable)])
+	fam = cbind(f[J("wage"),list(year,wage=variable)],f[J("earnings"),list(earnings=variable)])
+
+	d = build.panel(datadir="~/git/bk/data/",fam.vars=fam,ind.vars=ind,SAScii = TRUE, heads.only = TRUE,sample="SRC",design=2,verbose=TRUE)
+	save(d,file="~/psid.RData")
+	return(d$data)
 }
 
 

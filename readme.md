@@ -27,22 +27,32 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 this package attempts to help the task of building a panel data. the user can either
 
 1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
-2. there is an option to directly download into an R data.frame via SAScii (**caution** it takes long: the individual index has about 280MB in ASCII)
+2. `[RECOMMENDED]` use the option to directly download into an R data.frame via the `SAScii` package. You download only once.
 
-To build the panel, the user must specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. This will in almost all cases contain the **survey weights** you want to use. 
+To build the panel, the user must specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. 
 
-Please check out [the R survey package](http://cran.r-project.org/web/packages/survey/index.html) for analyzing complex survey's with R. Also go to [http://www.asdfree.com/](http://www.asdfree.com/) for a range of tutorials and tips for using survey data with R.
 
-### Real World Example
+### Real World Example: Missing Variables
+
+* You want a `data.table` with the following columns: `PID,year,income,wage,age,educ`.
+* You went to the [PSID variable search](https://simba.isr.umich.edu/VS/s.aspx) to look up the relevant variable names in each year in either the `individual-level` or `family-level` datasets.
+* You created a list of those variables as I did in `inst/psid-lists` of this package
+* You noted that there is **NO EDUCATION** variable in the individual index file in 1968 and 1969
+    * Instead of the variable name for `EDUC` in 1968 and 1969 you put `NA`
+* You noted that there is **NO HOURLY WAGE** variable in the family index file in 1993
+    * Instead of the variable name for `HOURLY WAGE` in 1993 you put `NA`
 
 ```R
 # Build panel with income, wage, age and education
+# this is the body of the function build.psid()
 library(psidR)
-f = fread("inst/famvars.txt")
-i = fread("inst/indvars.txt")
+r = system.file(package="psidR")
+f = fread(file.path(r,"psid-lists","famvars.txt"))
+i = fread(file.path(r,"psid-lists","indvars.txt"))
 
-f[1:37, vgroup := "wage"]
-f[38:74,vgroup := "earnings"]
+# add a group identifier
+f[1:38,vgroup := "wage"]
+f[39:76,vgroup := "earnings"]
 setkey(f,vgroup)
 
 i[1:38,   vgroup := "age"]
@@ -50,14 +60,50 @@ i[39:76,  vgroup := "educ"]  # caution about 2 first years: no educ data
 i[77:114, vgroup := "weight"]
 setkey(i,vgroup)
 
+> head(f)
+                 dataset year variable                label   vgroup
+1: PSID Main Family Data 1968      V81        FAM MONEY INC earnings
+2: PSID Main Family Data 1969     V529       TOTAL FU $ INC earnings
+3: PSID Main Family Data 1970    V1514 TOT FU MON INC OV414 earnings
+4: PSID Main Family Data 1971    V2226       TOT FU MON INC earnings
+5: PSID Main Family Data 1972    V2852       TOT FU MON INC earnings
+6: PSID Main Family Data 1973    V3256       TOT FU MON INC earnings
+> head(i)
+                         dataset year variable                label vgroup
+1: PSID Individual Data by Years 1968  ER30004 AGE OF INDIVIDUAL 68    age
+2: PSID Individual Data by Years 1969  ER30023 AGE OF INDIVIDUAL 69    age
+3: PSID Individual Data by Years 1970  ER30046 AGE OF INDIVIDUAL 70    age
+4: PSID Individual Data by Years 1971  ER30070 AGE OF INDIVIDUAL 71    age
+5: PSID Individual Data by Years 1972  ER30094 AGE OF INDIVIDUAL 72    age
+6: PSID Individual Data by Years 1973  ER30120 AGE OF INDIVIDUAL 73    age
+
+
+# create ind and fam data.tables
 ind = cbind(i[J("age"),list(year,age=variable)],
             i[J("educ"),list(educ=variable)],
             i[J("weight"),list(weight=variable)])
 fam = cbind(f[J("wage"),list(year,wage=variable)],
             f[J("earnings"),list(earnings=variable)])
 
-# caution: this step will take many hours
-d = build.panel(fam.vars=fam,
+> head(ind)
+   year     age    educ  weight
+1: 1968 ER30004      NA ER30019
+2: 1969 ER30023      NA ER30042
+3: 1970 ER30046 ER30052 ER30066
+4: 1971 ER30070 ER30076 ER30090
+5: 1972 ER30094 ER30100 ER30116
+6: 1973 ER30120 ER30126 ER30137
+> head(fam)
+   year  wage earnings
+1: 1968  V337      V81
+2: 1969  V871     V529
+3: 1970 V1567    V1514
+4: 1971 V2279    V2226
+5: 1972 V2906    V2852
+6: 1973 V3275    V3256
+
+# caution: this step will take many hours the first time.
+d = build.panel(datadir="~/data",fam.vars=fam,
           ind.vars=ind,
           SAScii = TRUE, 
           heads.only = TRUE,
@@ -65,8 +111,7 @@ d = build.panel(fam.vars=fam,
           design=2)
 ```
 
-
-There are several prelimiary steps you have to take before using **psidR**. They all have to do with acquiring the data and storing it in a certain format. I'll explain below in examples.
+### Usage
 
 #### In case you go for psidR option 1 
 
@@ -142,17 +187,19 @@ fam.vars <- data.frame(year=c(2001,2003),
 
 The function will then keep NA as the value of the variable in year 2001 and you can fix this later on. This functionality was needed because NAs have a generic meaning, i.e. a person who does not participate in a given year is kept in the register, but has no replies in the family file, so has NA in all variables of the family file after merging.
 
-3. Specify options for the panel, like *design* or *heads.only* or *sample*
-4. call the function **build.panel**
-5. the result is a wide data.table where the id colums are *pid* (person identifier) and *year*. 
 
 ### Supplemental Datasets
 
 The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. 
 
+### Additional Info
+
+* Please check out [the R survey package](http://cran.r-project.org/web/packages/survey/index.html) for analyzing complex survey's with R. 
+* Also go to [http://www.asdfree.com/](http://www.asdfree.com/) for a range of tutorials and tips for using survey data with R.
+
+
 ### Future Developments
 
 * allow more complex panel designs, like accounting for wider family structure (i.e. using the family splitoff indicator to follow households that split up).
-* allow user to specify `NA` for missing variables in `indvars`.
 
 

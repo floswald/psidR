@@ -9,13 +9,13 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
   verbose = FALSE)
 }
 \arguments{
-\item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported.}
+\item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported. Recommended usage is to specify \code{datadir}.}
 
 \item{fam.vars}{data.frame of variable to retrieve from family files. Can contain see example for required format.}
 
 \item{ind.vars}{data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.}
 
-\item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time.}
+\item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time, but downloads only once if you specify \code{datadir}.}
 
 \item{heads.only}{logical TRUE if user wants current household heads only.}
 
@@ -33,56 +33,45 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
 Builds a panel data set in wide format with id variables \code{pid} (unique person identifier) and \code{year} from individual PSID family files.
 }
 \details{
-takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2011ER.xyz}, which must be in the same directory. Note that only one IND file may be present in the directory (each PSID shipping comes with a new IND file). The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs. 
+takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2013ER.xyz}, which must be in the same directory. The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs. The package allows the missing variables in certain waves to be accounted for automatically, i.e. the variables are inserted in the missing year as \code{NA}.
 Merge: the variables \code{interview number} in each family file map to 
 the \code{interview number} variable of a given year in the individual file. Run \code{example(build.panel)} for a demonstration.
 Accepted input data are stata format .dta, .csv files or R data formats .rda and RData. Similar in usage to stata module \code{psiduse}.
 }
 \examples{
 \dontrun{
-# specify variables from family files you want
+# ################################################
+# Real-world example: not run because takes long.
+# Build panel with income, wage, age and education
+# ################################################
 
-the family files dataframe can contain NAs.
-E.g. if there are years where a variable is missing
-and you want to fix that later on somehow.
-famvars <- data.frame(year=c(2001,2003),
-                     house.value=c("ER17044","ER21043"),
-                     total.income=c("ER20456","ER24099"),
-                     education=c("ER20457",NA))
-                     
-# specify variables from individual index file       
-# these cannot contain NAs at the moment.
-               
-indvars = data.frame(year=c(2001,2003),
-                     longitud.wgt=c("ER33637","ER33740"))
+r = system.file(package="psidR")
+f = fread(file.path(r,"psid-lists","famvars.txt"))
+i = fread(file.path(r,"psid-lists","indvars.txt"))
 
-# call builder
-# mydir is a directory that contains FAM2001ER.dta, 
-# FAM2003ER.dta and IND2011ER.dta
+f[1:38,vgroup := "wage"]
+f[39:76,vgroup := "earnings"]
+setkey(f,vgroup)
 
-# default
-d <- build.panel(datadir=mydir,
-                fam.vars=famvars,
-                ind.vars=indvars)
-                
-# also non-heads               
-d <- build.panel(datadir=mydir,
-                fam.vars=famvars,
-                ind.vars=indvars,
-                heads.only=FALSE)
-                
-# non-balanced panel design               
-d <- build.panel(datadir=mydir,
-                fam.vars=famvars,
-                ind.vars=indvars,
-                heads.only=FALSE,
-                design=2) # keep if stay 2+ periods
+i[1:38, vgroup := "age"]
+i[39:76, vgroup := "educ"]  # caution about 2 first years: no educ data
+i[77:114, vgroup := "weight"]
+setkey(i,vgroup)
 
-# subset the sample to "latino" only              
-d <- build.panel(datadir=mydir,
-                fam.vars=famvars,
-                ind.vars=indvars,
-                sample="latino")
+ind = cbind(i[J("age"),list(year,age=variable)],
+			   i[J("educ"),list(educ=variable)],
+			   i[J("weight"),list(weight=variable)])
+fam = cbind(f[J("wage"),list(year,wage=variable)],
+			   f[J("earnings"),list(earnings=variable)])
+
+# caution: this step will take many hours
+d = build.panel(datadir="~/data",
+                fam.vars=fam,
+				   ind.vars=ind,
+                SAScii = TRUE, 
+                heads.only = TRUE,
+                sample="SRC",
+                design=2)
 } 
 
 # ######################################

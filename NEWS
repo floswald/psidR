@@ -4,6 +4,9 @@
 * News in Version 1.4
 *********************
 
+* Added ability to have NA values in the individual index
+  https://github.com/floswald/psidR/issues/4
+* Don't download anything if files are present.
 * Added a real world example
 * Illustrates how variables can be constructed from a text file.
 
