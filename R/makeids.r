@@ -63,7 +63,7 @@ makeids <- function(){
 						  "ER33903",
 						  "ER34003",
 						  "ER34103",
-						  "ER34204")
+						  "ER34203")
 						  
 	# numeric code for "i am the head"
 	id.list$ind.head.num <- c(rep(1,15),rep(10,23))

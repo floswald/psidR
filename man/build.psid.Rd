@@ -7,7 +7,7 @@
 build.psid()
 }
 \value{
-a list with panel data and data dictionary
+a data.table with panel data
 }
 \description{
 Builds a panel from the full PSID dataset (i.e. all years)
