@@ -12,7 +12,8 @@
 #' @param fam.vars data.frame of variable to retrieve from family files. Can contain see example for required format.
 #' @param ind.vars data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.
 #' @param SAScii logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time, but downloads only once if you specify \code{datadir}.
-#' @param heads.only logical TRUE if user wants current household heads only. 
+#' @param current.heads.only logical TRUE if user wants current household heads only. Distinguishes mover outs heads.
+#' @param heads.only logical TRUE if user wants household heads only. Household heads in sample year.
 #' @param sample string indicating which sample to select: "SRC" (survey research center), "SEO" (survey for economic opportunity), "immigrant" (immigrant sample), "latino" (Latino family sample). Defaults to NULL, so no subsetting takes place.
 #' @param design either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.
 #' @param verbose logical TRUE if you want verbose output.
@@ -124,7 +125,7 @@
 #' # #####################################################################
 #' # Please go to https://github.com/floswald/psidR for more example usage
 #' # #####################################################################
-build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.only=FALSE,sample=NULL,design="balanced",verbose=FALSE){
+build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.only=FALSE,current.heads.only=FALSE,sample=NULL,design="balanced",verbose=FALSE){
 	
 
 	# locally bind all variables to be used in a data.table
@@ -428,14 +429,14 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
     		}
     	}
 
-    	# heads only selection
+    	# current heads only selection
     	# --------------------
 
     	# https://github.com/floswald/psidR/issues/2
 		# for current heads only need to subset "relationship to head" AS WELL AS "sequence number" == 1 
 		# otherwise a head who died between last and this wave is still head, so there would be two heads in that family.
 		# https://psidonline.isr.umich.edu/Guide/FAQ.aspx?Type=ALL#150
-		if (heads.only) {
+		if (current.heads.only) {
 		   n    <- nrow(yind)
 		   if (years[iy]==1968){
 		     yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num])]
@@ -447,7 +448,25 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,SAScii=FALSE,heads.o
 			   cat('dropping non-current-heads leaves',nrow(yind),'obs\n')
 		   }
 		   yind[,headyes := NULL]
+		} else if (heads.only){
+			# https://psidonline.isr.umich.edu/Guide/FAQ.aspx?Type=ALL#250
+			# To create a single year Head/Wife file: 
+			# Select individuals with Relationship to Head of "Head" (a code value of 1 for 1968-1982; code 10 from 1983 onward) 
+			# and with values for Sequence Number in the range 1-20. 
+		   n    <- nrow(yind)
+		   if (years[iy]==1968){
+		     yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num])]
+		   } else {
+		     yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]) & ((yind[,curr[,ind.seq],with=FALSE]> 0) & (yind[,curr[,ind.seq],with=FALSE]< 21))]
+		   }
+		   yind <- copy(yind[headyes==TRUE])
+		   if (verbose){
+			   cat('dropping non-heads leaves',nrow(yind),'obs\n')
+		   }
+		   yind[,headyes := NULL]
+
 		}
+
 		
 
 		if (length(ind.nas)>0){
@@ -590,7 +609,7 @@ build.psid <- function(){
 	ind = cbind(i[J("age"),list(year,age=variable)],i[J("educ"),list(educ=variable)],i[J("weight"),list(weight=variable)])
 	fam = cbind(f[J("wage"),list(year,wage=variable)],f[J("earnings"),list(earnings=variable)])
 
-	d = build.panel(datadir="~/git/bk/data/",fam.vars=fam,ind.vars=ind,SAScii = TRUE, heads.only = TRUE,sample="SRC",design=2,verbose=TRUE)
+	d = build.panel(datadir="~/datasets/psid",fam.vars=fam,ind.vars=ind,SAScii = TRUE, heads.only = TRUE,sample="SRC",design=2,verbose=TRUE)
 	save(d,file="~/psid.RData")
 	return(d$data)
 }
