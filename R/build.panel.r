@@ -139,7 +139,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 	# figure out platform
 	s <- .Platform$file.sep
 	if ( .Platform$OS.type != 'windows' ) {
-		warning("I'm setting your encoding to windows now")
+		# warning("I'm setting your encoding to windows now")
 		options( encoding = "windows-1252" )		# # only macintosh and *nix users need this line
 	}
 	
@@ -158,6 +158,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 	if (SAScii){
 
 		lf = list.files(datadir)
+	
+		wlth.down <- is.null(wealth.vars)
 
 		# all psid family files
 		# family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2015 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 ))
@@ -645,7 +647,6 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 	}
 	
 	data2 <- rbindlist(datas,use.names=TRUE,fill=TRUE)	# glue together
-	print("hi")
 	rm(datas)
 
 	# design
