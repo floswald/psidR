@@ -177,7 +177,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 		}
 
 		if (is.data.frame(wealth.vars)){
-			# if any of 1984, 1989, 1994, 1999, 2001, 2003, 2005, 2007 in years, also download the associated wealth supplement
+			# if any of 1984, 1989, 1994, 1999, 2001, 2003, 2005, 2007 in years, also download the associated wealth supplement
 			wlth = data.frame(year=c(1984, 1989, 1994, 1999, 2001, 2003, 2005, 2007),file=c(1147,1148,1149,1150,1130,1131,1133,1140))
 			if (verbose){
 				cat("years: \n")
@@ -189,20 +189,22 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 			}
 			wlth = wlth[wealth.vars$year %in% years, ]
 
-			wlth.down <- rep(FALSE,nrow(wlth))
-			if (length(wlth.down) >0){
-				for ( i in 1:nrow( wlth )) {
-					if ((paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda") %in% lf)) {
-						wlth.down[i] <- TRUE
-						cat('found ',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"), 'already downloaded \n')
-					} else {
-						cat('will download as ',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"), '\n')
-					}
-				}
-			}
+			if ( nrow(wlth) > 0 ){
+			  wlth.down <- rep(FALSE,nrow(wlth))
+			    for ( i in 1:nrow( wlth )) {
+			      if ((paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda") %in% lf)) {
+			        wlth.down[i] <- TRUE
+			        cat('found ',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"), 'already downloaded \n')
+			      } else {
+			        cat('will download as ',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"), '\n')
+			      }
+			    }
+  			} else {
+  			  wlth.down = TRUE
+  			  # saying we already downloaded even if we didn't look for wealth vars.
+  			}
+			
 		}
-
-
 
 		ind.down <- FALSE
 		# check if datadir contains individual index already
@@ -259,11 +261,14 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 					}
 				}
 
-				for ( i in 1:nrow(wlth)){
-					if (!(wlth.down[i])){
-						get.psid( wlth[ i , 'file' ] ,name= paste0(datadir, "WEALTH" , wlth[ i , 'year' ], "ER") , params , curl )
-					}
+				if (nrow(wlth)>0){
+				  for ( i in 1:nrow(wlth)){
+				    if (!(wlth.down[i])){
+				      get.psid( wlth[ i , 'file' ] ,name= paste0(datadir, "WEALTH" , wlth[ i , 'year' ], "ER") , params , curl )
+				    }
+				  }
 				}
+				
 
 				# check if datadir contains individual index already
 				if (!("IND2013ER.rda" %in% lf)) {
