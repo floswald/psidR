@@ -687,14 +687,23 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 
 #' Build full example PSID
 #' 
-#' @description Builds a panel from the full PSID dataset (i.e. all years)
+#' @description Builds a panel from the full PSID dataset
 #' @export
+#' @param small logical TRUE if only use years 2013 and 2015.
 #' @return a data.table with panel data
-build.psid <- function(){
+build.psid <- function(small=TRUE){
   r = system.file(package="psidR")
-  f = subset(fread(file.path(r,"psid-lists","famvars.txt")),year<2015)
-  i = subset(fread(file.path(r,"psid-lists","indvars.txt")),year<2015)
-  w = subset(fread(file.path(r,"psid-lists","wealthvars.txt")),year<2015)
+  if (small){
+    f = fread(file.path(r,"psid-lists","famvars-small.txt"))
+    i = fread(file.path(r,"psid-lists","indvars-small.txt"))
+    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
+    
+  } else {
+    f = fread(file.path(r,"psid-lists","famvars.txt"))
+    i = fread(file.path(r,"psid-lists","indvars.txt"))
+    w = fread(file.path(r,"psid-lists","wealthvars.txt"))
+    
+  }
   setkey(i,"name")
   setkey(f,"name")
   setkey(w,"name")
@@ -703,7 +712,7 @@ build.psid <- function(){
   f = dcast(f[,list(year,name,variable)],year~name)
   w = dcast(w[,list(year,name,variable)],year~name)
   
-  d = build.panel(datadir="~/datasets/psid/",fam.vars=f,ind.vars=i,wealth.vars=w,SAScii = TRUE, heads.only = TRUE,sample="SRC",verbose=TRUE,design="all")
+  d = build.panel(datadir="~/datasets/psid_test/",fam.vars=f,ind.vars=i,wealth.vars=w,SAScii = TRUE, heads.only = TRUE,sample="SRC",verbose=TRUE,design="all")
   
 	save(d,file="~/psid.RData")
 	return(d$data)
