@@ -23,7 +23,7 @@ makeids <- function(){
 						 "ER30536","ER30571","ER30607","ER30643","ER30690","ER30734", 
 						 "ER30807","ER33102","ER33202","ER33302","ER33402","ER33502", 
 						 "ER33602","ER33702","ER33802","ER33902","ER34002","ER34102",
-						 "ER34202","ER34303")
+						 "ER34202","ER34302")
 	
 	# name of variable "relationship to head"
 	id.list$ind.head <- c("ER30003",
