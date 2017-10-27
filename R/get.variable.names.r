@@ -51,11 +51,15 @@
 
 get.variable.names <- function(vars, years, scrape_name=F, varnames = NULL){
   
+  
+  # Define certicificate file
+  cafile <- system.file("CurlSSL", "cacert.pem", package = "RCurl")
+  
   # Check if the function is required to scrape variable names from the dictionary or not
-  using_names = !(is.null(varnames))
+  using_names <- !(is.null(varnames))
   
   if (using_names & scrape_name) {
-    scrape_name = F
+    scrape_name <- F
     warning("The option scrape_name has been set to FALSE. If you require the code to scrape variable names, let the varnames option set to default value NULL.\n")
   }
 
@@ -67,12 +71,13 @@ get.variable.names <- function(vars, years, scrape_name=F, varnames = NULL){
   for (varindex in vars) {
 
     # Get html code from psidonline
-    h <- htmlParse(paste0("http://simba.isr.umich.edu/cb.aspx?vList=",varindex))
+    h.source <- GET(paste0("https://simba.isr.umich.edu/cb.aspx?vList=", varindex),
+      config(cainfo = cafile))
+    h.page <- htmlParse(h.source)
     
     # Recover and edit the explicit variable name (replace special characters as they might be complicated to handle with)
-    # NB: the list of special characters might need to be expanded
     if (scrape_name) {
-      h.varname <- xmlValue(getNodeSet(h, "//td")[[3]])
+      h.varname <- xmlValue(getNodeSet(h.source, "//td")[[3]])
       h.varname <- gsub("\\s+", " ", h.varname)
       h.varname <- gsub(" ", "_", h.varname)
       h.varname <- gsub("\\\\|\\-|/|\\?|\\(|\\)", "_", h.varname)
@@ -84,7 +89,7 @@ get.variable.names <- function(vars, years, scrape_name=F, varnames = NULL){
     }
 
     # Locate a list of type [99]AB1234, then build a matrix with column of type c("99", "AB1234")
-    for (node in rev(getNodeSet(h, "//td"))) {
+    for (node in rev(getNodeSet(h.page, "//td"))) {
 
       if (substr(xmlValue(node),1,1) == "[" & substr(xmlValue(node),4,4) == "]") {
 
@@ -146,4 +151,5 @@ get.variable.names <- function(vars, years, scrape_name=F, varnames = NULL){
   return(vardf)
   
 }
+
   
