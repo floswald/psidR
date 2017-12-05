@@ -1,23 +1,25 @@
 
-
-#' This function allows to build a data table containing the original PSID variable names (of type AB12345) for each desired year and checks
-#' on the psidonline web site whether a variable is available or not. Information is obtained on https://simba.isr.umich.edu/VS/s.aspx
-#' through the package XML.
+#' This function helps the user save a lot of time in building a data table containing the original PSID variable codes (e.g. ER30046) for 
+#' each desired year and checks on the psidonline web site in which years a variable is available or not. Information is obtained on 
+#' https://simba.isr.umich.edu/VS/s.aspx.
 #'
-#' Instead of building the data table by hand and look up each variable on the online dictionary to understand in which year it is available, 
-#' it is sufficient to look at the dictionary for a given wave, select some variables of interest and type in their original name for a given 
-#' year y, as well as a list of years that one wants to be included in the panel. If the variable is not available for a given year, the 
-#' function automatically types NA in the corresponding cell.
+#' The function build.panel requires the user to input a table containing the original PSID variable codes. However, this requires looking up
+#' the unique variable identifier for each different wave: for instance, ER30046 stands for age of individual in 1970, while ER30070 for age of
+#' individual in 1971. If the user wants to build a long panel, looking up EACH variable code for EACH wave manually takes a long time. This 
+#' function simplifies the user's life by requiring to provide a list with the original variable codes from one wave only. It then 
+#' automatically looks up the corresponding variable codes for the same variable in other waves, if available. For instance, if the user  
+#' includes the code ER30046 (age in 1970) in the list and declares that the panel should span from 1970 to 1971, then the function will 
+#' return a table containing the original PSID codes for the variable "age of individual" for all desired years, in this case ER30046 (1970)
+#' and ER30070 (1971).
 #'
-#' Note that, in the list of variables provided, one could include a variable from year y and a variable from year y'. This is allowed and 
-#' irrelevant to the functioning of the function. This could be useful if one wants to recover some variables that are only present in some
-#' specific waves. Only remark: if one types in the same variable for both year y and year y', it is going to show up twice in the final data 
-#' table.
+#' Note that, in the list of variables provided, one could include a variable code from year y and a variable code from year y'. This is 
+#' allowed and irrelevant to the functioning of the function. Only remark: if the codes refer to the same variable, then the same variable will
+#' show up twice in the output table.
 #'
 #' The following options are also available:
 #' - if scrape_name equals TRUE, then the function recovers the variable names from the online dictionary and edits them to avoid the presence
 #' of special characters such as "/", "#" or "-"; the dictionary names suggested by psidonline might be long and cryptic and are NOT always
-#' consistent over years, even if the coding of the variable is the same;
+#' consistent over years (even if the underlying variable is consistent);
 #' - if the vector varnames is provided and scrape_name equals FALSE, then the function names the variables after the user-provided labels;
 #' varnames must be of the same length as input vector vars.
 #'
@@ -30,15 +32,6 @@
 #' ind <- get.variable.names(i, years, scrape_name=T)
 #' fam <- get.variable.names(f, years, scrape_name=T)
 #'
-#' > head(fam)
-#'      year heads_avg_hrly_ern tot_fu_mon_inc_ov414
-#' 1968 1968               V337                  V81
-#' 1969 1969               V871                 V529
-#' 1970 1970              V1567                V1514
-#' 1971 1971              V2279                V2226
-#' 1972 1972              V2906                V2852
-#' 1973 1973              V3275                V3256
-#' 
 #' > head(ind)
 #'      year age_of_individual grade_finished individual_weight
 #' 1968 1968           ER30004        ER30010           ER30019
@@ -48,9 +41,20 @@
 #' 1972 1972           ER30094        ER30100           ER30116
 #' 1973 1973           ER30120        ER30126           ER30137
 #' 
+#' > head(fam)
+#'      year heads_avg_hrly_ern tot_fu_mon_inc_ov414
+#' 1968 1968               V337                  V81
+#' 1969 1969               V871                 V529
+#' 1970 1970              V1567                V1514
+#' 1971 1971              V2279                V2226
+#' 1972 1972              V2906                V2852
+#' 1973 1973              V3275                V3256
+#' 
 
 get.variable.names <- function(vars, years, scrape_name=F, varnames = NULL){
   
+  # XML must be present in the installed.packages() list for this function to work
+  tryCatch(installed.packages()["XML",], error=function(e) print("ATTENTION: the package XML must be downloaded manually in order to use the function get.variable.names\n"))
   
   # Define certicificate file
   cafile <- system.file("CurlSSL", "cacert.pem", package = "RCurl")
