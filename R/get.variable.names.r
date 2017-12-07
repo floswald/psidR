@@ -12,15 +12,20 @@
 #' return a table containing the original PSID codes for the variable "age of individual" for all desired years, in this case ER30046 (1970)
 #' and ER30070 (1971).
 #'
+#' Arguments:
+#' @param vars character vector contains the original PSID variable codes of type ER30046.
+#' @param years numeric vector contains the waves for which the user wants to retrieve the original variable codes.
+#' @param scrape_name logical indicating whether to retrieve the original variable names (T) or not (F) (e.g. age_of_individual for ER30046).
+#' @param varnames character vector contains customized variable names; applied if scrape_name set to F and must be of same length as vars.
+#'
 #' Note that, in the list of variables provided, one could include a variable code from year y and a variable code from year y'. This is 
 #' allowed and irrelevant to the functioning of the function. Only remark: if the codes refer to the same variable, then the same variable will
 #' show up twice in the output table.
 #'
-#' The following options are also available:
-#' - if scrape_name equals TRUE, then the function recovers the variable names from the online dictionary and edits them to avoid the presence
-#' of special characters such as "/", "#" or "-"; the dictionary names suggested by psidonline might be long and cryptic and are NOT always
-#' consistent over years (even if the underlying variable is consistent);
-#' - if the vector varnames is provided and scrape_name equals FALSE, then the function names the variables after the user-provided labels;
+#' - If scrape_name equals TRUE, then the function recovers the variable names from the online dictionary and edits them to avoid the presence
+#' of special characters such as "/", "#" or "-". The dictionary names suggested by psidonline might be long and cryptic and are NOT always
+#' consistent over years (even if the underlying variable is consistent).
+#' - If the vector varnames is provided and scrape_name equals FALSE, then the function names the variables after the user-provided labels;
 #' varnames must be of the same length as input vector vars.
 #'
 #' Here is shown how to obtain the ind and fam data tables used in the main example function. In this example, the function is required to
@@ -51,7 +56,7 @@
 #' 1973 1973              V3275                V3256
 #' 
 
-get.variable.names <- function(vars, years, scrape_name=F, varnames = NULL){
+get.variable.names <- function(vars, years, scrape_name = F, varnames = NULL){
   
   # Define certicificate file
   cafile <- system.file("CurlSSL", "cacert.pem", package = "RCurl")
