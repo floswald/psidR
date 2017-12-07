@@ -53,9 +53,6 @@
 
 get.variable.names <- function(vars, years, scrape_name=F, varnames = NULL){
   
-  # XML must be present in the installed.packages() list for this function to work
-  tryCatch(installed.packages()["XML",], error=function(e) print("ATTENTION: the package XML must be downloaded manually in order to use the function get.variable.names\n"))
-  
   # Define certicificate file
   cafile <- system.file("CurlSSL", "cacert.pem", package = "RCurl")
   
