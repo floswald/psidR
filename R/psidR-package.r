@@ -10,6 +10,8 @@
 #' @import SAScii 
 #' @import RCurl
 #' @import foreign
+#' @import httr
+#' @import XML
 #' @docType package
 #' @name psidR
 #' 
