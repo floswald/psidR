@@ -283,7 +283,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 				cat('continuing now to build the dataset.\n')
 							
 			} else if (confirm=="no") {
-				break
+				return(0)
 			}
 		}  # end download data
 	}
