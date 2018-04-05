@@ -1,0 +1,5 @@
+dataset,year,variable,label,name
+PSID Family-level,2005,S717,NET WEALTH , wealth
+PSID Family-level,2007,S817,NET WEALTH , wealth
+PSID Family-level,2005,S707,NON-MORT DEBT,debt
+PSID Family-level,2007,S807,NON-MORT DEBT,debt

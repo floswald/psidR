@@ -58,7 +58,7 @@ test_that("check balanced sample design", {
     expect_true( !all( dd[,relation.head == 10]))
 } )
 
-test_that("check subsetting to heads only", {
+test_that("check subsetting to head and wife sample", {
   
   famvars <- data.frame(year=c(1985,1986),money=c("Money85","Money86"),age=c("age85","age86"))
   
@@ -68,11 +68,28 @@ test_that("check subsetting to heads only", {
   cored = core$data
   
   # check sequence numbers
-  expect_true( all( cored[,sequence == 1]))
+  expect_true( all( cored[,(sequence >0) & (sequence < 21) ]))
   
   # check relationship to head
   expect_true( all( cored[,relation.head == 10]))
 
+})
+
+test_that("check subsetting to current heads only", {
+  
+  famvars <- data.frame(year=c(1985,1986),money=c("Money85","Money86"),age=c("age85","age86"))
+  
+  # and ind.vars 
+  indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
+  core <- build.panel(datadir=my.dir,fam.vars=famvars,ind.vars=indvars,sample=NULL,current.heads.only=TRUE,verbose=FALSE,design="all")   
+  cored = core$data
+  
+  # check sequence numbers
+  expect_true( all( cored[,sequence==1]))
+  
+  # check relationship to head
+  expect_true( all( cored[,relation.head == 10]))
+  
 })
 
 test_that("check subsetting to core/immigrant/latino", {

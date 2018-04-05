@@ -19,12 +19,15 @@ Depends:
     data.table,
     RCurl,
     foreign,
-    SAScii
+    SAScii,
+    httr,
+    XML
 License: GPL-3
 Collate:
     'build.panel.r'
     'makeids.r'
     'psidR-package.r'
+    'get.variable.names.r'
 Suggests:
     testthat
 RoxygenNote: 5.0.1

@@ -1,0 +1,17 @@
+dataset,year,variable,label,name
+PSID Family-level,1984,S117,NET WEALTH , wealth
+PSID Family-level,1989,S217,NET WEALTH , wealth
+PSID Family-level,1994,S317,NET WEALTH , wealth
+PSID Family-level,1999,S417,NET WEALTH , wealth
+PSID Family-level,2001,S517,NET WEALTH , wealth
+PSID Family-level,2003,S617,NET WEALTH , wealth
+PSID Family-level,2005,S717,NET WEALTH , wealth
+PSID Family-level,2007,S817,NET WEALTH , wealth
+PSID Family-level,1984,S107,NON-MORT DEBT,debt
+PSID Family-level,1989,S207,NON-MORT DEBT,debt
+PSID Family-level,1994,S307,NON-MORT DEBT,debt
+PSID Family-level,1999,S407,NON-MORT DEBT,debt
+PSID Family-level,2001,S507,NON-MORT DEBT,debt
+PSID Family-level,2003,S607,NON-MORT DEBT,debt
+PSID Family-level,2005,S707,NON-MORT DEBT,debt
+PSID Family-level,2007,S807,NON-MORT DEBT,debt
