@@ -737,3 +737,50 @@ build.psid <- function(small=TRUE,wealth=FALSE){
 	return(d$data)
 }
 
+
+
+#' Get proper names for PSID variables from various years
+#'
+#' The user can specify one variable name from any year. This function
+#' will find that variable's correct name in any of the years
+#' specified by the user. If user does not specify the \code{years}
+#' variable, return will represent all years in which variable was
+#' present.
+#'
+#' This uses the psid.xlsx crosswalk file from UMich, which is
+#' available at http://psidonline.isr.umich.edu/help/xyr/psid.xlsx. In the 
+#' example, the package openxlsx's read.xlsx is used to import the crosswalk
+#' file.
+#'
+#' Ask for one variable at a time.
+#' @param aname A variable name in any of the PSID years
+#' @param cwf A data.frame representation of the cross-walk file,
+#'     (the psid.xlsx file).
+#' @param years A vector of years. If NULL, all years in which that
+#'     variable existed are returned
+#' @return A vector of names, one for each year.
+#' @author Paul Johnson <pauljohn@@ku.edu>
+#' @example
+#' #get psid.xlsx from UMICH if openxlsx exists
+#' if (require(openxlsx)){
+#'     cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
+#'     getNamesPSID("ER17013", cwf, years = 2001)
+#'     getNamesPSID("ER17013", cwf, years = 2003)
+#'     getNamesPSID("ER17013", cwf, years = NULL)
+#'     getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
+#' }
+getNamesPSID <- function(aname, cwf, years = NULL){
+    myvar <- which(cwf == aname, arr.ind=TRUE)
+    ## variables that begin with Y
+    ynames.all <- grep("^Y", colnames(cwf))
+
+    if (is.null(years)){
+        yearkeep <- ynames.all
+    } else {
+        yearkeep <- paste0("Y", years)
+        yearkeep <- yearkeep[yearkeep %in% colnames(cwf)]
+    }
+    ovalue <- cwf[myvar[1], yearkeep, drop = FALSE]
+    ovalue
+}
+
