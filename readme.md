@@ -29,7 +29,7 @@ this package attempts to help the task of building a panel data. the user can ei
 1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
 2. `[RECOMMENDED]` use the option to directly download into an R data.frame via the `SAScii` package. You download only once.
 
-To build the panel, the user must specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. 
+To build the panel, the user must specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. The helper function `getNamesPSID` is helpful in finding different variable names across waves. 
 
 
 ### Real World Example: Missing Variables
@@ -50,7 +50,16 @@ r = system.file(package="psidR")
 f = fread(file.path(r,"psid-lists","famvars.txt"))
 i = fread(file.path(r,"psid-lists","indvars.txt"))
 
-# add a group identifier
+# alternatively, use getNamesPSID:
+# cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
+# Suppose you know the name of the variable in a certain year, and it is
+# "ER17013". then get the correpsonding name in another year with
+# getNamesPSID("ER17013", cwf, years = 2001)  
+# getNamesPSID("ER17013", cwf, years = 2003)
+# getNamesPSID("ER17013", cwf, years = NULL)
+# getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
+
+# add a group identifier
 f[1:38,vgroup := "wage"]
 f[39:76,vgroup := "earnings"]
 setkey(f,vgroup)
