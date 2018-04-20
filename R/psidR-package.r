@@ -11,7 +11,7 @@
 #' @import foreign
 #' @import httr
 #' @import XML
-#' @import openxlsx
+#' @importFrom openxlsx read.xlsx
 #' @importFrom stats rlnorm rnorm runif
 #' @importFrom utils object.size tail unzip
 #' @docType package

@@ -34,14 +34,18 @@ file.
 Ask for one variable at a time.
 }
 \examples{
-#get psid.xlsx from UMICH if openxlsx exists
-if (require(openxlsx)){
-    cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
-    getNamesPSID("ER17013", cwf, years = 2001)
-    getNamesPSID("ER17013", cwf, years = 2003)
-    getNamesPSID("ER17013", cwf, years = NULL)
-    getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
-}
+# read UMich crosswalk from installed file
+r = system.file(package="psidR")
+cwf = openxlsx::read.xlsx(file.path(r,"psid-lists","psid.xlsx"))
+
+# or download directly
+# cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
+
+# then get names with
+getNamesPSID("ER17013", cwf, years = 2001)
+getNamesPSID("ER17013", cwf, years = 2003)
+getNamesPSID("ER17013", cwf, years = NULL)
+getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
 }
 \author{
 Paul Johnson <pauljohn@ku.edu>
