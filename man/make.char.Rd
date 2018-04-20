@@ -15,4 +15,3 @@ a character
 \description{
 helper function to convert factor to character in a data.table
 }
-

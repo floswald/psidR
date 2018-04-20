@@ -7,8 +7,6 @@
 \title{psidR}
 \description{
 psidR is a package that helps the task of building longitudinal datasets from the Panel Study of Income Dynamics (PSID). 
-The user must supply the PSID variable names that correspond to the variables of interest in each desired wave. The data may be in .dta, .csv format on disk. Creation
-of .dta or .csv datasets requires access to Stata or SAS software. There is an option to bypass this requirement by directly downloading the data from the server into a
+The user must supply the PSID variable names that correspond to the variables of interest in each desired wave. Data can be supplied via Stata, or directly downloaded from PSID servers without any need for STATA.
 data.frame.
 }
-

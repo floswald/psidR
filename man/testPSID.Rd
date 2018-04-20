@@ -19,4 +19,3 @@ family files for 1985 and 1986
 makes artifical PSID data with variables \code{age} and \code{income}
 for two consecutive years 1985 and 1986.
 }
-

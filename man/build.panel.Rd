@@ -4,9 +4,9 @@
 \alias{build.panel}
 \title{build.panel: Build PSID panel data set}
 \usage{
-build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
-  heads.only = FALSE, sample = NULL, design = "balanced",
-  verbose = FALSE)
+build.panel(datadir = NULL, fam.vars, ind.vars = NULL, wealth.vars = NULL,
+  SAScii = FALSE, heads.only = FALSE, current.heads.only = FALSE,
+  sample = NULL, design = "balanced", verbose = FALSE)
 }
 \arguments{
 \item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported. Recommended usage is to specify \code{datadir}.}
@@ -15,9 +15,13 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
 
 \item{ind.vars}{data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.}
 
+\item{wealth.vars}{data.frame of variables to get from the wealth supplement files.}
+
 \item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time, but downloads only once if you specify \code{datadir}.}
 
-\item{heads.only}{logical TRUE if user wants current household heads only.}
+\item{heads.only}{logical TRUE if user wants household heads only. Household heads in sample year.}
+
+\item{current.heads.only}{logical TRUE if user wants current household heads only. Distinguishes mover outs heads.}
 
 \item{sample}{string indicating which sample to select: "SRC" (survey research center), "SEO" (survey for economic opportunity), "immigrant" (immigrant sample), "latino" (Latino family sample). Defaults to NULL, so no subsetting takes place.}
 
@@ -30,13 +34,14 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, SAScii = FALSE,
 \item{dict}{data dictionary if stata data was supplied, NULL else}
 }
 \description{
-Builds a panel data set in wide format with id variables \code{pid} (unique person identifier) and \code{year} from individual PSID family files.
+Builds a panel data set with id variables \code{pid} (unique person identifier) and \code{year} from individual PSID family files and supplemental wealth files.
 }
 \details{
-takes desired variables from family files for specified years in folder \code{datadir} and merges using the id information in \code{IND2013ER.xyz}, which must be in the same directory. The raw data can be supplied in stata .dta format or it can be directly downloaded from the PSID server to folders \code{datadir} or \code{tmpdir}. Notice that currently only stata format <= 12 is supported (so do \code{saveold} in stata). The user can change subsetting criteria as well as sample designs. The package allows the missing variables in certain waves to be accounted for automatically, i.e. the variables are inserted in the missing year as \code{NA}.
+There are several supported approches. Approach one downloads stata data, uses stata to build each wave, then puts it together with `psidR`. The second (recommended) approach downloads all data directly from the psid servers (no Stata needed. For this approach you need to supply the precise names of psid variables - those variable names vary by year. E.g. \emph{total family income} will have different names in different waves. The function \code{\link{getNamesPSID}} greatly helps collecting names for all waves.
 Merge: the variables \code{interview number} in each family file map to 
 the \code{interview number} variable of a given year in the individual file. Run \code{example(build.panel)} for a demonstration.
-Accepted input data are stata format .dta, .csv files or R data formats .rda and RData. Similar in usage to stata module \code{psiduse}.
+For approach one, accepted input data are stata format .dta, .csv files or R data formats .rda and RData. This usage is similar to stata module \code{psiduse}. 
+Approach two follows the strategy introduced at \url{http://asdfree.com}. In fact, both approaches use the same function \code{save.psid} to download the data, \code{psidR} automates the merge and subsetting proceedure for you.
 }
 \examples{
 \dontrun{
@@ -45,6 +50,8 @@ Accepted input data are stata format .dta, .csv files or R data formats .rda and
 # Build panel with income, wage, age and education
 # ################################################
 
+# The package is installed with a list of variables
+# Alternatively, search for names with \\code{\\link{getNamesPSID}}
 r = system.file(package="psidR")
 f = fread(file.path(r,"psid-lists","famvars.txt"))
 i = fread(file.path(r,"psid-lists","indvars.txt"))
@@ -87,9 +94,9 @@ d = build.panel(datadir="~/data",
 
 # testPSID creates artifical PSID data
 td <- testPSID(N=12,N.attr=0)
-fam1985 <- copy(td$famvars1985)
-fam1986 <- copy(td$famvars1986)
-IND2009ER <- copy(td$IND2009ER)
+fam1985 <- data.table::copy(td$famvars1985)
+fam1986 <- data.table::copy(td$famvars1986)
+IND2009ER <- data.table::copy(td$IND2009ER)
 
 # create a temporary datadir
 my.dir <- tempdir()
@@ -142,4 +149,3 @@ file.remove(paste0(my.dir,"/FAM1985ER.rda"),
 # Please go to https://github.com/floswald/psidR for more example usage
 # #####################################################################
 }
-

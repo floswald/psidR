@@ -21,4 +21,3 @@ see \url{http://www.asdfree.com/} for other usage and \url{http://stackoverflow.
 \author{
 Anthony Damico <ajdamico@gmail.com>
 }
-

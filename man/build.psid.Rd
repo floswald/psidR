@@ -2,14 +2,18 @@
 % Please edit documentation in R/build.panel.r
 \name{build.psid}
 \alias{build.psid}
-\title{Build full example PSID}
+\title{Build example PSID}
 \usage{
-build.psid()
+build.psid(small = TRUE, wealth = FALSE)
+}
+\arguments{
+\item{small}{logical TRUE if only use years 2013 and 2015.}
+
+\item{wealth}{logical TRUE if want to use wealth supplements}
 }
 \value{
 a data.table with panel data
 }
 \description{
-Builds a panel from the full PSID dataset (i.e. all years)
+Builds a panel from the full PSID dataset
 }
-
