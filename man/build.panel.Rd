@@ -48,38 +48,47 @@ Approach two follows the strategy introduced at \url{http://asdfree.com}. In fac
 # ################################################
 # Real-world example: not run because takes long.
 # Build panel with income, wage, age and education
+# optionally: add wealth supplements!
 # ################################################
 
 # The package is installed with a list of variables
 # Alternatively, search for names with \\code{\\link{getNamesPSID}}
+# This is the body of function build.psid()
+# (so why not call build.psid() and see what happens!)
 r = system.file(package="psidR")
-f = fread(file.path(r,"psid-lists","famvars.txt"))
-i = fread(file.path(r,"psid-lists","indvars.txt"))
-
-f[1:38,vgroup := "wage"]
-f[39:76,vgroup := "earnings"]
-setkey(f,vgroup)
-
-i[1:38, vgroup := "age"]
-i[39:76, vgroup := "educ"]  # caution about 2 first years: no educ data
-i[77:114, vgroup := "weight"]
-setkey(i,vgroup)
-
-ind = cbind(i[J("age"),list(year,age=variable)],
-			   i[J("educ"),list(educ=variable)],
-			   i[J("weight"),list(weight=variable)])
-fam = cbind(f[J("wage"),list(year,wage=variable)],
-			   f[J("earnings"),list(earnings=variable)])
-
-# caution: this step will take many hours
-d = build.panel(datadir="~/data",
-                fam.vars=fam,
-				   ind.vars=ind,
-                SAScii = TRUE, 
-                heads.only = TRUE,
-                sample="SRC",
-                design=2)
-} 
+if (small){
+  f = fread(file.path(r,"psid-lists","famvars-small.txt"))
+  i = fread(file.path(r,"psid-lists","indvars-small.txt"))
+  if (wealth){
+    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
+  }
+} else {
+  f = fread(file.path(r,"psid-lists","famvars.txt"))
+  i = fread(file.path(r,"psid-lists","indvars.txt"))
+  if (wealth){
+    w = fread(file.path(r,"psid-lists","wealthvars.txt"))
+  }
+}
+setkey(i,"name")
+setkey(f,"name")
+if (wealth) setkey(w,"name")
+i = dcast(i[,list(year,name,variable)],year~name)
+f = dcast(f[,list(year,name,variable)],year~name)
+if (wealth) {
+  w = dcast(w[,list(year,name,variable)],year~name)
+  d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
+                 ind.vars=i,wealth.vars=w,SAScii = TRUE, 
+                 heads.only =TRUE,sample="SRC",verbose=TRUE,
+                 design="all")
+  save(d,file="~/psid_wealth.RData")
+} else {
+  d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
+                 ind.vars=i,SAScii = TRUE, 
+                 heads.only =TRUE,sample="SRC",verbose=TRUE,
+                 design="all")
+  save(d,file="~/psid_no_wealth.RData")
+}
+}
 
 # ######################################
 # reproducible example on artifical data. 

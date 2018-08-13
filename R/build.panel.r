@@ -29,39 +29,48 @@
 #' # ################################################
 #' # Real-world example: not run because takes long.
 #' # Build panel with income, wage, age and education
+#' # optionally: add wealth supplements!
 #' # ################################################
 #' 
 #' # The package is installed with a list of variables
 #' # Alternatively, search for names with \code{\link{getNamesPSID}}
+#' # This is the body of function build.psid()
+#' # (so why not call build.psid() and see what happens!)
 #' r = system.file(package="psidR")
-#' f = fread(file.path(r,"psid-lists","famvars.txt"))
-#' i = fread(file.path(r,"psid-lists","indvars.txt"))
-#' 
-#' f[1:38,vgroup := "wage"]
-#' f[39:76,vgroup := "earnings"]
-#' setkey(f,vgroup)
-#' 
-#' i[1:38, vgroup := "age"]
-#' i[39:76, vgroup := "educ"]  # caution about 2 first years: no educ data
-#' i[77:114, vgroup := "weight"]
-#' setkey(i,vgroup)
-#' 
-#' ind = cbind(i[J("age"),list(year,age=variable)],
-#' 			   i[J("educ"),list(educ=variable)],
-#' 			   i[J("weight"),list(weight=variable)])
-#' fam = cbind(f[J("wage"),list(year,wage=variable)],
-#' 			   f[J("earnings"),list(earnings=variable)])
-#' 
-#' # caution: this step will take many hours
-#' d = build.panel(datadir="~/data",
-#'                 fam.vars=fam,
-#' 				   ind.vars=ind,
-#'                 SAScii = TRUE, 
-#'                 heads.only = TRUE,
-#'                 sample="SRC",
-#'                 design=2)
-#' } 
-#' 
+#' if (small){
+#'   f = fread(file.path(r,"psid-lists","famvars-small.txt"))
+#'   i = fread(file.path(r,"psid-lists","indvars-small.txt"))
+#'   if (wealth){
+#'     w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
+#'   }
+#' } else {
+#'   f = fread(file.path(r,"psid-lists","famvars.txt"))
+#'   i = fread(file.path(r,"psid-lists","indvars.txt"))
+#'   if (wealth){
+#'     w = fread(file.path(r,"psid-lists","wealthvars.txt"))
+#'   }
+#' }
+#' setkey(i,"name")
+#' setkey(f,"name")
+#' if (wealth) setkey(w,"name")
+#' i = dcast(i[,list(year,name,variable)],year~name)
+#' f = dcast(f[,list(year,name,variable)],year~name)
+#' if (wealth) {
+#'   w = dcast(w[,list(year,name,variable)],year~name)
+#'   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
+#'                  ind.vars=i,wealth.vars=w,SAScii = TRUE, 
+#'                  heads.only =TRUE,sample="SRC",verbose=TRUE,
+#'                  design="all")
+#'   save(d,file="~/psid_wealth.RData")
+#' } else {
+#'   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
+#'                  ind.vars=i,SAScii = TRUE, 
+#'                  heads.only =TRUE,sample="SRC",verbose=TRUE,
+#'                  design="all")
+#'   save(d,file="~/psid_no_wealth.RData")
+#' }
+#' }
+#'
 #' # ######################################
 #' # reproducible example on artifical data. 
 #' # run this with example(build.panel).
@@ -133,6 +142,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 	
 
 	# locally bind all variables to be used in a data.table
+	# or R CMD CHECK complains.
 
 	interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- ind.seq <- NULL
 
@@ -207,6 +217,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 			    }
   			} else {
   			  wlth.down = TRUE
+  			  cat('All Wealth files already downloaded. \n')
+  			  
   			  # saying we already downloaded even if we didn't look for wealth vars.
   			}
 			
@@ -221,7 +233,17 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 		if (all(all(families.down),ind.down,all(wlth.down))) {
 			cat("everything already downloaded. Build dataset now.\n")
 		} else {
-			cat("Will download missing datasets now.\n")
+			cat("Will download missing datasets now:\n")
+			if (!all(families.down)) {
+				cat("will download: \n",family[!families.down,"year"],'\n')
+			} 
+			if (!ind.down) {
+				cat("will download: IND2015ER \n")
+			} 
+			if (!wlth.down) {
+				cat("will download missing wealth files. \n")
+			}
+
 	    	confirm <- readline("This can take several hours/days to download.\n want to go ahead? give me 'yes' or 'no'.")
 			if (confirm=="yes"){
 
@@ -703,10 +725,11 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,SAS
 #' 
 #' @description Builds a panel from the full PSID dataset
 #' @export
+#' @param datadr string of the data directory
 #' @param small logical TRUE if only use years 2013 and 2015.
 #' @param wealth logical TRUE if want to use wealth supplements
 #' @return a data.table with panel data
-build.psid <- function(small=TRUE,wealth=FALSE){
+build.psid <- function(datadr="~/datasets/psid/",small=TRUE,wealth=FALSE){
   variable <- name <- NULL
   r = system.file(package="psidR")
   if (small){
@@ -732,10 +755,10 @@ build.psid <- function(small=TRUE,wealth=FALSE){
   f = dcast(f[,list(year,name,variable)],year~name)
   if (wealth) {
     w = dcast(w[,list(year,name,variable)],year~name)
-    d = build.panel(datadir="~/datasets/psid/",fam.vars=f,ind.vars=i,wealth.vars=w,SAScii = TRUE, heads.only = TRUE,sample="SRC",verbose=TRUE,design="all")
+    d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i,wealth.vars=w,SAScii = TRUE, heads.only = TRUE,sample="SRC",verbose=TRUE,design="all")
     save(d,file="~/psid_wealth.RData")
   } else {
-    d = build.panel(datadir="~/datasets/psid/",fam.vars=f,ind.vars=i,SAScii = TRUE, heads.only = TRUE,sample="SRC",verbose=TRUE,design="all")
+    d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i,SAScii = TRUE, heads.only = TRUE,sample="SRC",verbose=TRUE,design="all")
     save(d,file="~/psid_no_wealth.RData")
   }
 	return(d$data)

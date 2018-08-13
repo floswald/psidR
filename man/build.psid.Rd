@@ -4,9 +4,11 @@
 \alias{build.psid}
 \title{Build example PSID}
 \usage{
-build.psid(small = TRUE, wealth = FALSE)
+build.psid(datadr = "~/datasets/psid/", small = TRUE, wealth = FALSE)
 }
 \arguments{
+\item{datadr}{string of the data directory}
+
 \item{small}{logical TRUE if only use years 2013 and 2015.}
 
 \item{wealth}{logical TRUE if want to use wealth supplements}
