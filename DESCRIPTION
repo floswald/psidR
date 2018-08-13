@@ -29,7 +29,6 @@ Collate:
     'build.panel.r'
     'makeids.r'
     'psidR-package.r'
-    'get.variable.names.r'
 Suggests:
     testthat
 RoxygenNote: 6.0.1
