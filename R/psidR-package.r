@@ -9,8 +9,7 @@
 #' @import SAScii 
 #' @import RCurl
 #' @import foreign
-#' @import httr
-#' @import XML
+#' @import futile.logger
 #' @importFrom openxlsx read.xlsx
 #' @importFrom stats rlnorm rnorm runif
 #' @importFrom utils object.size tail unzip

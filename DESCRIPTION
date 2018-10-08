@@ -23,7 +23,8 @@ Imports:
     SAScii,
     httr,
     XML,
-    openxlsx
+    openxlsx,
+    futile.logger
 License: GPL-3
 Collate:
     'build.panel.r'
@@ -31,4 +32,4 @@ Collate:
     'psidR-package.r'
 Suggests:
     testthat
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

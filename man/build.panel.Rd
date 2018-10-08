@@ -4,9 +4,9 @@
 \alias{build.panel}
 \title{build.panel: Build PSID panel data set}
 \usage{
-build.panel(datadir = NULL, fam.vars, ind.vars = NULL, wealth.vars = NULL,
-  SAScii = FALSE, heads.only = FALSE, current.heads.only = FALSE,
-  sample = NULL, design = "balanced", verbose = FALSE)
+build.panel(datadir = NULL, fam.vars, ind.vars = NULL,
+  wealth.vars = NULL, heads.only = FALSE, current.heads.only = FALSE,
+  sample = NULL, design = "balanced", loglevel = INFO)
 }
 \arguments{
 \item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported. Recommended usage is to specify \code{datadir}.}
@@ -17,8 +17,6 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, wealth.vars = NULL,
 
 \item{wealth.vars}{data.frame of variables to get from the wealth supplement files.}
 
-\item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time, but downloads only once if you specify \code{datadir}.}
-
 \item{heads.only}{logical TRUE if user wants household heads only. Household heads in sample year.}
 
 \item{current.heads.only}{logical TRUE if user wants current household heads only. Distinguishes mover outs heads.}
@@ -26,6 +24,8 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL, wealth.vars = NULL,
 \item{sample}{string indicating which sample to select: "SRC" (survey research center), "SEO" (survey for economic opportunity), "immigrant" (immigrant sample), "latino" (Latino family sample). Defaults to NULL, so no subsetting takes place.}
 
 \item{design}{either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.}
+
+\item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time, but downloads only once if you specify \code{datadir}.}
 
 \item{verbose}{logical TRUE if you want verbose output.}
 }
@@ -77,13 +77,13 @@ f = dcast(f[,list(year,name,variable)],year~name)
 if (wealth) {
   w = dcast(w[,list(year,name,variable)],year~name)
   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
-                 ind.vars=i,wealth.vars=w,SAScii = TRUE, 
+                 ind.vars=i,wealth.vars=w, 
                  heads.only =TRUE,sample="SRC",verbose=TRUE,
                  design="all")
   save(d,file="~/psid_wealth.RData")
 } else {
   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
-                 ind.vars=i,SAScii = TRUE, 
+                 ind.vars=i, 
                  heads.only =TRUE,sample="SRC",verbose=TRUE,
                  design="all")
   save(d,file="~/psid_no_wealth.RData")
