@@ -420,8 +420,9 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		# ------------------------------------------------
 		# check for NA in ind.vars: these are years when a certain variable isn not available in the individual index file.
 		# adjust for first year (1968) when `sequence` was not available
-		ind.nas <- subset(ind.vars.yr,select=names(ind.vars.yr)[is.na(ind.vars.yr)])
-		yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter,as.character(subset(ind.vars.yr,select=names(ind.vars.yr)[!is.na(ind.vars.yr)])))),with=FALSE])	
+		ind.nas <- ind.vars.yr[,list(names(ind.vars.yr)[is.na(ind.vars.yr)])]
+		# ind.nas <- subset(ind.vars.yr,select=names(ind.vars.yr)[is.na(ind.vars.yr)])
+		yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter,as.character(ind.vars.yr[,list(names(ind.vars.yr)[!is.na(ind.vars.yr)])]))),with=FALSE])	
 		# add NA columns
 		if (length(ind.nas)>0){
 		    yind[,(names(ind.nas)) := NA]
