@@ -191,7 +191,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	for ( i in 1:nrow( family )) {
 		if ((paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf) | (paste0("FAM" , family[ i , 'year' ], "ER.RData") %in% lf)) {
 			families.down[i] <- TRUE
-			flog.info('found ',paste0("FAM" , family[ i , 'year' ], "ER.rda"), 'already downloaded')
+			flog.info('found %s already downloaded',paste0("FAM" , family[ i , 'year' ], "ER.rda"))
 		}
 	}
 
@@ -340,13 +340,12 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	load(file=ind.file,envir=tmp.env)
 	ind      <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
 	setnames(ind,names(ind), sapply(names(ind), toupper))	## convert all column names to uppercase
-	ind.dict <- NULL
 	ind      <- data.table(ind)
 	
 
 	flog.info('psidR: loaded individual file: %s',ind.file)
 	vvs = ceiling(object.size(ind)/1024^2)
-	flog.info("psidR: total memory load in MB: %f",as.numeric(vvs))
+	flog.info("psidR: total memory load in MB: %d",as.numeric(vvs))
 
 	# output data.tables
 	datas <- vector("list",length(years))
@@ -381,8 +380,6 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		wealth.vars[,interview := w_ids[wealth.vars][,interview]]
 	}
 
-
-	
 	# which vars to keep from ind.files?
 	if (!is.null(ind.vars))	stopifnot(is.list(ind.vars))
 
@@ -393,7 +390,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	for (iy in 1:length(years)){
 		
 		
-	  flog.info('')
+		flog.info('')
 		flog.info('psidR: currently working on data for year %d',years[iy])
 		
  
@@ -401,10 +398,10 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		# subset only if requested.
 		curr <- ids[list(years[iy])]
 		if (years[iy] == 1968){
-		  # there is no sequence variable
-		  ind.subsetter <- as.character(curr[,list(ind.interview,ind.head)])	# keep from ind file
+			# there is no sequence variable
+			ind.subsetter <- as.character(curr[,list(ind.interview,ind.head)])	# keep from ind file
 		} else {
-		  ind.subsetter <- as.character(curr[,list(ind.interview,ind.seq,ind.head)])	# keep from ind file
+			ind.subsetter <- as.character(curr[,list(ind.interview,ind.seq,ind.head)])	# keep from ind file
 		}
 		def.subsetter <- c("ER30001","ER30002")	# must keep those in all years
 
@@ -414,24 +411,39 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		# the default column order is: 
 		# "ER30001","ER30002", "current year interview var", "current year sequence number", "current year head indicator"
 		# get a character vector from ind.vars with variable names for this year
-		ind.vars.yr <- ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE]
+		ind.nas <- NULL
+		if (!is.null(ind.vars)){
+			ind.vars.yr <- ind.vars[list(years[iy]),which(names(ind.vars)!="year"),with=FALSE]
+			flog.debug("ind.vars.yr:",ind.vars.yr,capture=TRUE)
 
-		# issue https://github.com/floswald/psidR/issues/4
-		# ------------------------------------------------
-		# check for NA in ind.vars: these are years when a certain variable isn not available in the individual index file.
-		# adjust for first year (1968) when `sequence` was not available
-		ind.nas <- ind.vars.yr[,list(names(ind.vars.yr)[is.na(ind.vars.yr)])]
-		# ind.nas <- subset(ind.vars.yr,select=names(ind.vars.yr)[is.na(ind.vars.yr)])
-		yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter,as.character(ind.vars.yr[,list(names(ind.vars.yr)[!is.na(ind.vars.yr)])]))),with=FALSE])	
-		# add NA columns
-		if (length(ind.nas)>0){
-		    yind[,(names(ind.nas)) := NA]
+			# issue https://github.com/floswald/psidR/issues/4
+			# ------------------------------------------------
+			# check for NA in ind.vars: these are years when a certain variable isn not available in the individual index file.
+			# adjust for first year (1968) when `sequence` was not available
+			ind.notnas <- NULL
+			if (any(is.na(ind.vars.yr))){
+				ind.nas <- ind.vars.yr[,which(is.na(ind.vars.yr)),with=FALSE]
+				flog.debug("ind.nas:",ind.nas,capture=TRUE)
+			}
+			if (any(!is.na(ind.vars.yr))){
+				ind.notnas <- ind.vars.yr[,which(!is.na(ind.vars.yr)),with=FALSE]
+				flog.debug("ind.notnas:",ind.notnas,capture=TRUE)
+				yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter,as.character(ind.notnas))),with=FALSE])	
+			} else {
+				yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter)),with=FALSE])	
+			}
+			# add NA columns
+			if (!is.null(ind.nas)){
+			    yind[,(as.character(ind.nas)) := NA]
+			}
+		} else {
+			yind <- copy(ind[,c(def.subsetter,c(ind.subsetter)),with=FALSE])	
 		}
+
 		if (years[iy]==1968){
 		    yind[,sequence := NA]
 		    setcolorder(yind,c(1:3,ncol(yind),4:(ncol(yind)-1)))
 		}
-
 
     
     	# sample selection
@@ -476,17 +488,15 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		# otherwise a head who died between last and this wave is still head, so there would be two heads in that family.
 		# https://psidonline.isr.umich.edu/Guide/FAQ.aspx?Type=ALL#150
 		if (current.heads.only) {
-		   n    <- nrow(yind)
-		   if (years[iy]==1968){
-		     yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num])]
-		   } else {
-		     yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]) & (yind[,curr[,ind.seq],with=FALSE]== 1)]
-		   }
-		   yind <- copy(yind[headyes==TRUE])
-		  
-		   flog.info('dropping non-current-heads leaves %d obs',nrow(yind))
-		  
-		   yind[,headyes := NULL]
+			n    <- nrow(yind)
+			if (years[iy]==1968){
+				yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num])]
+			} else {
+				yind <- yind[,headyes := (yind[,curr[,ind.head],with=FALSE]==curr[,ind.head.num]) & (yind[,curr[,ind.seq],with=FALSE]== 1)]
+			}
+			yind <- copy(yind[headyes==TRUE])
+			flog.info('dropping non-current-heads leaves %d obs',nrow(yind))
+			yind[,headyes := NULL]
 		} else if (heads.only){
 			# https://psidonline.isr.umich.edu/Guide/FAQ.aspx?Type=ALL#250
 			# To create a single year Head/Wife file: 
@@ -508,7 +518,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 
 		
 
-		if (length(ind.nas)>0){
+		if (!is.null(ind.nas)){
 		    setnames(yind,c("ID1968","pernum","interview","sequence","relation.head",
 		                  (names(ind.vars)[-1])[-which(names(ind.vars)[-1] %in% names(ind.nas))],
 		                  names(ind.nas)))  
@@ -530,10 +540,9 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		tmp             <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
 		tmp             <- data.table(tmp)
 		
-		vs = ceiling(object.size(tmp))
-		print(vs,units="Mb")
+		vs = ceiling(object.size(tmp)/1024^2)
 		flog.debug('loaded family file: ',fam.dat[iy])
-		flog.debug('current memory load in MB: %f',print(vs,units="Mb"))
+		flog.debug('current memory load in MB: %d',vs)
 
 
 
@@ -579,20 +588,24 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 			   	load(file=iw,envir=tmp.env)
 				tmp             <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
 				tmp             <- data.table(tmp)
+				flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
 			
 				# convert all variable names to lower case in both fam.vars and data file
 				curvars <- wealth.vars[list(years[iy]),which(names(wealth.vars)!="year"),with=FALSE]
-				tmpnms = tolower(as.character(curvars))
-				for (i in 1:length(tmpnms)){
-					curvars[[i]] <- tmpnms[i]
-				}
+				flog.debug("wealth curvars: ",curvars,capture=TRUE)
+				curvars[,name := tolower(name)]
+				curvars[,variable := tolower(variable)]
+				curvars[,interview := tolower(interview)]
+
 				setnames(tmp,tolower(names(tmp)))
+				flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
 			
-				curnames <- names(curvars)
 				# current set of variables
-				codes <- as.character(curvars)
+				codes <- c(curvars[,variable],curvars[,interview][[1]])
+				flog.debug("wealth codes: ",codes,capture=TRUE)
 				tmp   <- copy(tmp[,codes,with=FALSE])
-				setnames(tmp,curnames)
+				setnames(tmp,c(curvars[,name],"interview"))
+				flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
 				setkey(tmp,interview)
 				
 				# merge m and wealthfile
@@ -611,7 +624,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		datas[[iy]] <- copy(m)
 
 
-	}
+	}  # end year
 	
 	data2 <- rbindlist(datas,use.names=TRUE,fill=TRUE)	# glue together
 	rm(datas)
@@ -645,11 +658,58 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	return(data2)
 }
 
-small.test <- function(){
+
+small.test.noind <- function(dd=NULL){
+ 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+ 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
+ 	famvars = data.frame(year=c(2003),age=head_age_var_name)
+ 	build.panel(fam.vars=famvars,datadir=dd)
+}
+
+small.test.ind <- function(dd=NULL){
+ 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+ 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
+ 	educ = getNamesPSID("ER30323",cwf,years=2003)
+ 	famvars = data.frame(year=c(2003),age=head_age_var_name)
+ 	indvars = data.frame(year=c(2003),educ=educ)
+ 	build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
+}
+medium.test.ind <- function(dd=NULL){
+	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
+ 	educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
+	famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
+	indvars = data.frame(year=c(2003,2005,2007),educ=educ)
+	build.panel(fam.vars=famvars,datadir=dd)
+}
+
+medium.test.noind <- function(dd=NULL){
   cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
-  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
-  famvars = data.frame(year=2003,age=head_age_var_name)
-  build.panel(fam.vars=famvars,datadir=NULL,loglevel = DEBUG)
+  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
+  famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
+  build.panel(fam.vars=famvars,datadir=dd)
+}
+
+medium.test.ind.NA <- function(dd=NULL){
+	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
+ 	educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
+ 	educ[2] = NA
+	famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
+	indvars = data.frame(year=c(2003,2005,2007),educ=educ)
+	build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd,loglevel = DEBUG)
+}
+
+medium.test.ind.NA.wealth <- function(dd=NULL){
+	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2005,2007))
+ 	educ = getNamesPSID("ER30323",cwf,years=c(2005,2007))
+ 	educ[2] = NA
+	r = system.file(package="psidR")
+    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
+	famvars = data.frame(year=c(2005,2007),age=head_age_var_name)
+	indvars = data.frame(year=c(2005,2007),educ=educ)
+	build.panel(fam.vars=famvars,ind.vars=indvars,wealth.vars=w,datadir=dd,loglevel = DEBUG)
 }
 
 
@@ -744,7 +804,7 @@ getNamesPSID <- function(aname, cwf, years = NULL){
         yearkeep <- paste0("Y", years)
         yearkeep <- yearkeep[yearkeep %in% colnames(cwf)]
     }
-    ovalue <- cwf[myvar[1], yearkeep, drop = FALSE]
-    ovalue
+    ovalue <- transpose(cwf[myvar[1], yearkeep, drop = FALSE])
+    ovalue$V1
 }
 
