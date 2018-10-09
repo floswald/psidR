@@ -175,6 +175,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	# data acquisition
 	# ----------------
 	lf = list.files(datadir)
+	flog.debug("datadir contains: ",lf,capture=TRUE)
 
 	wlth.down <- TRUE  # initiate to something
 
@@ -188,7 +189,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 
 	families.down <- rep(FALSE,nrow(family))
 	for ( i in 1:nrow( family )) {
-		if ((paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf)) {
+		if ((paste0("FAM" , family[ i , 'year' ], "ER.rda") %in% lf) | (paste0("FAM" , family[ i , 'year' ], "ER.RData") %in% lf)) {
 			families.down[i] <- TRUE
 			flog.info('found ',paste0("FAM" , family[ i , 'year' ], "ER.rda"), 'already downloaded')
 		}
@@ -204,16 +205,16 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		if ( nrow(wlth) > 0 ){
 		  wlth.down <- rep(FALSE,nrow(wlth))
 		    for ( i in 1:nrow( wlth )) {
-		      if ((paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda") %in% lf)) {
+		      if ((paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda") %in% lf) | (paste0("WEALTH" , wlth[ i , 'year' ], "ER.RData") %in% lf)) {
 		        wlth.down[i] <- TRUE
-		        cat('found ',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"), 'already downloaded \n')
+		        flog.info('found %s already downloaded',paste0("WEALTH" , wlth[ i , 'year' ]))
 		      } else {
-		        cat('will download as ',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"), '\n')
+		        flog.info('will download as %s',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"))
 		      }
 		    }
 			} else {
 			  wlth.down = TRUE
-			  cat('All Wealth files already downloaded. \n')
+			  flog.info('All Wealth files already downloaded')
 			  
 			  # saying we already downloaded even if we didn't look for wealth vars.
 			}
@@ -222,7 +223,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 
 	ind.down <- FALSE
 	# check if datadir contains individual index already
-	if (("IND2015ER.rda" %in% lf)) {
+	if (("IND2015ER.rda" %in% lf) | ("IND2015ER.RData" %in% lf)) {
 		#download latest individual index
 		ind.down = TRUE
 	}
@@ -526,7 +527,6 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		rm(list=ls(envir=tmp.env),envir=tmp.env)
 	   	load(file=fam.dat[iy],envir=tmp.env)
 		tmp             <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
-		fam.dicts[[iy]] <- NULL
 		tmp             <- data.table(tmp)
 		
 		vs = ceiling(object.size(tmp))
@@ -580,9 +580,6 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 				tmp             <- data.table(tmp)
 			
 				# convert all variable names to lower case in both fam.vars and data file
-				if (verbose) {
-					print(wealth.vars)
-				}
 				curvars <- wealth.vars[list(years[iy]),which(names(wealth.vars)!="year"),with=FALSE]
 				tmpnms = tolower(as.character(curvars))
 				for (i in 1:length(tmpnms)){

@@ -9,7 +9,7 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL,
   sample = NULL, design = "balanced", loglevel = INFO)
 }
 \arguments{
-\item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.xyz") and individual file ("IND2009ER.xyz") in admissible formats .xyz. Admissible are .dta, .csv, .RData, .rda. Please follow naming convention. Only .dta version <= 12 supported. Recommended usage is to specify \code{datadir}.}
+\item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.RData") and individual file ("IND2009ER.RData").}
 
 \item{fam.vars}{data.frame of variable to retrieve from family files. Can contain see example for required format.}
 
@@ -25,9 +25,7 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL,
 
 \item{design}{either character \emph{balanced} or \emph{all} or integer. \emph{balanced} means only individuals who appear in each wave are considered. \emph{All} means all are taken. An integer value stands for minimum consecutive years of participation, i.e. design=3 means present in at least 3 consecutive waves.}
 
-\item{SAScii}{logical TRUE if you want to directly download data into Rda format (no dependency on STATA/SAS/SPSS). may take a long time, but downloads only once if you specify \code{datadir}.}
-
-\item{verbose}{logical TRUE if you want verbose output.}
+\item{loglevel}{one of INFO, WARN and DEBUG. INFO by default.}
 }
 \value{
 \item{data}{resulting \code{data.table}. the variable \code{pid} is the unique person identifier, constructed from ID1968 and pernum.}
@@ -78,13 +76,13 @@ if (wealth) {
   w = dcast(w[,list(year,name,variable)],year~name)
   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
                  ind.vars=i,wealth.vars=w, 
-                 heads.only =TRUE,sample="SRC",verbose=TRUE,
+                 heads.only =TRUE,sample="SRC",
                  design="all")
   save(d,file="~/psid_wealth.RData")
 } else {
   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
                  ind.vars=i, 
-                 heads.only =TRUE,sample="SRC",verbose=TRUE,
+                 heads.only =TRUE,sample="SRC",
                  design="all")
   save(d,file="~/psid_no_wealth.RData")
 }
@@ -98,7 +96,7 @@ if (wealth) {
 ## make reproducible family data sets for 2 years
 ## variables are: family income (Money) and age
 
-## Data acquisition step: you download data or
+## Data acquisition step:
 ## run build.panel with sascii=TRUE
 
 # testPSID creates artifical PSID data
@@ -130,14 +128,14 @@ indvars <- data.frame(year=c(1985,1986),ind.weight=c("ER30497","ER30534"))
 
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
                  ind.vars=indvars,
-                 heads.only=FALSE,verbose=TRUE)	
+                 heads.only=FALSE)	
 
 # see what happens if we drop non-heads
 # only the ones who are heads in BOTH years 
 # are present (since design='balanced' by default)
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
                  ind.vars=indvars,
-                 heads.only=TRUE,verbose=FALSE)	
+                 heads.only=TRUE)	
 print(d$data[order(pid)],nrow=Inf)
 
 # change sample design to "all": 
@@ -145,7 +143,7 @@ print(d$data[order(pid)],nrow=Inf)
 # and drop in the other
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
                  ind.vars=indvars,heads.only=TRUE,
-                 verbose=FALSE,design="all")	
+                 design="all")	
 print(d$data[order(pid)],nrow=Inf)
 
 file.remove(paste0(my.dir,"/FAM1985ER.rda"),
