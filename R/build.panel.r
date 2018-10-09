@@ -118,7 +118,7 @@
 #' d <- build.panel(datadir=my.dir,fam.vars=famvars,
 #'                  ind.vars=indvars,
 #'                  heads.only=TRUE)	
-#' print(d$data[order(pid)],nrow=Inf)
+#' print(d[order(pid)],nrow=Inf)
 #' 
 #' # change sample design to "all": 
 #' # we'll keep individuals if they are head in one year,
@@ -126,7 +126,7 @@
 #' d <- build.panel(datadir=my.dir,fam.vars=famvars,
 #'                  ind.vars=indvars,heads.only=TRUE,
 #'                  design="all")	
-#' print(d$data[order(pid)],nrow=Inf)
+#' print(d[order(pid)],nrow=Inf)
 #' 
 #' file.remove(paste0(my.dir,"/FAM1985ER.rda"),
 #'             paste0(my.dir,"/FAM1986ER.RData"),
@@ -228,17 +228,17 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		ind.down = TRUE
 	}
 	if (all(all(families.down),ind.down,all(wlth.down))) {
-		cat("everything already downloaded. Build dataset now.\n")
+		flog.info("everything already downloaded. Build dataset now")
 	} else {
-		cat("Will download missing datasets now:\n")
+		flog.info("Will download missing datasets now")
 		if (!all(families.down)) {
-			cat("will download family files: \n",family[!families.down,"year"],'\n')
+			flog.info("will download family files: %s",family[!families.down,"year"])
 		} 
 		if (!ind.down) {
-			cat("will download: IND2015ER \n")
+			flog.info("will download: IND2015ER")
 		} 
 		if (!wlth.down) {
-			cat("will download missing wealth files. \n")
+			flog.info("will download missing wealth files.")
 		}
 
     	confirm <- readline("This can take several hours/days to download.\n want to go ahead? give me 'yes' or 'no'.")
@@ -692,7 +692,7 @@ build.psid <- function(datadr="~/datasets/psid/",small=TRUE,wealth=FALSE){
     d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
     save(d,file="~/psid_no_wealth.RData")
   }
-	return(d$data)
+	return(d)
 }
 
 

@@ -136,7 +136,7 @@ d <- build.panel(datadir=my.dir,fam.vars=famvars,
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
                  ind.vars=indvars,
                  heads.only=TRUE)	
-print(d$data[order(pid)],nrow=Inf)
+print(d[order(pid)],nrow=Inf)
 
 # change sample design to "all": 
 # we'll keep individuals if they are head in one year,
@@ -144,7 +144,7 @@ print(d$data[order(pid)],nrow=Inf)
 d <- build.panel(datadir=my.dir,fam.vars=famvars,
                  ind.vars=indvars,heads.only=TRUE,
                  design="all")	
-print(d$data[order(pid)],nrow=Inf)
+print(d[order(pid)],nrow=Inf)
 
 file.remove(paste0(my.dir,"/FAM1985ER.rda"),
             paste0(my.dir,"/FAM1986ER.RData"),
