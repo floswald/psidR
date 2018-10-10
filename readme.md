@@ -66,7 +66,7 @@ build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 medium.test.noind()
 
 INFO [2018-10-10 10:58:23] Will download missing datasets now
-INFO [2018-10-10 10:58:23] will download family files: 2003
+INFO [2018-10-10 10:58:23] will download family files: 2003, 2005, 2007
 This can take several hours/days to download.
  want to go ahead? give me 'yes' or 'no'.yes
 please enter your PSID username: *******
