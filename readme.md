@@ -226,46 +226,23 @@ require(psidR)
 example(build.panel)
 ```
 
-#### Usage Outline
-
-Suppose the user wants to have a panel with variables "house value", "total income" and "education" covering years 2001 and 2003. Steps 1 and 2 are relevant only for **option 1**, **option 2** requires only step 3 and 4:
-
-1. Download the zipped family files and cross-period individual files from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx), best into the same folder. This folder will be the function argument `datadir`.
-2. inside each downloaded folder, run the stata, sas or spss routine that comes with it. Fixes the text file up into a rectangular dataset. Save the data as either .dta or .csv. The default of the package requires that you use file names **FAMyyyy.dta** and **IND2009ER.dta** (case sensitive). 
-3. Supply a data.frame **fam.vars** which contains the variable names for each wave from the family file.
-4. Supply a data.frame **ind.vars** which contains the variable names for each wave from the individual index file.
-
-```r
-myvars <- data.frame(year=c(2001,2003),
-                       house.value=c("ER17044","ER21043"),
-                       total.income=c("ER20456","ER24099"),
-                       education=c("ER20457","ER24148"))
-indvars1 = data.frame(year=c(2001,2003),longitud.wgt=c("ER33637","ER33740"))
-```
-
-5. call the function, with `SAScii=TRUE` or `SAScii=FALSE` depending on your choice:
-
-```r
-option.1 <- build.panel(datadir=mydir,fam.vars=myvars,ind.vars=indvars,SAScii=FALSE)
-option.2 <- build.panel(datadir=mydir,fam.vars=myvars,ind.vars=indvars,SAScii=TRUE)
-```
-
-
-Stata users may recognize this syntax from module [psiduse](http://ideas.repec.org/c/boc/bocode/s457040.html), which is similar. The names are up to you ("house.value" is your choice), but the rest is not, i.e. there must be a column "year". Notice if you knew house.value was missing in year 2001, you could account for that with 
-
-```r
-fam.vars <- data.frame(year=c(2001,2003),
-                       house.value=c(NA,"ER21043"),
-                       total.income=c("ER20456","ER24099"),
-                       education=c("ER20457","ER24148"))
-```
-
-The function will then keep NA as the value of the variable in year 2001 and you can fix this later on. This functionality was needed because NAs have a generic meaning, i.e. a person who does not participate in a given year is kept in the register, but has no replies in the family file, so has NA in all variables of the family file after merging.
-
-
 ### Supplemental Datasets
 
-The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. 
+The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset:
+
+```R
+medium.test.ind.NA.wealth <- function(dd=NULL){
+    cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+    head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2005,2007))
+    educ = getNamesPSID("ER30323",cwf,years=c(2005,2007))
+    educ[2] = NA
+    r = system.file(package="psidR")
+    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
+    famvars = data.frame(year=c(2005,2007),age=head_age_var_name)
+    indvars = data.frame(year=c(2005,2007),educ=educ)
+    build.panel(fam.vars=famvars,ind.vars=indvars,wealth.vars=w,datadir=dd,loglevel = DEBUG)
+}
+```
 
 ### Additional Info
 
