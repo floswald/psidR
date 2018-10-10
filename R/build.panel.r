@@ -232,7 +232,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	} else {
 		flog.info("Will download missing datasets now")
 		if (!all(families.down)) {
-			flog.info("will download family files: %s",family[!families.down,"year"])
+			flog.info("will download family files: ",family[!families.down,"year"],capture=TRUE)
 		} 
 		if (!ind.down) {
 			flog.info("will download: IND2015ER")
