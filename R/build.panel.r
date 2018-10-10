@@ -686,7 +686,7 @@ medium.test.ind <- function(dd=NULL){
  	educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
 	famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
 	indvars = data.frame(year=c(2003,2005,2007),educ=educ)
-	build.panel(fam.vars=famvars,datadir=dd)
+	build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 }
 
 #' three year test, no ind file
