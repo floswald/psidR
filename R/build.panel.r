@@ -232,7 +232,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	} else {
 		flog.info("Will download missing datasets now")
 		if (!all(families.down)) {
-			flog.info("will download family files: ",family[!families.down,"year"],capture=TRUE)
+			flog.info("will download family files: %s",paste(family[!families.down,"year"],collapse=", "))
 		} 
 		if (!ind.down) {
 			flog.info("will download: IND2015ER")
@@ -389,9 +389,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	# loop over years
 	for (iy in 1:length(years)){
 		
-		
-		flog.info('')
-		flog.info('psidR: currently working on data for year %d',years[iy])
+			flog.info('psidR: currently working on data for year %d',years[iy])
 		
  
    		# keeping only relevant columns from individual file
