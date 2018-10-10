@@ -17,4 +17,4 @@ setkey(i,vgroup)
 ind = cbind(i[J("age"),list(year,age=variable)],i[J("educ"),list(educ=variable)],i[J("weight"),list(weight=variable)])
 fam = cbind(f[J("wage"),list(year,wage=variable)],f[J("earnings"),list(earnings=variable)])
 
-d = build.panel(fam.vars=fam,ind.vars=ind,SAScii = TRUE, heads.only = TRUE,sample="SRC",design=2)
+d = build.panel(fam.vars=fam,ind.vars=ind,heads.only = TRUE,sample="SRC",design=2)

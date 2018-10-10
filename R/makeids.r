@@ -110,14 +110,14 @@ get.psid <- function( file , name , params , curl ){
 	
 		tf <- tempfile() ; td <- tempdir()
 		
-		cat('downloading file ',name,'\n')
+		flog.info('downloading file %s',name)
 		file <- getBinaryURL( paste0( "http://simba.isr.umich.edu/Zips/GetFile.aspx?file=" , file ) , curl = curl )
 		writeBin( file , tf )
 		z <- unzip( tf , exdir = td )
 		fn <- z[ grepl( ".txt" , tolower( z ) , fixed = TRUE ) & ! grepl( "_vdm|readme|doc|errata" , tolower( z ) ) ]
 		sas_ri <- z[ grepl( '.sas' , z , fixed = TRUE ) ]
 
-		cat('now reading and processing SAS file',name,'into R\n')
+		flog.info('now reading and processing SAS file %s into R',name)
 
 		#SAScii version check SAScii_fork
 		# if (!exists("SAScii_fork",mode="function")){

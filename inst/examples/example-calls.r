@@ -56,6 +56,6 @@ famvars4 = data.frame(year=c(2001,2003),
                       total.income=c("ER20456","ER24099"),
                       education=c("ER20457","ER24148"))
 d <- build.panel(datadir="~/datasets/PSID/from-SAS/",
-                 fam.vars=famvars4,design="all",SAScii=TRUE)	
+                 fam.vars=famvars4,design="all")	
                  # will store .rda dataframes into datadir
 } 

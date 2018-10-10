@@ -1,13 +1,12 @@
 Package: psidR
 Type: Package
 Title: Build Panel Data Sets from PSID Raw Data
-Version: 1.5
-Date: 2018-04-20
+Version: 1.7
+Date: 2018-10-09
 Author: Florian Oswald
 Maintainer: Florian Oswald <florian.oswald@gmail.com>
 Description: Makes it easy to build panel data in wide format from Panel Survey
-    of Income Dynamics ('PSID') delivered raw data. Deals with data downloaded and
-    pre-processed by 'Stata' or 'SAS', or can optionally download directly from
+    of Income Dynamics ('PSID') delivered raw data. Downloads data directly from
     the PSID server using the 'SAScii' package. 'psidR' takes care of merging
     data from each wave onto a cross-period index file, so that individuals can be
     followed over time. The user must specify which years they are interested in,
@@ -21,9 +20,8 @@ Imports:
     RCurl,
     foreign,
     SAScii,
-    httr,
-    XML,
-    openxlsx
+    openxlsx,
+    futile.logger
 License: GPL-3
 Collate:
     'build.panel.r'
@@ -31,4 +29,4 @@ Collate:
     'psidR-package.r'
 Suggests:
     testthat
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
