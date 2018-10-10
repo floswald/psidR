@@ -659,6 +659,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 }
 
 #' one year test, no ind file
+#' 
+#' @param dd Data Dictionary location
 #' @export
 small.test.noind <- function(dd=NULL){
  	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
@@ -668,6 +670,8 @@ small.test.noind <- function(dd=NULL){
 }
 
 #' one year test, ind file
+#' 
+#' @param dd Data Dictionary location
 #' @export
 small.test.ind <- function(dd=NULL){
  	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
@@ -679,6 +683,8 @@ small.test.ind <- function(dd=NULL){
 }
 
 #' three year test, ind file
+#' 
+#' @param dd Data Dictionary location
 #' @export
 medium.test.ind <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
@@ -690,6 +696,8 @@ medium.test.ind <- function(dd=NULL){
 }
 
 #' three year test, no ind file
+#' 
+#' @param dd Data Dictionary location
 #' @export
 medium.test.noind <- function(dd=NULL){
   cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
@@ -699,6 +707,8 @@ medium.test.noind <- function(dd=NULL){
 }
 
 #' three year test, ind file and one NA variable
+#' 
+#' @param dd Data Dictionary location
 #' @export
 medium.test.ind.NA <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
@@ -711,6 +721,8 @@ medium.test.ind.NA <- function(dd=NULL){
 }
 
 #' three year test, ind file and one NA variable and wealth
+#' 
+#' @param dd Data Dictionary location
 #' @export
 medium.test.ind.NA.wealth <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
