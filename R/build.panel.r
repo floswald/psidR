@@ -658,7 +658,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	return(data2)
 }
 
-
+#' one year test, no ind file
+#' @export
 small.test.noind <- function(dd=NULL){
  	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
  	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
@@ -666,6 +667,8 @@ small.test.noind <- function(dd=NULL){
  	build.panel(fam.vars=famvars,datadir=dd)
 }
 
+#' one year test, ind file
+#' @export
 small.test.ind <- function(dd=NULL){
  	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
  	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
@@ -674,6 +677,9 @@ small.test.ind <- function(dd=NULL){
  	indvars = data.frame(year=c(2003),educ=educ)
  	build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 }
+
+#' three year test, ind file
+#' @export
 medium.test.ind <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
@@ -683,6 +689,8 @@ medium.test.ind <- function(dd=NULL){
 	build.panel(fam.vars=famvars,datadir=dd)
 }
 
+#' three year test, no ind file
+#' @export
 medium.test.noind <- function(dd=NULL){
   cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
   head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
@@ -690,6 +698,8 @@ medium.test.noind <- function(dd=NULL){
   build.panel(fam.vars=famvars,datadir=dd)
 }
 
+#' three year test, ind file and one NA variable
+#' @export
 medium.test.ind.NA <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
@@ -700,6 +710,8 @@ medium.test.ind.NA <- function(dd=NULL){
 	build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd,loglevel = DEBUG)
 }
 
+#' three year test, ind file and one NA variable and wealth
+#' @export
 medium.test.ind.NA.wealth <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2005,2007))

@@ -24,10 +24,7 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 
 ### psidR
 
-this package attempts to help the task of building a panel data. the user can either
-
-1. download ASCII data from the server to disk and process with Stata or SAS to generate .dta or .csv files as input; or
-2. `[RECOMMENDED]` use the option to directly download into an R data.frame via the `SAScii` package. You download only once.
+this package attempts to help the task of building a panel data. the user can either downloads ASCII data directly from the server to R
 
 To build the panel, the user must specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. The helper function `getNamesPSID` is helpful in finding different variable names across waves. 
 
@@ -122,18 +119,75 @@ d = build.panel(datadir="~/data",fam.vars=fam,
 
 ### Usage
 
-#### In case you go for psidR option 1 
+check out those example calls:
 
-* download the zipped family data from [http://simba.isr.umich.edu/Zips/ZipMain.aspx](http://simba.isr.umich.edu/Zips/ZipMain.aspx)
-  * run any of the contained program statements in each of the downloaded folders
-* download the cross-year individual file
-* the user can set some sample design options
-* subsetting criteria
-* if some variables are not measured in a given wave for whatever reason, the package takes care of that (after you tell it which ones are missing. see examples in package).
+```
+#' one year test, no ind file
+#' @export
+small.test.noind <- function(dd=NULL){
+  cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
+  famvars = data.frame(year=c(2003),age=head_age_var_name)
+  build.panel(fam.vars=famvars,datadir=dd)
+}
 
-#### If you go for psidR option 2
+#' one year test, ind file
+#' @export
+small.test.ind <- function(dd=NULL){
+  cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
+  educ = getNamesPSID("ER30323",cwf,years=2003)
+  famvars = data.frame(year=c(2003),age=head_age_var_name)
+  indvars = data.frame(year=c(2003),educ=educ)
+  build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
+}
 
-You don't have to prepare anything: just enough time (you should think about leaving your machine on over night/the weekend, depending on how many waves you want to use. The individual index file is very big).
+#' three year test, ind file
+#' @export
+medium.test.ind <- function(dd=NULL){
+  cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
+  educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
+  famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
+  indvars = data.frame(year=c(2003,2005,2007),educ=educ)
+  build.panel(fam.vars=famvars,datadir=dd)
+}
+
+#' three year test, no ind file
+#' @export
+medium.test.noind <- function(dd=NULL){
+  cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
+  famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
+  build.panel(fam.vars=famvars,datadir=dd)
+}
+
+#' three year test, ind file and one NA variable
+#' @export
+medium.test.ind.NA <- function(dd=NULL){
+  cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
+  educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
+  educ[2] = NA
+  famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
+  indvars = data.frame(year=c(2003,2005,2007),educ=educ)
+  build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd,loglevel = DEBUG)
+}
+
+#' three year test, ind file and one NA variable and wealth
+#' @export
+medium.test.ind.NA.wealth <- function(dd=NULL){
+  cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+  head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2005,2007))
+  educ = getNamesPSID("ER30323",cwf,years=c(2005,2007))
+  educ[2] = NA
+  r = system.file(package="psidR")
+    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
+  famvars = data.frame(year=c(2005,2007),age=head_age_var_name)
+  indvars = data.frame(year=c(2005,2007),educ=educ)
+  build.panel(fam.vars=famvars,ind.vars=indvars,wealth.vars=w,datadir=dd,loglevel = DEBUG)
+}
+```
 
 ### How to install this package
 
