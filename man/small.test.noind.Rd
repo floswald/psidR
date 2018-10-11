@@ -6,6 +6,10 @@
 \usage{
 small.test.noind(dd = NULL)
 }
+\arguments{
+\item{dd}{Data Dictionary location. If NULL, 
+use temp dir and force download}
+}
 \description{
 one year test, no ind file
 }

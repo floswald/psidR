@@ -12,7 +12,7 @@
 #' @import futile.logger
 #' @importFrom openxlsx read.xlsx
 #' @importFrom stats rlnorm rnorm runif
-#' @importFrom utils object.size tail unzip
+#' @importFrom utils object.size tail unzip head
 #' @docType package
 #' @name psidR
 #' 

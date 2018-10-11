@@ -6,6 +6,10 @@
 \usage{
 medium.test.ind.NA.wealth(dd = NULL)
 }
+\arguments{
+\item{dd}{Data Dictionary location. If NULL, 
+use temp dir and force download}
+}
 \description{
 three year test, ind file and one NA variable and wealth
 }

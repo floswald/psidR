@@ -6,6 +6,9 @@
 \usage{
 medium.test.noind(dd = NULL)
 }
+\arguments{
+\item{dd}{Data Dictionary location}
+}
 \description{
 three year test, no ind file
 }
