@@ -144,7 +144,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	# locally bind all variables to be used in a data.table
 	# or R CMD CHECK complains.
 
-	interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- ind.seq <- NULL
+	interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- ind.seq <- name <- variable <- NULL
 
 	stopifnot(is.numeric(fam.vars$year))
 	years <- fam.vars$year
