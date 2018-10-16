@@ -111,6 +111,8 @@ medium.test.ind.NA.wealth()
 
 ```
 
+
+
 ### Real World Example: Missing Variables
 
 * You want a `data.table` with the following columns: `PID,year,income,wage,age,educ`.
@@ -244,14 +246,27 @@ medium.test.ind.NA.wealth <- function(dd=NULL){
 }
 ```
 
-### Additional Info
+## Citation
 
-* Please check out [the R survey package](http://cran.r-project.org/web/packages/survey/index.html) for analyzing complex survey's with R. 
-* Also go to [http://www.asdfree.com/](http://www.asdfree.com/) for a range of tutorials and tips for using survey data with R.
+If you use `psidR` in your work, please consider citing it. You could just do 
 
+```R
+> citation(package="psidR")
 
-### Future Developments
+To cite package ‘psidR’ in publications use:
 
-* allow more complex panel designs, like accounting for wider family structure (i.e. using the family splitoff indicator to follow households that split up).
+  Florian Oswald (2018). psidR: Build Panel Data Sets from PSID Raw
+  Data. R package version 1.7. https://github.com/floswald/psidR
 
+A BibTeX entry for LaTeX users is
 
+  @Manual{,
+    title = {psidR: Build Panel Data Sets from PSID Raw Data},
+    author = {Florian Oswald},
+    year = {2018},
+    note = {R package version 1.7},
+    url = {https://github.com/floswald/psidR},
+  }
+```
+
+Thanks!
