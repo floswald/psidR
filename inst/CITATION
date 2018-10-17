@@ -6,7 +6,7 @@ vers = paste('R package version', meta$Version)
 citEntry(
   entry = 'manual',
   title = paste('psidR:', meta$Title),
-  author = Filter(function(p) 'aut' %in% p$role, as.person(meta$Author)),
+  author = 'Florian Oswald',
   year = year,
   note = vers,
   url = meta$URL,
