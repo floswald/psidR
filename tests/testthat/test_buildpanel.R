@@ -2,19 +2,23 @@
 
 context("test build.panel")
 
-n=100
+n=1000
 attr = 7
-td = testPSID(N=n,N.attr=attr)
-fam1985 <- copy(td$famvars1985)
-fam1986 <- copy(td$famvars1986)
-IND2015ER <- copy(td$IND2009ER)
+my.dir = system.file(package = "psidR","testdata")
+# test data was created like this:
+# td = testPSID(N=n,N.attr=attr)
+# fam1985 <- copy(td$famvars1985)
+# fam1986 <- copy(td$famvars1986)
+# IND2015ER <- copy(td$IND2009ER)
+# save(fam1985,file=paste0("inst/testdata","/FAM1985ER.rda"))
+# save(fam1986,file=paste0("inst/testdata","/FAM1986ER.RData"))
+# save(IND2015ER,file=paste0("inst/testdata","/IND2015ER.RData"))
+# 
 
-# create a temporary datadir
-my.dir <- tempdir()
-# save those in the datadir
-save(fam1985,file=paste0(my.dir,"/FAM1985ER.rda"))
-save(fam1986,file=paste0(my.dir,"/FAM1986ER.RData"))
-save(IND2015ER,file=paste0(my.dir,"/IND2015ER.RData"))
+load(file.path(my.dir,"FAM1985ER.rda"))
+load(file.path(my.dir,"FAM1986ER.RData"))
+load(file.path(my.dir,"IND2015ER.RData"))
+
 
 
 test_that("check balanced sample design", {
@@ -35,12 +39,13 @@ test_that("check balanced sample design", {
     expect_true(dd[pid %in% attrited$pernum,unique(year)] == 1985)
 
     # check that age_t+1 = age_t + 1
+    dd = dd[!(pid %in% attrited$pernum)]
     setkey(dd,pid,year)
-    expect_true( all( dd[!(pid %in% attrited$pernum),list(dage=diff(age)),by=pid][,dage] == rep(1,n-attr)) )
+    expect_true( all( dd[,list(dage=diff(age)),by=pid][,dage] == 1 ))
 
     # check that year_t+1 = year_t + 1
     setkey(dd,pid,year)
-    expect_true( all( dd[!(pid %in% attrited$pernum),list(dage=diff(year)),by=pid][,dage] == rep(1,n-attr)) )
+    expect_true( all( dd[,list(dage=diff(year)),by=pid][,dage] == 1 ))
 
     # balanced design: only keep people who are in both waves
     d <- build.panel(datadir=my.dir,fam.vars=famvars,ind.vars=indvars,sample=NULL,heads.only=FALSE,design="balanced")   
