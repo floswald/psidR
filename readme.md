@@ -128,8 +128,8 @@ medium.test.ind.NA.wealth()
 # this is the body of the function build.psid()
 library(psidR)
 r = system.file(package="psidR")
-f = fread(file.path(r,"psid-lists","famvars.txt"))
-i = fread(file.path(r,"psid-lists","indvars.txt"))
+f = data.table::fread(file.path(r,"psid-lists","famvars.txt"))
+i = data.table::fread(file.path(r,"psid-lists","indvars.txt"))
 
 # alternatively, use getNamesPSID:
 # cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
