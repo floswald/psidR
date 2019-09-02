@@ -195,7 +195,6 @@ fam = cbind(f[J("wage"),list(year,wage=variable)],
 # caution: this step will take many hours the first time.
 d = build.panel(datadir="~/data",fam.vars=fam,
           ind.vars=ind,
-          SAScii = TRUE, 
           heads.only = TRUE,
           sample="SRC",
           design=2)
