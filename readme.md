@@ -11,6 +11,8 @@
 
 This R package provides a function to easily build panel data from PSID raw data.
 
+**Warning**: the wealth-supplement setup has changed on the PSID system. wealth variables are now part of the family files fro waves 1999 onwards. `psidR` will not work properly when setting `wealth=TRUE` at the moment. See [this issue](https://github.com/floswald/psidR/issues/34) for more details.
+
 ### PSID
 
 The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publicly available dataset. You have to register and agree to terms and conditions, but there are no other strings attached. 
