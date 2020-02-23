@@ -5,7 +5,7 @@
 #' @details this function hardcodes the PSID variable names of "interview number" from both family and individual file for each wave, as well as "sequence number", "relation to head" and numeric value x of that variable such that "relation to head" == x means the individual is the head. Varies over time.
 makeids <- function(){
 
-	id.list <- data.table(year=c(1968:1997,seq(1999,2015,by=2)))
+	id.list <- data.table(year=c(1968:1997,seq(1999,2017,by=2)))
 	id.list$ind.interview <- c("ER30001","ER30020","ER30043","ER30067",
 									"ER30091","ER30117","ER30138","ER30160", 
 									"ER30188","ER30217","ER30246","ER30283",

@@ -181,7 +181,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth1984.vars=NULL
 	wlth.down <- TRUE  # initiate to something
 
 	# all psid family files
-	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2015 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 , 1187))
+	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2017 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 , 1187))
 	# family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164  ))
 
 	#subset to the years we want
@@ -600,7 +600,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth1984.vars=NULL
 			# 	# merge m and wealthfile
 			# 	m <- merge(m,tmp,all.x=TRUE)
 
-			}  # end wealth files
+			# }  # end wealth files
 		}
 	
 		# note: a person who does not respond in wave x has an interview number in that wave, but NAs in the family file variables. remove those records.
