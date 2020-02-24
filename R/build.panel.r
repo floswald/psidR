@@ -422,7 +422,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth1984.vars=NULL
 			}
 			# add NA columns
 			if (!is.null(ind.nas)){
-			    yind[,(as.character(ind.nas)) := NA]
+			    yind[,(names(ind.nas)) := NA]
 			}
 		} else {
 			yind <- copy(ind[,c(def.subsetter,c(ind.subsetter)),with=FALSE])	
