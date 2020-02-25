@@ -9,10 +9,10 @@ my.dir = system.file(package = "psidR","testdata")
 # td = testPSID(N=n,N.attr=attr)
 # fam1985 <- copy(td$famvars1985)
 # fam1986 <- copy(td$famvars1986)
-# IND2015ER <- copy(td$IND2009ER)
+# IND2017ER <- copy(td$IND2009ER)
 # save(fam1985,file=paste0("inst/testdata","/FAM1985ER.rda"))
 # save(fam1986,file=paste0("inst/testdata","/FAM1986ER.RData"))
-# save(IND2015ER,file=paste0("inst/testdata","/IND2015ER.RData"))
+# save(IND2017ER,file=paste0("inst/testdata","/IND2017ER.RData"))
 # 
 
 load(file.path(my.dir,"FAM1985ER.rda"))
