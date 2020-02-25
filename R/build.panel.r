@@ -792,8 +792,9 @@ getNamesPSID <- function(aname, cwf, years = NULL,file = NULL){
         yearkeep <- ynames.all
     } else {
         yearkeep <- paste0("Y", years)
+        iyearkeep <- ynames.labs %in% yearkeep
         yearkeep <- yearkeep[yearkeep %in% colnames(cwf)]
-        ynames.labs <- ynames.labs[yearkeep %in% colnames(cwf)]
+        ynames.labs <- ynames.labs[iyearkeep]
     }
     ovalue <- transpose(cwf[myvar[1], yearkeep, drop = FALSE])
     od = data.frame(year = ynames.labs, variable = ovalue$V1)
