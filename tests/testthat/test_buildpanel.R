@@ -17,7 +17,7 @@ my.dir = system.file(package = "psidR","testdata")
 
 load(file.path(my.dir,"FAM1985ER.rda"))
 load(file.path(my.dir,"FAM1986ER.RData"))
-load(file.path(my.dir,"IND2015ER.RData"))
+load(file.path(my.dir,"IND2017ER.RData"))
 
 
 
@@ -33,7 +33,7 @@ test_that("check balanced sample design", {
 
     # full sample design: keep all obs
     # for all attrited, there should only be a 1985 row
-    attrited <- subset(IND2015ER,(ER30463!=0) & (ER30498 == 0) )
+    attrited <- subset(IND2017ER,(ER30463!=0) & (ER30498 == 0) )
     attrited$pernum <- attrited$ER30001*1000 + attrited$ER30002
     expect_true(nrow(attrited) == attr)
     expect_true(dd[pid %in% attrited$pernum,unique(year)] == 1985)
