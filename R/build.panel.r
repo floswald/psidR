@@ -762,12 +762,13 @@ build.psid <- function(datadr="~/datasets/psid/",small=TRUE){
 #'
 #' Ask for one variable at a time.
 #' @param aname A variable name in any of the PSID years
+#' @param file optional file name to write csv
 #' @param cwf A data.frame representation of the cross-walk file,
 #'     (the psid.xlsx file).
 #' @param years A vector of years. If NULL, all years in which that
 #'     variable existed are returned
 #' @return A vector of names, one for each year.
-#' @author Paul Johnson <pauljohn@@ku.edu>
+#' @author Paul Johnson <pauljohn@@ku.edu> and Florian Oswald
 #' @export
 #' @examples
 #' # read UMich crosswalk from installed file

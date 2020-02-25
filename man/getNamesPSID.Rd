@@ -4,7 +4,7 @@
 \alias{getNamesPSID}
 \title{GetPSID variables names from various years}
 \usage{
-getNamesPSID(aname, cwf, years = NULL)
+getNamesPSID(aname, cwf, years = NULL, file = NULL)
 }
 \arguments{
 \item{aname}{A variable name in any of the PSID years}
@@ -14,6 +14,8 @@ getNamesPSID(aname, cwf, years = NULL)
 
 \item{years}{A vector of years. If NULL, all years in which that
 variable existed are returned}
+
+\item{file}{optional file name to write csv}
 }
 \value{
 A vector of names, one for each year.

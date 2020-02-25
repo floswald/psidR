@@ -5,8 +5,8 @@
 \title{build.panel: Build PSID panel data set}
 \usage{
 build.panel(datadir = NULL, fam.vars, ind.vars = NULL,
-  wealth.vars = NULL, heads.only = FALSE, current.heads.only = FALSE,
-  sample = NULL, design = "balanced", loglevel = INFO)
+  heads.only = FALSE, current.heads.only = FALSE, sample = NULL,
+  design = "balanced", loglevel = INFO)
 }
 \arguments{
 \item{datadir}{either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.RData") and individual file ("IND2009ER.RData").}
@@ -14,8 +14,6 @@ build.panel(datadir = NULL, fam.vars, ind.vars = NULL,
 \item{fam.vars}{data.frame of variable to retrieve from family files. Can contain see example for required format.}
 
 \item{ind.vars}{data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.}
-
-\item{wealth.vars}{data.frame of variables to get from the wealth supplement files.}
 
 \item{heads.only}{logical TRUE if user wants household heads only. Household heads in sample year.}
 
@@ -57,35 +55,19 @@ r = system.file(package="psidR")
 if (small){
   f = fread(file.path(r,"psid-lists","famvars-small.txt"))
   i = fread(file.path(r,"psid-lists","indvars-small.txt"))
-  if (wealth){
-    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
-  }
 } else {
   f = fread(file.path(r,"psid-lists","famvars.txt"))
   i = fread(file.path(r,"psid-lists","indvars.txt"))
-  if (wealth){
-    w = fread(file.path(r,"psid-lists","wealthvars.txt"))
-  }
 }
 setkey(i,"name")
 setkey(f,"name")
-if (wealth) setkey(w,"name")
 i = dcast(i[,list(year,name,variable)],year~name)
 f = dcast(f[,list(year,name,variable)],year~name)
-if (wealth) {
-  w = dcast(w[,list(year,name,variable)],year~name)
-  d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
-                 ind.vars=i,wealth.vars=w, 
-                 heads.only =TRUE,sample="SRC",
-                 design="all")
-  save(d,file="~/psid_wealth.RData")
-} else {
   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
                  ind.vars=i, 
                  heads.only =TRUE,sample="SRC",
                  design="all")
-  save(d,file="~/psid_no_wealth.RData")
-}
+  save(d,file="~/psid.RData")
 }
 
 # ######################################
