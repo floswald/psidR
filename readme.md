@@ -28,21 +28,21 @@ This package attempts to help the task of building a panel data. The user direct
 
 ### Usage
 
-check out those example calls and output of function `medium.test.noind()`:
+First we present some tests on differently sized datasets, assuming different scenarios (with or without individual-file data). Then, we present a real world example building a full 1968-2017 panel.
 
 ```R
 # one year test, no ind file
-# call function `small.test.noind()`
+# call function `small.test.noind()`
 # get var names from cross walk
 cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
 # create family vars data.frame
 famvars = data.frame(year=c(2003),age=head_age_var_name)
-# call function
+# call function
 build.panel(fam.vars=famvars,datadir=dd)
 
 # one year test, ind file
-# call function `small.test.ind()`
+# call function `small.test.ind()`
 
 cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
@@ -53,7 +53,7 @@ build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 
 
 # three year test, ind file
-# call function `medium.test.ind()`
+# call function `medium.test.ind()`
 
 cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
@@ -107,8 +107,6 @@ INFO [2018-10-10 11:28:39] End of build.panel
 
 # etc for 
 medium.test.ind.NA()
-medium.test.ind.NA.wealth()
-
 ```
 
 
@@ -131,6 +129,34 @@ r = system.file(package="psidR")
 f = data.table::fread(file.path(r,"psid-lists","famvars.txt"))
 i = data.table::fread(file.path(r,"psid-lists","indvars.txt"))
 
+> i
+                           dataset year variable                  label   name
+  1: PSID Individual Data by Years 1968  ER30019   INDIVIDUAL WEIGHT 68 weight
+  2: PSID Individual Data by Years 1969  ER30042   INDIVIDUAL WEIGHT 69 weight
+  3: PSID Individual Data by Years 1970  ER30066   INDIVIDUAL WEIGHT 70 weight
+  4: PSID Individual Data by Years 1971  ER30090   INDIVIDUAL WEIGHT 71 weight
+  5: PSID Individual Data by Years 1972  ER30116   INDIVIDUAL WEIGHT 72 weight
+ ---                                                                          
+143:    PSID Individual Data Index 2009  ER34020 HIGHEST GRADE FINISHED   educ
+144:    PSID Individual Data Index 2011  ER34119 HIGHEST GRADE FINISHED   educ
+145:    PSID Individual Data Index 2013  ER34230 HIGHEST GRADE FINISHED   educ
+146:    PSID Individual Data Index 2015  ER34349 HIGHEST GRADE FINISHED   educ
+147:    PSID Individual Data Index 2017  ER34548 HIGHEST GRADE FINISHED   educ
+
+> f
+                   dataset year variable                     label            name
+  1: PSID Main Family Data 1968      V47 HD ANN HRS WORKED LAST YR           hours
+  2: PSID Main Family Data 1969     V465 HD ANN HRS WORKED LAST YR           hours
+  3: PSID Main Family Data 1970    V1138 HD ANN HRS WORKED LAST YR           hours
+  4: PSID Main Family Data 1971    V1839 HD ANN HRS WORKED LAST YR           hours
+  5: PSID Main Family Data 1972    V2439 HD ANN HRS WORKED LAST YR           hours
+ ---                                                                              
+609:     PSID Family-level 2009  ER42139  A52 LIKELIHOOD OF MOVING likelihood_move
+610:     PSID Family-level 2011  ER47447  A52 LIKELIHOOD OF MOVING likelihood_move
+611:     PSID Family-level 2013  ER53147  A52 LIKELIHOOD OF MOVING likelihood_move
+612:     PSID Family-level 2015  ER60162  A52 LIKELIHOOD OF MOVING likelihood_move
+613:     PSID Family-level 2017  ER66163  A52 LIKELIHOOD OF MOVING likelihood_move
+
 # alternatively, use getNamesPSID:
 # cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
 # Suppose you know the name of the variable in a certain year, and it is
@@ -140,64 +166,36 @@ i = data.table::fread(file.path(r,"psid-lists","indvars.txt"))
 # getNamesPSID("ER17013", cwf, years = NULL)  # all years
 # getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))   # some years
 
-# add a group identifier
-f[1:38,vgroup := "wage"]
-f[39:76,vgroup := "earnings"]
-setkey(f,vgroup)
+# next, bring into required shape:
 
-i[1:38,   vgroup := "age"]
-i[39:76,  vgroup := "educ"]  # caution about 2 first years: no educ data
-i[77:114, vgroup := "weight"]
-setkey(i,vgroup)
+i = dcast(i[,list(year,name,variable)],year~name, value.var = "variable")
+f = dcast(f[,list(year,name,variable)],year~name, value.var = "variable")
+
+> head(i)
+   year     age    educ empstat  weight
+1: 1968 ER30004 ER30010    <NA> ER30019
+2: 1969 ER30023    <NA>    <NA> ER30042
+3: 1970 ER30046 ER30052    <NA> ER30066
+4: 1971 ER30070 ER30076    <NA> ER30090
+5: 1972 ER30094 ER30100    <NA> ER30116
+6: 1973 ER30120 ER30126    <NA> ER30137
 
 > head(f)
-                 dataset year variable                label   vgroup
-1: PSID Main Family Data 1968      V81        FAM MONEY INC earnings
-2: PSID Main Family Data 1969     V529       TOTAL FU $ INC earnings
-3: PSID Main Family Data 1970    V1514 TOT FU MON INC OV414 earnings
-4: PSID Main Family Data 1971    V2226       TOT FU MON INC earnings
-5: PSID Main Family Data 1972    V2852       TOT FU MON INC earnings
-6: PSID Main Family Data 1973    V3256       TOT FU MON INC earnings
-> head(i)
-                         dataset year variable                label vgroup
-1: PSID Individual Data by Years 1968  ER30004 AGE OF INDIVIDUAL 68    age
-2: PSID Individual Data by Years 1969  ER30023 AGE OF INDIVIDUAL 69    age
-3: PSID Individual Data by Years 1970  ER30046 AGE OF INDIVIDUAL 70    age
-4: PSID Individual Data by Years 1971  ER30070 AGE OF INDIVIDUAL 71    age
-5: PSID Individual Data by Years 1972  ER30094 AGE OF INDIVIDUAL 72    age
-6: PSID Individual Data by Years 1973  ER30120 AGE OF INDIVIDUAL 73    age
+   year age_youngest_child debt empstat_ faminc hours hvalue ...
+1: 1968               V120 <NA>     V196    V81   V47     V5 ...
+2: 1969              V1013 <NA>     V639   V529  V465   V449 ...
+3: 1970              V1243 <NA>    V1278  V1514 V1138  V1122 ...
+4: 1971              V1946 <NA>    V1983  V2226 V1839  V1823 ...
+5: 1972              V2546 <NA>    V2581  V2852 V2439  V2423 ...
+6: 1973              V3099 <NA>    V3114  V3256 V3027  V3021 ...
 
+# call the builder function
 
-# create ind and fam data.tables
-ind = cbind(i[J("age"),list(year,age=variable)],
-            i[J("educ"),list(educ=variable)],
-            i[J("weight"),list(weight=variable)])
-fam = cbind(f[J("wage"),list(year,wage=variable)],
-            f[J("earnings"),list(earnings=variable)])
+d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
 
-> head(ind)
-   year     age    educ  weight
-1: 1968 ER30004      NA ER30019
-2: 1969 ER30023      NA ER30042
-3: 1970 ER30046 ER30052 ER30066
-4: 1971 ER30070 ER30076 ER30090
-5: 1972 ER30094 ER30100 ER30116
-6: 1973 ER30120 ER30126 ER30137
-> head(fam)
-   year  wage earnings
-1: 1968  V337      V81
-2: 1969  V871     V529
-3: 1970 V1567    V1514
-4: 1971 V2279    V2226
-5: 1972 V2906    V2852
-6: 1973 V3275    V3256
+# d contains your panel
 
-# caution: this step will take many hours the first time.
-d = build.panel(datadir="~/data",fam.vars=fam,
-          ind.vars=ind,
-          heads.only = TRUE,
-          sample="SRC",
-          design=2)
+save(d,file="~/psid.Rds")
 ```
 
 
@@ -229,7 +227,7 @@ example(build.panel)
 
 ### Supplemental Datasets
 
-The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset:
+The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. **By default, the merging with wealth files is suspended in the package at the moment**.
 
 ```R
 medium.test.ind.NA.wealth <- function(dd=NULL){
@@ -254,16 +252,16 @@ If you use `psidR` in your work, please consider citing it. You could just do
 
 To cite package ‘psidR’ in publications use:
 
-  Florian Oswald (2018). psidR: Build Panel Data Sets from PSID Raw
-  Data. R package version 1.7. https://github.com/floswald/psidR
+  Florian Oswald (2020). psidR: Build Panel Data Sets from PSID Raw
+  Data. R package version 1.8. https://github.com/floswald/psidR
 
 A BibTeX entry for LaTeX users is
 
   @Manual{,
     title = {psidR: Build Panel Data Sets from PSID Raw Data},
     author = {Florian Oswald},
-    year = {2018},
-    note = {R package version 1.7},
+    year = {2020},
+    note = {R package version 1.8},
     url = {https://github.com/floswald/psidR},
   }
 ```

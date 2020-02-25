@@ -730,18 +730,15 @@ build.psid <- function(datadr="~/datasets/psid/",small=TRUE){
   if (small){
     f = fread(file.path(r,"psid-lists","famvars-small.txt"))
     i = fread(file.path(r,"psid-lists","indvars-small.txt"))
-
   } else {
     f = fread(file.path(r,"psid-lists","famvars.txt"))
     i = fread(file.path(r,"psid-lists","indvars.txt"))
-
-    
   }
   setkey(i,"name")
   setkey(f,"name")
 
-  i = dcast(i[,list(year,name,variable)],year~name)
-  f = dcast(f[,list(year,name,variable)],year~name)
+  i = dcast(i[,list(year,name,variable)],year~name, value.var = "variable")
+  f = dcast(f[,list(year,name,variable)],year~name, value.var = "variable")
   d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
   save(d,file="~/psid_no_wealth.RData")
  
