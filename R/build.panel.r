@@ -12,7 +12,6 @@
 #' @param datadir either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.RData") and individual file ("IND2009ER.RData").
 #' @param fam.vars data.frame of variable to retrieve from family files. Can contain see example for required format.
 #' @param ind.vars data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.
-#' @param wealth.vars data.frame of variables to get from the wealth supplement files.
 #' @param current.heads.only logical TRUE if user wants current household heads only. Distinguishes mover outs heads.
 #' @param heads.only logical TRUE if user wants household heads only. Household heads in sample year.
 #' @param sample string indicating which sample to select: "SRC" (survey research center), "SEO" (survey for economic opportunity), "immigrant" (immigrant sample), "latino" (Latino family sample). Defaults to NULL, so no subsetting takes place.
@@ -39,35 +38,19 @@
 #' if (small){
 #'   f = fread(file.path(r,"psid-lists","famvars-small.txt"))
 #'   i = fread(file.path(r,"psid-lists","indvars-small.txt"))
-#'   if (wealth){
-#'     w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
-#'   }
 #' } else {
 #'   f = fread(file.path(r,"psid-lists","famvars.txt"))
 #'   i = fread(file.path(r,"psid-lists","indvars.txt"))
-#'   if (wealth){
-#'     w = fread(file.path(r,"psid-lists","wealthvars.txt"))
-#'   }
 #' }
 #' setkey(i,"name")
 #' setkey(f,"name")
-#' if (wealth) setkey(w,"name")
 #' i = dcast(i[,list(year,name,variable)],year~name)
 #' f = dcast(f[,list(year,name,variable)],year~name)
-#' if (wealth) {
-#'   w = dcast(w[,list(year,name,variable)],year~name)
-#'   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
-#'                  ind.vars=i,wealth.vars=w, 
-#'                  heads.only =TRUE,sample="SRC",
-#'                  design="all")
-#'   save(d,file="~/psid_wealth.RData")
-#' } else {
 #'   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
 #'                  ind.vars=i, 
 #'                  heads.only =TRUE,sample="SRC",
 #'                  design="all")
-#'   save(d,file="~/psid_no_wealth.RData")
-#' }
+#'   save(d,file="~/psid.RData")
 #' }
 #'
 #' # ######################################
@@ -137,9 +120,9 @@
 #' # #####################################################################
 #' # Please go to https://github.com/floswald/psidR for more example usage
 #' # #####################################################################
-build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,heads.only=FALSE,current.heads.only=FALSE,sample=NULL,design="balanced",loglevel=INFO){
+build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,current.heads.only=FALSE,sample=NULL,design="balanced",loglevel=INFO){
 	
-  flog.threshold(loglevel)
+  	flog.threshold(loglevel)
 
 	# locally bind all variables to be used in a data.table
 	# or R CMD CHECK complains.
@@ -167,8 +150,9 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	}
 	flog.debug("datadir: %s",datadir)
 
-	# are we processing wealth supplements?
-	any.wealth = is.data.frame(wealth.vars)
+	# are we processing wealth supplements? No.
+	# any.wealth = is.data.frame(wealth1984.vars)
+	any.wealth = FALSE
 	flog.debug("any.wealth? %d",any.wealth)
 	
 
@@ -180,7 +164,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	wlth.down <- TRUE  # initiate to something
 
 	# all psid family files
-	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2015 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 ))
+	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2017 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 , 1187))
 	# family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164  ))
 
 	#subset to the years we want
@@ -197,33 +181,24 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 
 	if (any.wealth){
 		# if any of 1984, 1989, 1994, 1999, 2001, 2003, 2005, 2007 in years, also download the associated wealth supplement
-		wlth = data.frame(year=c(1984, 1989, 1994, 1999, 2001, 2003, 2005, 2007),file=c(1147,1148,1149,1150,1130,1131,1133,1140))
+		wlth = data.frame(year=c(1984),file=c(1175))
 		flog.debug("working on wealth")
-		wlth = wlth[wealth.vars$year %in% years, ]
 		flog.debug("wlth: ",wlth, capture=TRUE)
 
-		if ( nrow(wlth) > 0 ){
-		  wlth.down <- rep(FALSE,nrow(wlth))
-		    for ( i in 1:nrow( wlth )) {
-		      if ((paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda") %in% lf) | (paste0("WEALTH" , wlth[ i , 'year' ], "ER.RData") %in% lf)) {
-		        wlth.down[i] <- TRUE
-		        flog.info('found %s already downloaded',paste0("WEALTH" , wlth[ i , 'year' ]))
-		      } else {
-		        flog.info('will download as %s',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"))
-		      }
-		    }
-			} else {
-			  wlth.down = TRUE
-			  flog.info('All Wealth files already downloaded')
-			  
-			  # saying we already downloaded even if we didn't look for wealth vars.
-			}
-		
+		wlth.down <- rep(FALSE,nrow(wlth))
+	  	for ( i in 1:nrow( wlth )) {
+	    	if ((paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda") %in% lf) | (paste0("WEALTH" , wlth[ i , 'year' ], "ER.RData") %in% lf)) {
+	      		wlth.down[i] <- TRUE
+	      		flog.info('found %s already downloaded',paste0("WEALTH" , wlth[ i , 'year' ]))
+	    	} else {
+	      		flog.info('will download 1984 supplement as %s',paste0("WEALTH" , wlth[ i , 'year' ], "ER.rda"))
+	    	}
+	  	}
 	}
 
 	ind.down <- FALSE
 	# check if datadir contains individual index already
-	if (("IND2015ER.rda" %in% lf) | ("IND2015ER.RData" %in% lf)) {
+	if (("IND2017ER.rda" %in% lf) | ("IND2017ER.RData" %in% lf)) {
 		#download latest individual index
 		ind.down = TRUE
 	}
@@ -235,7 +210,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 			flog.info("will download family files: %s",paste(family[!families.down,"year"],collapse=", "))
 		} 
 		if (!ind.down) {
-			flog.info("will download: IND2015ER")
+			flog.info("will download latest individual index: IND2017ER")
 		} 
 		if (!wlth.down) {
 			flog.info("will download missing wealth files.")
@@ -285,20 +260,18 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 					get.psid( family[ i , 'file' ] ,name= paste0(datadir, "FAM" , family[ i , 'year' ], "ER") , params , curl )
 				}
 			}
-      if (any.wealth){
-        if (nrow(wlth)>0){
-          for ( i in 1:nrow(wlth)){
-            if (!(wlth.down[i])){
-              get.psid( wlth[ i , 'file' ] ,name= paste0(datadir, "WEALTH" , wlth[ i , 'year' ], "ER") , params , curl )
-            }
-          }
-        }
-      }
+			if (any.wealth){
+		    	for ( i in 1:nrow(wlth)){
+		      		if (!(wlth.down[i])){
+		        		get.psid( wlth[ i , 'file' ] ,name= paste0(datadir, "WEALTH" , wlth[ i , 'year' ], "ER") , params , curl )
+		      		}
+		    	}
+			}
 			
 			# check if datadir contains individual index already
-			if (!("IND2015ER.rda" %in% lf)) {
+			if (!("IND2017ER.rda" %in% lf)) {
 				#download latest individual index
-				get.psid( 1053 ,name= paste0(datadir, "IND2015ER") , params , curl )
+				get.psid( 1053 ,name= paste0(datadir, "IND2017ER") , params , curl )
 			}
 
 			flog.info('finished downloading files to %s', datadir)
@@ -373,11 +346,11 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	}
 	# convert ind.vars to data.table if not null
 	if (any.wealth){
-		stopifnot(is.data.frame(wealth.vars))
-		wealth.vars <- data.table(wealth.vars)
-		wealth.vars <- copy(wealth.vars[,lapply(.SD,make.char)])
-		setkey(wealth.vars,year)
-		wealth.vars[,interview := w_ids[wealth.vars][,interview]]
+		stopifnot(is.data.frame(wealth1984.vars))
+		wealth1984.vars <- data.table(wealth1984.vars)
+		wealth1984.vars <- copy(wealth1984.vars[,lapply(.SD,make.char)])
+		setkey(wealth1984.vars,year)
+		wealth1984.vars[,interview := w_ids[wealth1984.vars][,interview]]
 	}
 
 	# which vars to keep from ind.files?
@@ -389,7 +362,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 	# loop over years
 	for (iy in 1:length(years)){
 		
-			flog.info('psidR: currently working on data for year %d',years[iy])
+		flog.info('psidR: currently working on data for year %d',years[iy])
 		
  
    		# keeping only relevant columns from individual file
@@ -426,13 +399,14 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 			if (any(!is.na(ind.vars.yr))){
 				ind.notnas <- ind.vars.yr[,which(!is.na(ind.vars.yr)),with=FALSE]
 				flog.debug("ind.notnas:",ind.notnas,capture=TRUE)
+				# browser()
 				yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter,as.character(ind.notnas))),with=FALSE])	
 			} else {
 				yind    <- copy(ind[,c(def.subsetter,c(ind.subsetter)),with=FALSE])	
 			}
 			# add NA columns
 			if (!is.null(ind.nas)){
-			    yind[,(as.character(ind.nas)) := NA]
+			    yind[,(names(ind.nas)) := NA]
 			}
 		} else {
 			yind <- copy(ind[,c(def.subsetter,c(ind.subsetter)),with=FALSE])	
@@ -579,37 +553,38 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,wealth.vars=NULL,hea
 		# ==================================
 		# merge m and wealth
 		if (any.wealth){
+			flog.warn("merging of wealth files currently turned off!")
 			# check if there is a wealth file for this year
-			iw = grep(years[iy],wlth.dat,value=TRUE)
-			if (length(iw)>0){
-				rm(list=ls(envir=tmp.env),envir=tmp.env)
-			   	load(file=iw,envir=tmp.env)
-				tmp             <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
-				tmp             <- data.table(tmp)
-				flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
+			# iw = grep(years[iy],wlth.dat,value=TRUE)
+			# if (length(iw)>0){
+			# 	rm(list=ls(envir=tmp.env),envir=tmp.env)
+			#    	load(file=iw,envir=tmp.env)
+			# 	tmp             <- get(ls(tmp.env),tmp.env)	# assign loaded dataset a new name
+			# 	tmp             <- data.table(tmp)
+			# 	flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
 			
-				# convert all variable names to lower case in both fam.vars and data file
-				curvars <- wealth.vars[list(years[iy]),which(names(wealth.vars)!="year"),with=FALSE]
-				flog.debug("wealth curvars: ",curvars,capture=TRUE)
-				curvars[,name := tolower(name)]
-				curvars[,variable := tolower(variable)]
-				curvars[,interview := tolower(interview)]
+			# 	# convert all variable names to lower case in both fam.vars and data file
+			# 	curvars <- wealth1984.vars[list(years[iy]),which(names(wealth1984.vars)!="year"),with=FALSE]
+			# 	flog.debug("wealth curvars: ",curvars,capture=TRUE)
+			# 	curvars[,name := tolower(name)]
+			# 	curvars[,variable := tolower(variable)]
+			# 	curvars[,interview := tolower(interview)]
 
-				setnames(tmp,tolower(names(tmp)))
-				flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
+			# 	setnames(tmp,tolower(names(tmp)))
+			# 	flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
 			
-				# current set of variables
-				codes <- c(curvars[,variable],curvars[,interview][[1]])
-				flog.debug("wealth codes: ",codes,capture=TRUE)
-				tmp   <- copy(tmp[,codes,with=FALSE])
-				setnames(tmp,c(curvars[,name],"interview"))
-				flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
-				setkey(tmp,interview)
+			# 	# current set of variables
+			# 	codes <- c(curvars[,variable],curvars[,interview][[1]])
+			# 	flog.debug("wealth codes: ",codes,capture=TRUE)
+			# 	tmp   <- copy(tmp[,codes,with=FALSE])
+			# 	setnames(tmp,c(curvars[,name],"interview"))
+			# 	flog.debug("wealth tmp: ",head(tmp),capture=TRUE)
+			# 	setkey(tmp,interview)
 				
-				# merge m and wealthfile
-				m <- merge(m,tmp,all.x=TRUE)
+			# 	# merge m and wealthfile
+			# 	m <- merge(m,tmp,all.x=TRUE)
 
-			}  # end wealth files
+			# }  # end wealth files
 		}
 	
 		# note: a person who does not respond in wave x has an interview number in that wave, but NAs in the family file variables. remove those records.
@@ -728,15 +703,17 @@ medium.test.ind.NA <- function(dd=NULL){
 #' use temp dir and force download
 #' @export
 medium.test.ind.NA.wealth <- function(dd=NULL){
-	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
-	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2005,2007))
- 	educ = getNamesPSID("ER30323",cwf,years=c(2005,2007))
- 	educ[2] = NA
-	r = system.file(package="psidR")
-    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
-	famvars = data.frame(year=c(2005,2007),age=head_age_var_name)
-	indvars = data.frame(year=c(2005,2007),educ=educ)
-	build.panel(fam.vars=famvars,ind.vars=indvars,wealth.vars=w,datadir=dd,loglevel = DEBUG)
+    flog.warn("this functionality is not implemented any more.")
+# 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
+# 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2005,2007))
+#  	educ = getNamesPSID("ER30323",cwf,years=c(2005,2007))
+#  	educ[2] = NA
+# 	r = system.file(package="psidR")
+#     w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
+# 	famvars = data.frame(year=c(2005,2007),age=head_age_var_name)
+# 	indvars = data.frame(year=c(2005,2007),educ=educ)
+# 	build.panel(fam.vars=famvars,ind.vars=indvars,wealth1984.vars
+# =w,datadir=dd,loglevel = DEBUG)
 }
 
 
@@ -746,41 +723,26 @@ medium.test.ind.NA.wealth <- function(dd=NULL){
 #' @export
 #' @param datadr string of the data directory
 #' @param small logical TRUE if only use years 2013 and 2015.
-#' @param wealth logical TRUE if want to use wealth supplements
 #' @return a data.table with panel data
-build.psid <- function(datadr="~/datasets/psid/",small=TRUE,wealth=FALSE){
+build.psid <- function(datadr="~/datasets/psid/",small=TRUE){
   variable <- name <- NULL
   r = system.file(package="psidR")
   if (small){
     f = fread(file.path(r,"psid-lists","famvars-small.txt"))
     i = fread(file.path(r,"psid-lists","indvars-small.txt"))
-    if (wealth){
-      w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
-    }
-    
   } else {
     f = fread(file.path(r,"psid-lists","famvars.txt"))
     i = fread(file.path(r,"psid-lists","indvars.txt"))
-    if (wealth){
-      w = fread(file.path(r,"psid-lists","wealthvars.txt"))
-    }
-    
   }
   setkey(i,"name")
   setkey(f,"name")
-  if (wealth) setkey(w,"name")
-  
-  i = dcast(i[,list(year,name,variable)],year~name)
-  f = dcast(f[,list(year,name,variable)],year~name)
-  if (wealth) {
-    w = dcast(w[,list(year,name,variable)],year~name)
-    d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i,wealth.vars=w, heads.only = TRUE,sample="SRC",design="all")
-    save(d,file="~/psid_wealth.RData")
-  } else {
-    d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
-    save(d,file="~/psid_no_wealth.RData")
-  }
-	return(d)
+
+  i = dcast(i[,list(year,name,variable)],year~name, value.var = "variable")
+  f = dcast(f[,list(year,name,variable)],year~name, value.var = "variable")
+  d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
+  save(d,file="~/psid_no_wealth.RData")
+ 
+  return(d)
 }
 
 
@@ -820,18 +782,25 @@ build.psid <- function(datadr="~/datasets/psid/",small=TRUE,wealth=FALSE){
 #' getNamesPSID("ER17013", cwf, years = 2003)
 #' getNamesPSID("ER17013", cwf, years = NULL)
 #' getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
-getNamesPSID <- function(aname, cwf, years = NULL){
+getNamesPSID <- function(aname, cwf, years = NULL,file = NULL){
     myvar <- which(cwf == aname, arr.ind=TRUE)
     ## variables that begin with Y
     ynames.all <- grep("^Y", colnames(cwf))
+    ynames.labs <- grep("^Y", colnames(cwf),value = TRUE)
 
     if (is.null(years)){
         yearkeep <- ynames.all
     } else {
         yearkeep <- paste0("Y", years)
+        iyearkeep <- ynames.labs %in% yearkeep
         yearkeep <- yearkeep[yearkeep %in% colnames(cwf)]
+        ynames.labs <- ynames.labs[iyearkeep]
     }
     ovalue <- transpose(cwf[myvar[1], yearkeep, drop = FALSE])
-    ovalue$V1
+    od = data.frame(year = ynames.labs, variable = ovalue$V1)
+    if (!is.null(file)){
+        write.table(od,file = file,row.names = FALSE)
+    }
+    od
 }
 
