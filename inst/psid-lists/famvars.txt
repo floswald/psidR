@@ -1,34 +1,4 @@
 dataset,year,variable,label,name
-PSID Main Family Data,1996,ER8915,G133 WTR BANKRPT SINCE91,bankrupt_91
-PSID Main Family Data,1996,ER8916,G134 # BANKRUPTCIES	  ,bankrupt_num
-PSID Main Family Data,1996,ER8917,G135 YEAR BNKRPT FILED 1,bankrupt1_year
-PSID Main Family Data,1996,ER8918,G136 STATE FILED-BNKRPT1,bankrupt1_where
-PSID Main Family Data,1996,ER8919,G137 WHY FILED1-BNKRPT1 ,bankrupt1_why1
-PSID Main Family Data,1996,ER8920,G137 WHY FILED2-BNKRPT1 ,bankrupt1_why2
-PSID Main Family Data,1996,ER8921,G137 WHY FILED3-BNKRPT1 ,bankrupt1_why3
-PSID Main Family Data,1996,ER8926,G138 CHAPTR 7/13-BNKRPT1,bankrupt1_7_13
-PSID Main Family Data,1996,ER8927,G139 COURT TAKE PROP-BK1,bankrupt1_property
-PSID Main Family Data,1996,ER8928,G140 VALUE OF PROP-BKRP1,bankrupt1_property_val
-PSID Main Family Data,1996,ER8929,G141 AMT FROM ERNG-BKRP1,bankrupt1_repay_amt
-PSID Main Family Data,1996,ER8930,G141 PER FROM ERNG-BKRP1,bankrupt1_repay_per
-PSID Main Family Data,1996,ER8931,G142 REPAYMENT LNGTH-YR1,bankrupt1_repay_length
-PSID Main Family Data,1996,ER8934,G143 REPAYMENT DONE-BKR1,bankrupt1_repay_done
-PSID Main Family Data,1996,ER8935,G144 TOT DEBT FILED-BKR1,bankrupt1_initdebt
-PSID Main Family Data,1996,ER8936,G145 REM DEBT AT END-BK1,bankrupt1_enddebt
-PSID Main Family Data,1996,ER8943,G135 YEAR BNKRPT FILED 2,bankrupt2_year
-PSID Main Family Data,1996,ER8944,G136 STATE FILED-BNKRPT2,bankrupt2_where
-PSID Main Family Data,1996,ER8945,G137 WHY FILED1-BNKRPT2 ,bankrupt2_why1
-PSID Main Family Data,1996,ER8946,G137 WHY FILED2-BNKRPT2 ,bankrupt2_why2
-PSID Main Family Data,1996,ER8947,G137 WHY FILED3-BNKRPT2 ,bankrupt2_why3
-PSID Main Family Data,1996,ER8952,G138 CHAPTR 7/13-BNKRPT2,bankrupt2_7_13
-PSID Main Family Data,1996,ER8953,G139 COURT TAKE PROP-BK2,bankrupt2_property
-PSID Main Family Data,1996,ER8954,G140 VALUE OF PROP-BKRP2,bankrupt2_property_val
-PSID Main Family Data,1996,ER8955,G141 AMT FROM ERNG-BKRP2,bankrupt2_repay_amt
-PSID Main Family Data,1996,ER8956,G141 PER FROM ERNG-BKRP2,bankrupt2_repay_per
-PSID Main Family Data,1996,ER8957,G142 REPAYMENT LNGTH-YR2,bankrupt2_repay_length
-PSID Main Family Data,1996,ER8960,G143 REPAYMENT DONE-BKR2,bankrupt2_repay_done
-PSID Main Family Data,1996,ER8961,G144 TOT DEBT FILED-BKR2,bankrupt2_initdebt
-PSID Main Family Data,1996,ER8962,G145 REM DEBT AT END-BK2,bankrupt2_enddebt
 PSID Main Family Data,1968,V47,HD ANN HRS WORKED LAST YR,hours
 PSID Main Family Data,1969,V465,HD ANN HRS WORKED LAST YR,hours
 PSID Main Family Data,1970,V1138,HD ANN HRS WORKED LAST YR,hours
@@ -68,6 +38,7 @@ PSID Main Family Data,2009,ER46767,HD ANN HRS WORKED LAST YR,hours
 PSID Main Family Data,2011,ER52175,HD ANN HRS WORKED LAST YR,hours
 PSID Main Family Data,2013,ER57976,HD ANN HRS WORKED LAST YR,hours
 PSID Main Family Data,2015,ER65156,HD ANN HRS WORKED LAST YR,hours
+PSID Main Family Data,2017,ER71233,HD ANN HRS WORKED LAST YR,hours
 PSID Main Family Data,1968,V103,OWN OR RENT,own
 PSID Main Family Data,1969,V593,OWN OR RENT,own
 PSID Main Family Data,1970,V1264,OWN OR RENT,own
@@ -107,6 +78,7 @@ PSID Main Family Data,2009,ER42029,OWN OR RENT,own
 PSID Main Family Data,2011,ER47329,OWN OR RENT,own
 PSID Main Family Data,2013,ER53029,OWN OR RENT,own
 PSID Main Family Data,2015,ER60030,OWN OR RENT,own
+PSID Main Family Data,2017,ER66030,OWN OR RENT,own
 PSID Main Family Data,1968,V5,HOUSE VALUE,hvalue
 PSID Main Family Data,1969,V449,HOUSE VALUE,hvalue
 PSID Main Family Data,1970,V1122,HOUSE VALUE,hvalue
@@ -146,6 +118,47 @@ PSID Main Family Data,2009,ER42030,HOUSE VALUE,hvalue
 PSID Main Family Data,2011,ER47330,HOUSE VALUE,hvalue
 PSID Main Family Data,2013,ER53030,HOUSE VALUE,hvalue
 PSID Main Family Data,2015,ER60031,HOUSE VALUE,hvalue
+PSID Main Family Data,2017,ER66031,HOUSE VALUE,hvalue
+PSID Main Family Data,1968,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1969,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1970,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1971,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1972,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1973,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1974,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1975,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1976,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1977,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1978,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1979,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1980,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1981,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1982,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1983,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1984,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1985,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1986,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1987,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1988,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1989,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1990,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1991,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1992,NA,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1993,V21620,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1994,ER2049,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1995,ER5048,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1996,ER7121,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1997,ER10060,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,1999,ER13065,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2001,ER17074,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2003,ER21072,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2005,ER25063,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2007,ER36065,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2009,ER42080,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2011,ER47387,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2013,ER53087,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2015,ER60088,A31 DOLLARS RENT,monthly_rent
+PSID Main Family Data,2017,ER66090,A31 DOLLARS RENT,monthly_rent
 PSID Family-level,1969,V451,REM MORT PRINCIPAL,mortgage
 PSID Family-level,1970,V1124,REM MORT PRINCIPAL,mortgage
 PSID Family-level,1971,V1825,REM MORT PRINCIPAL,mortgage
@@ -180,6 +193,47 @@ PSID Family-level,2009,ER42043,REM MORT PRINCIPAL,mortgage
 PSID Family-level,2011,ER47348,REM MORT PRINCIPAL,mortgage
 PSID Family-level,2013,ER53048,REM MORT PRINCIPAL,mortgage
 PSID Family-level,2015,ER60049,REM MORT PRINCIPAL,mortgage
+PSID Family-level,2017,ER66051,REM MORT PRINCIPAL,mortgage
+PSID Family-level,1968,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1969,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1970,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1971,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1972,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1973,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1974,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1975,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1976,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1977,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1978,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1979,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1980,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1981,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1982,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1983,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1984,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1985,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1986,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1987,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1988,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1989,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1990,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1991,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1992,NA,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1993,V21614,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1994,ER2039,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1995,ER5038,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1996,ER7044,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1997,ER10046,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,1999,ER13048,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2001,ER17054,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2003,ER21053,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2005,ER25044,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2007,ER36044,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2009,ER42045,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2011,ER47350,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2013,ER53050,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2015,ER60051,A25 MNTHLY PMTS MOR 1,monthly_mortgage
+PSID Family-level,2017,ER66053,A25 MNTHLY PMTS MOR 1,monthly_mortgage
 PSID Family-level,1968,V196,WORKING NOW UNEMP RETIRED OR WHAT,empstat_
 PSID Family-level,1969,V639,WORKING NOW UNEMP RETIRED OR WHAT,empstat_
 PSID Family-level,1970,V1278,WORKING NOW UNEMP RETIRED OR WHAT,empstat_
@@ -195,6 +249,8 @@ PSID Family-level,1979,V6492,WORKING NOW UNEMP RETIRED OR WHAT,empstat_
 PSID Family-level,2009,ER46970,NET WEALTH , wealth
 PSID Family-level,2011,ER52394,NET WEALTH , wealth
 PSID Family-level,2013,ER58211,NET WEALTH , wealth
+PSID Family-level,2015,ER65408,NET WEALTH , wealth
+PSID Family-level,2017,ER71485,NET WEALTH , wealth
 PSID Family-level,2009,ER46946,NON-MORT DEBT,debt
 PSID Family-level,1968,V93,PSID STATE NOW,state
 PSID Family-level,1969,V537,PSID STATE NOW,state
@@ -235,6 +291,7 @@ PSID Family-level,2009,ER42003,PSID STATE NOW,state
 PSID Family-level,2011,ER47303,PSID STATE NOW,state
 PSID Family-level,2013,ER53003,PSID STATE NOW,state
 PSID Family-level,2015,ER60003,PSID STATE NOW,state
+PSID Family-level,2017,ER66003,PSID STATE NOW,state
 PSID Family-level,1968,V81,TOTAL FAMILY INCOME LAST YEAR,faminc
 PSID Family-level,1969,V529,TOTAL FAMILY INCOME LAST YEAR,faminc
 PSID Family-level,1970,V1514,TOTAL FAMILY INCOME LAST YEAR,faminc
@@ -274,3 +331,284 @@ PSID Family-level,2009,ER46935,TOTAL FAMILY INCOME LAST YEAR,faminc
 PSID Family-level,2011,ER52343,TOTAL FAMILY INCOME LAST YEAR,faminc
 PSID Family-level,2013,ER58152,TOTAL FAMILY INCOME LAST YEAR,faminc
 PSID Family-level,2015,ER65349,TOTAL FAMILY INCOME LAST YEAR,faminc
+PSID Family-level,2017,ER71426,TOTAL FAMILY INCOME LAST YEAR,faminc
+PSID Family-level,1968,V398,# CHILDREN IN FU,numkids
+PSID Family-level,1969,V550,# CHILDREN IN FU,numkids
+PSID Family-level,1970,V1242,# CHILDREN IN FU,numkids
+PSID Family-level,1971,V1945,# CHILDREN IN FU,numkids
+PSID Family-level,1972,V2545,# CHILDREN IN FU,numkids
+PSID Family-level,1973,V3098,# CHILDREN IN FU,numkids
+PSID Family-level,1974,V3511,# CHILDREN IN FU,numkids
+PSID Family-level,1975,V3924,# CHILDREN IN FU,numkids
+PSID Family-level,1976,V4439,# CHILDREN IN FU,numkids
+PSID Family-level,1977,V5353,# CHILDREN IN FU,numkids
+PSID Family-level,1978,V5853,# CHILDREN IN FU,numkids
+PSID Family-level,1979,V6465,# CHILDREN IN FU,numkids
+PSID Family-level,1980,V7070,# CHILDREN IN FU,numkids
+PSID Family-level,1981,V7661,# CHILDREN IN FU,numkids
+PSID Family-level,1982,V8355,# CHILDREN IN FU,numkids
+PSID Family-level,1983,V8964,# CHILDREN IN FU,numkids
+PSID Family-level,1984,V10422,# CHILDREN IN FU,numkids
+PSID Family-level,1985,V11609,# CHILDREN IN FU,numkids
+PSID Family-level,1986,V13014,# CHILDREN IN FU,numkids
+PSID Family-level,1987,V14117,# CHILDREN IN FU,numkids
+PSID Family-level,1988,V15133,# CHILDREN IN FU,numkids
+PSID Family-level,1989,V16634,# CHILDREN IN FU,numkids
+PSID Family-level,1990,V18052,# CHILDREN IN FU,numkids
+PSID Family-level,1991,V19352,# CHILDREN IN FU,numkids
+PSID Family-level,1992,V20654,# CHILDREN IN FU,numkids
+PSID Family-level,1993,V22409,# CHILDREN IN FU,numkids
+PSID Family-level,1994,ER2010,# CHILDREN IN FU,numkids
+PSID Family-level,1995,ER5009,# CHILDREN IN FU,numkids
+PSID Family-level,1996,ER7009,# CHILDREN IN FU,numkids
+PSID Family-level,1997,ER10012,# CHILDREN IN FU,numkids
+PSID Family-level,1999,ER13013,# CHILDREN IN FU,numkids
+PSID Family-level,2001,ER17016,# CHILDREN IN FU,numkids
+PSID Family-level,2003,ER21020,# CHILDREN IN FU,numkids
+PSID Family-level,2005,ER25020,# CHILDREN IN FU,numkids
+PSID Family-level,2007,ER36020,# CHILDREN IN FU,numkids
+PSID Family-level,2009,ER42020,# CHILDREN IN FU,numkids
+PSID Family-level,2011,ER47320,# CHILDREN IN FU,numkids
+PSID Family-level,2013,ER53020,# CHILDREN IN FU,numkids
+PSID Family-level,2015,ER60021,# CHILDREN IN FU,numkids
+PSID Family-level,2017,ER66021,# CHILDREN IN FU,numkids
+PSID Family-level,1968,V102,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1969,V592,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1970,V1263,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1971,V1966,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1972,V2565,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1973,V3107,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1974,V3521,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1975,V3937,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1976,V4448,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1977,V5362,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1978,V5862,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1979,V6477,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1980,V7080,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1981,V7671,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1982,V8360,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1983,V8969,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1984,V10432,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1985,V11614,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1986,V13019,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1987,V14122,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1988,V15138,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1989,V16639,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1990,V18070,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1991,V19370,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1992,V20670,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1993,V22425,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1994,ER2029,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1995,ER5028,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1996,ER7028,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1997,ER10032,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1999,ER13037,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2001,ER17040,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2003,ER21039,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2005,ER25027,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2007,ER36027,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2009,ER42028,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2011,ER47328,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2013,ER53028,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2015,ER60029,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,2017,ER66029,A8 ACTUAL # ROOMS,numrooms
+PSID Family-level,1968,V120,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1969,V1013,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1970,V1243,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1971,V1946,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1972,V2546,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1973,V3099,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1974,V3512,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1975,V3925,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1976,V4440,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1977,V5354,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1978,V5854,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1979,V6466,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1980,V7071,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1981,V7662,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1982,V8356,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1983,V8965,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1984,V10423,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1985,V11610,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1986,V13015,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1987,V14118,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1988,V15134,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1989,V16635,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1990,V18053,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1991,V19353,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1992,V20655,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1993,V22410,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1994,ER2011,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1995,ER5010,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1996,ER7010,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1997,ER10013,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1999,ER13014,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2001,ER17017,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2003,ER21021,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2005,ER25021,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2007,ER36021,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2009,ER42021,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2011,ER47321,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2013,ER53021,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2015,ER60022,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,2017,ER66022,AGE YOUNGEST CHILD,age_youngest_child
+PSID Family-level,1968,NA,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1969,V603,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1970,V1274,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1971,V1979,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1972,V2577,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1973,V3110,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1974,V3524,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1975,V3941,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1976,V4452,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1977,V5366,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1978,V5866,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1979,V6484,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1980,V7089,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1981,V7700,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1982,V8369,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1983,V8999,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1984,V10447,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1985,V11628,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1986,V13037,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1987,V14140,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1988,V15148,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1989,V16649,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1990,V18087,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1991,V19387,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1992,V20687,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1993,V22441,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1994,ER2062,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1995,ER5061,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1996,ER7155,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1997,ER10072,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1999,ER13077,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2001,ER17088,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2003,ER21117,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2005,ER25098,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2007,ER36103,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2009,ER42132,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2011,ER47440,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2013,ER53140,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2015,ER60155,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,2017,ER66156,A49 WTR MOVED SINCE JAN 1 OF PRIOR YEAR,moved
+PSID Family-level,1968,NA,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1969,V604,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1970,V1275,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1971,V1980,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1972,V2578,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1973,V3111,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1974,V3525,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1975,V3943,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1976,V4454,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1977,V5368,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1978,V5868,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1979,V6486,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1980,V7091,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1981,V7702,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1982,V8370,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1983,V9001,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1984,V10449,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1985,V11630,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1986,V13039,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1987,V14142,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1988,V15150,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1989,V16651,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1990,V18089,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1991,V19389,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1992,V20689,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1993,V22444,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1994,ER2065,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1995,ER5064,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1996,ER7158,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1997,ER10075,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1999,ER13080,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2001,ER17091,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2003,ER21120,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2005,ER25101,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2007,ER36106,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2009,ER42135,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2011,ER47443,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2013,ER53143,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2015,ER60158,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,2017,ER66159,A50 WHY MOVED 1ST MENTION,why_moved
+PSID Family-level,1968,V111,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1969,V605,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1970,V1276,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1971,V1981,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1972,V2579,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1973,V3112,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1974,V3526,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1975,V3944,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1976,V4455,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1977,V5369,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1978,V5869,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1979,V6487,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1980,V7092,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1981,V7703,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1982,V8371,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1983,V9002,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1984,V10450,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1985,V11631,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1986,V13040,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1987,V14143,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1988,V15151,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1989,V16652,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1990,V18090,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1991,V19390,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1992,V20690,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1993,V22445,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1994,NA,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1995,ER5066A,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1996,ER7161,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1997,ER10079,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1999,ER13084,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2001,ER17095,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2003,ER21121,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2005,ER25102,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2007,ER36107,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2009,ER42138,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2011,ER47446,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2013,ER53146,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2015,ER60161,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,2017,ER66162,A51 WTR MIGHT MOVE,might_move
+PSID Family-level,1968,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1969,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1970,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1971,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1972,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1973,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1974,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1975,V3945,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1976,V4456,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1977,V5370,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1978,V5870,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1979,V6488,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1980,V7093,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1981,V7704,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1982,V8372,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1983,V9003,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1984,V10451,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1985,V11632,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1986,V13041,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1987,V14144,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1988,V15152,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1989,V16653,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1990,V18091,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1991,V19391,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1992,V20691,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1993,V22446,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1994,NA,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1995,ER5066B,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1996,ER7162,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1997,ER10080,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,1999,ER13085,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2001,ER17096,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2003,ER21122,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2005,ER25103,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2007,ER36108,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2009,ER42139,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2011,ER47447,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2013,ER53147,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2015,ER60162,A52 LIKELIHOOD OF MOVING,likelihood_move
+PSID Family-level,2017,ER66163,A52 LIKELIHOOD OF MOVING,likelihood_move
