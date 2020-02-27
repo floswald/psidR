@@ -30,7 +30,97 @@ This package attempts to help the task of building a panel dataset. The user dir
 
 ### Usage
 
-First we present some tests on differently sized datasets, assuming different scenarios (with or without individual-file data). Then, we present a real world example building a full 1968-2017 panel.
+First present a real world example building a full 1968-2017 panel. Then we show some tests.
+
+
+### Real World Example: With Missing Variables
+
+* You want a `data.table` with the following columns: `PID,year,income,wage,age,educ` and some more variables.
+* You went to the [PSID variable search](https://simba.isr.umich.edu/VS/s.aspx) to look up the relevant variable names in each year in either the `individual-level` or `family-level` datasets.
+* You created a list of those variables as I did in `inst/psid-lists` of this package
+* You noted that there is **NO EDUCATION** variable in the individual index file in 1968 and 1969
+    * Instead of the variable name for `EDUC` in 1968 and 1969 you want to put `NA`
+* You noted that there is **NO HOURLY WAGE** variable in the family index file in 1993
+    * Instead of the variable name for `HOURLY WAGE` in 1993 you want to put `NA`
+
+```R
+# Build panel with income, wage, age, education and several other variables
+# [this is the body of the function build.psid()]
+library(psidR)
+r = system.file(package="psidR")
+f = data.table::fread(file.path(r,"psid-lists","famvars.txt"))
+i = data.table::fread(file.path(r,"psid-lists","indvars.txt"))
+
+> i
+                           dataset year variable                  label   name
+  1: PSID Individual Data by Years 1968  ER30019   INDIVIDUAL WEIGHT 68 weight
+  2: PSID Individual Data by Years 1969  ER30042   INDIVIDUAL WEIGHT 69 weight
+  3: PSID Individual Data by Years 1970  ER30066   INDIVIDUAL WEIGHT 70 weight
+  4: PSID Individual Data by Years 1971  ER30090   INDIVIDUAL WEIGHT 71 weight
+  5: PSID Individual Data by Years 1972  ER30116   INDIVIDUAL WEIGHT 72 weight
+ ---                                                                          
+143:    PSID Individual Data Index 2009  ER34020 HIGHEST GRADE FINISHED   educ
+144:    PSID Individual Data Index 2011  ER34119 HIGHEST GRADE FINISHED   educ
+145:    PSID Individual Data Index 2013  ER34230 HIGHEST GRADE FINISHED   educ
+146:    PSID Individual Data Index 2015  ER34349 HIGHEST GRADE FINISHED   educ
+147:    PSID Individual Data Index 2017  ER34548 HIGHEST GRADE FINISHED   educ
+
+> f
+                   dataset year variable                     label            name
+  1: PSID Main Family Data 1968      V47 HD ANN HRS WORKED LAST YR           hours
+  2: PSID Main Family Data 1969     V465 HD ANN HRS WORKED LAST YR           hours
+  3: PSID Main Family Data 1970    V1138 HD ANN HRS WORKED LAST YR           hours
+  4: PSID Main Family Data 1971    V1839 HD ANN HRS WORKED LAST YR           hours
+  5: PSID Main Family Data 1972    V2439 HD ANN HRS WORKED LAST YR           hours
+ ---                                                                              
+609:     PSID Family-level 2009  ER42139  A52 LIKELIHOOD OF MOVING likelihood_move
+610:     PSID Family-level 2011  ER47447  A52 LIKELIHOOD OF MOVING likelihood_move
+611:     PSID Family-level 2013  ER53147  A52 LIKELIHOOD OF MOVING likelihood_move
+612:     PSID Family-level 2015  ER60162  A52 LIKELIHOOD OF MOVING likelihood_move
+613:     PSID Family-level 2017  ER66163  A52 LIKELIHOOD OF MOVING likelihood_move
+
+# alternatively, use `getNamesPSID`:
+# cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
+# Suppose you know the name of the variable in a certain year, and it is
+# "ER17013". then get the correpsonding name in another year with
+# getNamesPSID("ER17013", cwf, years = 2001)  # 2001 only
+# getNamesPSID("ER17013", cwf, years = 2003)  # 2003
+# getNamesPSID("ER17013", cwf, years = NULL)  # all years
+# getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))   # some years
+
+# next, bring into required shape:
+
+i = dcast(i[,list(year,name,variable)],year~name, value.var = "variable")
+f = dcast(f[,list(year,name,variable)],year~name, value.var = "variable")
+
+> head(i)
+   year     age    educ empstat  weight
+1: 1968 ER30004 ER30010    <NA> ER30019
+2: 1969 ER30023    <NA>    <NA> ER30042        # NOTICE THE NA for educ HERE!!
+3: 1970 ER30046 ER30052    <NA> ER30066
+4: 1971 ER30070 ER30076    <NA> ER30090
+5: 1972 ER30094 ER30100    <NA> ER30116
+6: 1973 ER30120 ER30126    <NA> ER30137
+
+> head(f)
+   year age_youngest_child debt empstat_ faminc hours hvalue ...
+1: 1968               V120 <NA>     V196    V81   V47     V5 ...
+2: 1969              V1013 <NA>     V639   V529  V465   V449 ...
+3: 1970              V1243 <NA>    V1278  V1514 V1138  V1122 ...
+4: 1971              V1946 <NA>    V1983  V2226 V1839  V1823 ...
+5: 1972              V2546 <NA>    V2581  V2852 V2439  V2423 ...
+6: 1973              V3099 <NA>    V3114  V3256 V3027  V3021 ...
+
+# call the builder function
+
+d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
+
+# d contains your panel
+
+save(d,file="~/psid.Rds")
+```
+
+Here are some tests:
 
 ```R
 # one year test, no ind file
@@ -113,93 +203,6 @@ medium.test.ind.NA()
 ```
 
 
-
-### Real World Example: Missing Variables
-
-* You want a `data.table` with the following columns: `PID,year,income,wage,age,educ`.
-* You went to the [PSID variable search](https://simba.isr.umich.edu/VS/s.aspx) to look up the relevant variable names in each year in either the `individual-level` or `family-level` datasets.
-* You created a list of those variables as I did in `inst/psid-lists` of this package
-* You noted that there is **NO EDUCATION** variable in the individual index file in 1968 and 1969
-    * Instead of the variable name for `EDUC` in 1968 and 1969 you want to put `NA`
-* You noted that there is **NO HOURLY WAGE** variable in the family index file in 1993
-    * Instead of the variable name for `HOURLY WAGE` in 1993 you want to put `NA`
-
-```R
-# Build panel with income, wage, age, education and several other variables
-# [this is the body of the function build.psid()]
-library(psidR)
-r = system.file(package="psidR")
-f = data.table::fread(file.path(r,"psid-lists","famvars.txt"))
-i = data.table::fread(file.path(r,"psid-lists","indvars.txt"))
-
-> i
-                           dataset year variable                  label   name
-  1: PSID Individual Data by Years 1968  ER30019   INDIVIDUAL WEIGHT 68 weight
-  2: PSID Individual Data by Years 1969  ER30042   INDIVIDUAL WEIGHT 69 weight
-  3: PSID Individual Data by Years 1970  ER30066   INDIVIDUAL WEIGHT 70 weight
-  4: PSID Individual Data by Years 1971  ER30090   INDIVIDUAL WEIGHT 71 weight
-  5: PSID Individual Data by Years 1972  ER30116   INDIVIDUAL WEIGHT 72 weight
- ---                                                                          
-143:    PSID Individual Data Index 2009  ER34020 HIGHEST GRADE FINISHED   educ
-144:    PSID Individual Data Index 2011  ER34119 HIGHEST GRADE FINISHED   educ
-145:    PSID Individual Data Index 2013  ER34230 HIGHEST GRADE FINISHED   educ
-146:    PSID Individual Data Index 2015  ER34349 HIGHEST GRADE FINISHED   educ
-147:    PSID Individual Data Index 2017  ER34548 HIGHEST GRADE FINISHED   educ
-
-> f
-                   dataset year variable                     label            name
-  1: PSID Main Family Data 1968      V47 HD ANN HRS WORKED LAST YR           hours
-  2: PSID Main Family Data 1969     V465 HD ANN HRS WORKED LAST YR           hours
-  3: PSID Main Family Data 1970    V1138 HD ANN HRS WORKED LAST YR           hours
-  4: PSID Main Family Data 1971    V1839 HD ANN HRS WORKED LAST YR           hours
-  5: PSID Main Family Data 1972    V2439 HD ANN HRS WORKED LAST YR           hours
- ---                                                                              
-609:     PSID Family-level 2009  ER42139  A52 LIKELIHOOD OF MOVING likelihood_move
-610:     PSID Family-level 2011  ER47447  A52 LIKELIHOOD OF MOVING likelihood_move
-611:     PSID Family-level 2013  ER53147  A52 LIKELIHOOD OF MOVING likelihood_move
-612:     PSID Family-level 2015  ER60162  A52 LIKELIHOOD OF MOVING likelihood_move
-613:     PSID Family-level 2017  ER66163  A52 LIKELIHOOD OF MOVING likelihood_move
-
-# alternatively, use `getNamesPSID`:
-# cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
-# Suppose you know the name of the variable in a certain year, and it is
-# "ER17013". then get the correpsonding name in another year with
-# getNamesPSID("ER17013", cwf, years = 2001)  # 2001 only
-# getNamesPSID("ER17013", cwf, years = 2003)  # 2003
-# getNamesPSID("ER17013", cwf, years = NULL)  # all years
-# getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))   # some years
-
-# next, bring into required shape:
-
-i = dcast(i[,list(year,name,variable)],year~name, value.var = "variable")
-f = dcast(f[,list(year,name,variable)],year~name, value.var = "variable")
-
-> head(i)
-   year     age    educ empstat  weight
-1: 1968 ER30004 ER30010    <NA> ER30019
-2: 1969 ER30023    <NA>    <NA> ER30042
-3: 1970 ER30046 ER30052    <NA> ER30066
-4: 1971 ER30070 ER30076    <NA> ER30090
-5: 1972 ER30094 ER30100    <NA> ER30116
-6: 1973 ER30120 ER30126    <NA> ER30137
-
-> head(f)
-   year age_youngest_child debt empstat_ faminc hours hvalue ...
-1: 1968               V120 <NA>     V196    V81   V47     V5 ...
-2: 1969              V1013 <NA>     V639   V529  V465   V449 ...
-3: 1970              V1243 <NA>    V1278  V1514 V1138  V1122 ...
-4: 1971              V1946 <NA>    V1983  V2226 V1839  V1823 ...
-5: 1972              V2546 <NA>    V2581  V2852 V2439  V2423 ...
-6: 1973              V3099 <NA>    V3114  V3256 V3027  V3021 ...
-
-# call the builder function
-
-d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
-
-# d contains your panel
-
-save(d,file="~/psid.Rds")
-```
 
 
 
