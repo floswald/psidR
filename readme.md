@@ -11,7 +11,7 @@
 
 This R package provides a function to easily build panel data from PSID raw data.
 
-**Warning**: the wealth-supplement setup has changed on the PSID system. wealth variables are now part of the family files fro waves 1999 onwards. The `wealth=TRUE` option has been removed. See [this issue](https://github.com/floswald/psidR/issues/34) for more details.
+**Warning**: the wealth-supplement setup has changed on the PSID system. wealth variables are now part of the family files for waves 1999 onwards. The `wealth=TRUE` option has therefore been removed from the package. See [this issue](https://github.com/floswald/psidR/issues/34) for more details.
 
 ### PSID
 
