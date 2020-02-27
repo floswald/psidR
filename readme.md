@@ -37,7 +37,7 @@ First present a real world example building a full 1968-2017 panel. Then we show
 
 * You want a `data.table` with the following columns: `PID,year,income,wage,age,educ` and some more variables.
 * You went to the [PSID variable search](https://simba.isr.umich.edu/VS/s.aspx) to look up the relevant variable names in each year in either the `individual-level` or `family-level` datasets.
-* You created a list of those variables as I did in `inst/psid-lists` of this package
+* You created a list of those variables as I did in [`inst/psid-lists`](inst/psid-lists) of this package
 * You noted that there is **NO EDUCATION** variable in the individual index file in 1968 and 1969
     * Instead of the variable name for `EDUC` in 1968 and 1969 you want to put `NA`
 * You noted that there is **NO HOURLY WAGE** variable in the family index file in 1993
