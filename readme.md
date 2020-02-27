@@ -15,18 +15,18 @@ This R package provides a function to easily build panel data from PSID raw data
 
 ### PSID
 
-The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publicly available dataset. You have to register and agree to terms and conditions, but there are no other strings attached. 
+The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publicly available dataset. 
 
 * you can use the [data center](http://simba.isr.umich.edu/default.aspx) to build simple datasets
 * not workable for larger datasets
   * some variables don't show up (although you know they exist)
   * the ftp interface gets slower the more periods you are looking at
   * the click and scroll exercise of selecting the right variables in each period is extremely error prone. 
-* merging the data manually is tricky.
+* merging the data manually is non-trivial.
 
 ### psidR
 
-This package attempts to help the task of building a panel data. The user directly downloads ASCII data from the server to and into `R`, without the need for any other software like stata or sas. To build the panel, the user must then specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. The helper function `getNamesPSID` is helpful in finding different variable names across waves - see examples below.
+This package attempts to help the task of building a panel dataset. The user directly downloads ASCII data from the PSID server into `R`, **without the need** for any other software like stata or sas. To build the panel, the user must then specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. The helper function `getNamesPSID` is helpful in finding different variable names across waves - see examples below.
 
 ### Usage
 
@@ -67,6 +67,8 @@ build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 # etc for
 medium.test.noind()
 
+# example output:
+
 INFO [2018-10-10 10:58:23] Will download missing datasets now
 INFO [2018-10-10 10:58:23] will download family files: 2003, 2005, 2007
 This can take several hours/days to download.
@@ -92,7 +94,6 @@ INFO [2018-10-10 11:28:37]
 INFO [2018-10-10 11:28:37] psidR: currently working on data for year 2007
 INFO [2018-10-10 11:28:39] balanced design reduces sample from 97377 to 89571
 INFO [2018-10-10 11:28:39] End of build.panel
-> x
 > x
        age interview ID1968 pernum sequence relation.head     pid year
     1:  92         1    848      2        1            10  848002 2003
@@ -124,8 +125,8 @@ medium.test.ind.NA()
     * Instead of the variable name for `HOURLY WAGE` in 1993 you want to put `NA`
 
 ```R
-# Build panel with income, wage, age and education
-# this is the body of the function build.psid()
+# Build panel with income, wage, age, education and several other variables
+# [this is the body of the function build.psid()]
 library(psidR)
 r = system.file(package="psidR")
 f = data.table::fread(file.path(r,"psid-lists","famvars.txt"))
@@ -159,7 +160,7 @@ i = data.table::fread(file.path(r,"psid-lists","indvars.txt"))
 612:     PSID Family-level 2015  ER60162  A52 LIKELIHOOD OF MOVING likelihood_move
 613:     PSID Family-level 2017  ER66163  A52 LIKELIHOOD OF MOVING likelihood_move
 
-# alternatively, use getNamesPSID:
+# alternatively, use `getNamesPSID`:
 # cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
 # Suppose you know the name of the variable in a certain year, and it is
 # "ER17013". then get the correpsonding name in another year with
@@ -229,21 +230,8 @@ example(build.panel)
 
 ### Supplemental Datasets
 
-The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. **By default, the merging with wealth files is suspended in the package at the moment**.
+The PSID has a wealth of add-on datasets. Once you have a panel those are easy to merge on. The panel will have a variable `interview`, which is the identifier in the supplemental dataset. 
 
-```R
-medium.test.ind.NA.wealth <- function(dd=NULL){
-    cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
-    head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2005,2007))
-    educ = getNamesPSID("ER30323",cwf,years=c(2005,2007))
-    educ[2] = NA
-    r = system.file(package="psidR")
-    w = fread(file.path(r,"psid-lists","wealthvars-small.txt"))
-    famvars = data.frame(year=c(2005,2007),age=head_age_var_name)
-    indvars = data.frame(year=c(2005,2007),educ=educ)
-    build.panel(fam.vars=famvars,ind.vars=indvars,wealth.vars=w,datadir=dd,loglevel = DEBUG)
-}
-```
 
 ## Citation
 
@@ -255,7 +243,7 @@ If you use `psidR` in your work, please consider citing it. You could just do
 To cite package ‘psidR’ in publications use:
 
   Florian Oswald (2020). psidR: Build Panel Data Sets from PSID Raw
-  Data. R package version 1.8. https://github.com/floswald/psidR
+  Data. R package version 2.0. https://github.com/floswald/psidR
 
 A BibTeX entry for LaTeX users is
 
