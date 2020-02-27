@@ -263,7 +263,7 @@ A BibTeX entry for LaTeX users is
     title = {psidR: Build Panel Data Sets from PSID Raw Data},
     author = {Florian Oswald},
     year = {2020},
-    note = {R package version 1.8},
+    note = {R package version 2.0},
     url = {https://github.com/floswald/psidR},
   }
 ```
