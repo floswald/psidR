@@ -47,9 +47,10 @@ First present a real world example building a full 1968-2017 panel. Then we show
 # Build panel with income, wage, age, education and several other variables
 # [this is the body of the function build.psid()]
 library(psidR)
+library(data.table)
 r = system.file(package="psidR")
-f = data.table::fread(file.path(r,"psid-lists","famvars.txt"))
-i = data.table::fread(file.path(r,"psid-lists","indvars.txt"))
+f = fread(file.path(r,"psid-lists","famvars.txt"))
+i = fread(file.path(r,"psid-lists","indvars.txt"))
 
 > i
                            dataset year variable                  label   name
