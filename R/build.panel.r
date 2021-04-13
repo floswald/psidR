@@ -164,7 +164,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 	wlth.down <- TRUE  # initiate to something
 
 	# all psid family files
-	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2019 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 , 1187))
+	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2019 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 , 1187 , 1194))
 	# family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164  ))
 
 	#subset to the years we want
