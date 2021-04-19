@@ -164,7 +164,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 	wlth.down <- TRUE  # initiate to something
 
 	# all psid family files
-	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2017 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 , 1187))
+	family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2019 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164 , 1183 , 1187 , 1194))
 	# family    <- data.frame(year = c( 1968:1997 , seq( 1999 , 2013 , 2 ) ),file = c( 1056 , 1058:1082 , 1047:1051 , 1040 , 1052 , 1132 , 1139 , 1152  , 1156, 1164  ))
 
 	#subset to the years we want
@@ -198,7 +198,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 
 	ind.down <- FALSE
 	# check if datadir contains individual index already
-	if (("IND2017ER.rda" %in% lf) | ("IND2017ER.RData" %in% lf)) {
+	if (("IND2019ER.rda" %in% lf) | ("IND2019ER.RData" %in% lf)) {
 		#download latest individual index
 		ind.down = TRUE
 	}
@@ -210,7 +210,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 			flog.info("will download family files: %s",paste(family[!families.down,"year"],collapse=", "))
 		} 
 		if (!ind.down) {
-			flog.info("will download latest individual index: IND2017ER")
+			flog.info("will download latest individual index: IND2019ER")
 		} 
 		if (!wlth.down) {
 			flog.info("will download missing wealth files.")
@@ -269,9 +269,9 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 			}
 			
 			# check if datadir contains individual index already
-			if (!("IND2017ER.rda" %in% lf)) {
+			if (!("IND2019ER.rda" %in% lf)) {
 				#download latest individual index
-				get.psid( 1053 ,name= paste0(datadir, "IND2017ER") , params , curl )
+				get.psid( 1053 ,name= paste0(datadir, "IND2019ER") , params , curl )
 			}
 
 			flog.info('finished downloading files to %s', datadir)
