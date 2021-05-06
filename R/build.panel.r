@@ -4,11 +4,14 @@
 #' 
 #' @description Builds a panel data set with id variables \code{pid} (unique person identifier) and \code{year} from individual PSID family files and supplemental wealth files.
 #' @details 
-#' There are several supported approches. Approach one downloads stata data, uses stata to build each wave, then puts it together with `psidR`. The second (recommended) approach downloads all data directly from the psid servers (no Stata needed. For this approach you need to supply the precise names of psid variables - those variable names vary by year. E.g. \emph{total family income} will have different names in different waves. The function \code{\link{getNamesPSID}} greatly helps collecting names for all waves.
-#' Merge: the variables \code{interview number} in each family file map to 
-#' the \code{interview number} variable of a given year in the individual file. Run \code{example(build.panel)} for a demonstration.
-#' For approach one, accepted input data are stata format .dta, .csv files or R data formats .rda and RData. This usage is similar to stata module \code{psiduse}. 
-#' Approach two follows the strategy introduced at \url{http://asdfree.com}. In fact, both approaches use the same function \code{save.psid} to download the data, \code{psidR} automates the merge and subsetting proceedure for you. 
+#' There are several supported approches. Approach one downloads stata data, uses stata to build each wave, then puts it together with `psidR`. The second (recommended) approach downloads all data directly from the psid servers (no Stata needed). For this approach you need to supply the precise names of psid variables - those variable names vary by year. E.g. \emph{total family income} will have different names in different waves. The function \code{\link{getNamesPSID}} greatly helps collecting names for all waves.
+#' @section Merging:
+#' The variables \code{interview number} in each family file map to 
+#' the \code{interview number} variable of a given year in the individual file. Run \code{example(build.panel)} for a demonstration.  
+#' 
+#' @section Supplements:
+#' \emph{Notice that support for wealth supplements is disabled!} Recent releases of the main family file have wealth data included. Earlier waves must be merged manually, again by variable \code{interview number} as above. 
+
 #' @param datadir either \code{NULL}, in which case saves to tmpdir or path to directory containing family files ("FAMyyyy.RData") and individual file ("IND2009ER.RData").
 #' @param fam.vars data.frame of variable to retrieve from family files. Can contain see example for required format.
 #' @param ind.vars data.frame of variables to get from individual file. In almost all cases this will be the type of survey weights you want to use. don't include id variables ER30001 and ER30002.
@@ -19,8 +22,7 @@
 #' @param loglevel one of INFO, WARN and DEBUG. INFO by default.
 #' @import SAScii RCurl data.table
 #' @return
-#' \item{data}{resulting \code{data.table}. the variable \code{pid} is the unique person identifier, constructed from ID1968 and pernum.}
-#' \item{dict}{data dictionary if stata data was supplied, NULL else}
+#' resulting \code{data.table}. the variable \code{pid} is the unique person identifier, constructed from ID1968 and pernum
 #' @export
 #' @examples 
 #' \dontrun{
@@ -68,7 +70,7 @@
 #' td <- testPSID(N=12,N.attr=0)
 #' fam1985 <- data.table::copy(td$famvars1985)
 #' fam1986 <- data.table::copy(td$famvars1986)
-#' IND2009ER <- data.table::copy(td$IND2009ER)
+#' IND2019ER <- data.table::copy(td$IND2019ER)
 #' 
 #' # create a temporary datadir
 #' my.dir <- tempdir()
@@ -76,7 +78,7 @@
 #' # notice different R formats admissible
 #' save(fam1985,file=paste0(my.dir,"/FAM1985ER.rda"))
 #' save(fam1986,file=paste0(my.dir,"/FAM1986ER.RData"))
-#' save(IND2009ER,file=paste0(my.dir,"/IND2009ER.RData"))
+#' save(IND2019ER,file=paste0(my.dir,"/IND2019ER.RData"))
 #' 
 #' ## end Data acquisition step.
 #' 
@@ -113,7 +115,7 @@
 #' 
 #' file.remove(paste0(my.dir,"/FAM1985ER.rda"),
 #'             paste0(my.dir,"/FAM1986ER.RData"),
-#'             paste0(my.dir,"/IND2009ER.RData"))
+#'             paste0(my.dir,"/IND2019ER.RData"))
 #' 
 #' # END psidR example
 #' 

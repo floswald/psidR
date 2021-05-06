@@ -3,7 +3,6 @@
 \docType{package}
 \name{psidR}
 \alias{psidR}
-\alias{psidR-package}
 \title{psidR}
 \description{
 psidR is a package that helps the task of building longitudinal datasets from the Panel Study of Income Dynamics (PSID). 

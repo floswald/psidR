@@ -11,7 +11,7 @@
 
 This R package provides a function to easily build panel data from PSID raw data.
 
-**Warning**: the wealth-supplement setup has changed on the PSID system. wealth variables are now part of the family files for waves 1999 onwards. The `wealth=TRUE` option has therefore been removed from the package. See [this issue](https://github.com/floswald/psidR/issues/34) for more details.
+>**Warning**: the wealth-supplement setup has changed on the PSID system. wealth variables are now part of the family files for waves 1999 onwards. The `wealth=TRUE` option has therefore been removed from the package. See [this issue](https://github.com/floswald/psidR/issues/34) for more details.
 
 ### PSID
 
@@ -244,18 +244,18 @@ If you use `psidR` in your work, please consider citing it. You could just do
 ```R
 > citation(package="psidR")
 
-To cite package ‘psidR’ in publications use:
+To cite the 'psidR' package in publications use:
 
-  Florian Oswald (2020). psidR: Build Panel Data Sets from PSID Raw
-  Data. R package version 2.0. https://github.com/floswald/psidR
+  Florian Oswald (2021). psidR: Build Panel Data Sets from PSID Raw Data. R package version
+  2.1.
 
 A BibTeX entry for LaTeX users is
 
   @Manual{,
     title = {psidR: Build Panel Data Sets from PSID Raw Data},
     author = {Florian Oswald},
-    year = {2020},
-    note = {R package version 2.0},
+    year = {2021},
+    note = {R package version 2.1},
     url = {https://github.com/floswald/psidR},
   }
 ```

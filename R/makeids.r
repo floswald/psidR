@@ -247,7 +247,6 @@ testPSID <-function(N=100,N.attr = 0){
 	
     # same on index file
 	setnames(IND2009ER,c("intnum85","intnum86"), c("ER30463","ER30498"))
-	IND2009ER
-  
-    return(list(famvars1985=fam85,famvars1986=fam86,IND2009ER=IND2009ER))
+
+    return(list(famvars1985=fam85,famvars1986=fam86,IND2019ER=IND2009ER))
 }

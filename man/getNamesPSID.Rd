@@ -50,5 +50,5 @@ getNamesPSID("ER17013", cwf, years = NULL)
 getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
 }
 \author{
-Paul Johnson <pauljohn@ku.edu>
+Paul Johnson <pauljohn@ku.edu> and Florian Oswald
 }

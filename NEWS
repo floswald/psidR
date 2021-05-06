@@ -1,3 +1,10 @@
+*********************
+* News in Version 2.1
+*********************
+
+* Updated to PSID to 2019 wave https://github.com/floswald/psidR/pull/45
+* No longer support building with wealth variables. Those are included in the main family data file, and must be merged manually for early waves.
+
 
 *********************
 * News in Version 1.6
