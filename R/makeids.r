@@ -97,7 +97,7 @@ makeids.wealth <- function(){
 	  
 #' get.psid connects to PSID database and downloads into Rda
 #'
-#' see \url{http://www.asdfree.com/} for other usage and \url{http://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
+#' see \url{http://asdfree.com/} for other usage and \url{https://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
 #' @author Anthony Damico <ajdamico@@gmail.com>
 #' @param file string psid file number
 #' @param name string of filename on disc
