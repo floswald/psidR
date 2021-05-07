@@ -16,7 +16,7 @@ get.psid(file, name, params, curl)
 \item{curl}{postForm{RCurl} curl handle}
 }
 \description{
-see \url{http://www.asdfree.com/} for other usage and \url{http://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
+see \url{http://asdfree.com/} for other usage and \url{https://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
 }
 \author{
 Anthony Damico <ajdamico@gmail.com>
