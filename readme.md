@@ -28,6 +28,42 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 
 This package attempts to help the task of building a panel dataset. The user directly downloads ASCII data from the PSID server into `R`, **without the need** for any other software like stata or sas. To build the panel, the user must then specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. The helper function `getNamesPSID` is helpful in finding different variable names across waves - see examples below.
 
+
+### Quick Start
+
+```R
+> library(psidR)
+
+> build.psid(datadr = "~/data/PSID", small = TRUE)  # directory `datadr` must exist!
+INFO [2021-07-13 10:34:26] Will download missing datasets now
+INFO [2021-07-13 10:34:26] will download family files: 2013, 2015
+INFO [2021-07-13 10:34:26] will download latest individual index: IND2019ER
+This can take several hours/days to download.
+ want to go ahead? give me 'yes' or 'no'.yes
+please enter your PSID username: *****
+please enter your PSID password: *****
+INFO [2021-07-13 10:34:41] downloading file ~/data/PSID/FAM2013ER
+INFO [2021-07-13 10:34:56] now reading and processing SAS file ~/data/PSID/FAM2013ER into R
+INFO [2021-07-13 10:40:06] downloading file ~/data/PSID/FAM2015ER          
+INFO [2021-07-13 10:40:22] now reading and processing SAS file ~/data/PSID/FAM2015ER into R
+INFO [2021-07-13 10:45:34] downloading file ~/data/PSID/IND2019ER          
+INFO [2021-07-13 10:46:39] now reading and processing SAS file ~/data/PSID/IND2019ER into R
+INFO [2021-07-13 11:15:04] finished downloading files to ~/data/PSID/       
+INFO [2021-07-13 11:15:04] continuing now to build the dataset
+INFO [2021-07-13 11:15:04] psidR: Loading Family data from .rda files
+INFO [2021-07-13 11:15:12] psidR: loaded individual file: ~/data/PSID/IND2019ER.rda
+INFO [2021-07-13 11:15:12] psidR: total memory load in MB: 1538
+INFO [2021-07-13 11:15:12] psidR: currently working on data for year 2013
+INFO [2021-07-13 11:15:12] full 2013 sample has 82573 obs
+INFO [2021-07-13 11:15:12] you selected 34856 obs belonging to SRC
+INFO [2021-07-13 11:15:12] dropping non-heads leaves 5450 obs
+INFO [2021-07-13 11:15:14] psidR: currently working on data for year 2015
+INFO [2021-07-13 11:15:14] full 2015 sample has 82573 obs
+INFO [2021-07-13 11:15:14] you selected 34856 obs belonging to SRC
+INFO [2021-07-13 11:15:14] dropping non-heads leaves 5318 obs
+INFO [2021-07-13 11:15:16] End of build.panel
+```
+
 ### Usage
 
 First present a real world example building a full 1968-2017 panel. Then we show some tests.
