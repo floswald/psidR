@@ -12,6 +12,22 @@
 This R package provides a function to easily build panel data from PSID raw data.
 
 >**Warning**: the wealth-supplement setup has changed on the PSID system. wealth variables are now part of the family files for waves 1999 onwards. The `wealth=TRUE` option has therefore been removed from the package. See [this issue](https://github.com/floswald/psidR/issues/34) for more details.
+>
+
+## How to install this package
+
+The package is on CRAN, so just type
+
+```r
+install.packages('psidR')
+```
+
+Alternatively to get the up-to-date version from this repository,
+
+```r
+install.packages('devtools')
+install_github("psidR",username="floswald")
+```
 
 ### PSID
 
@@ -243,20 +259,7 @@ medium.test.ind.NA()
 
 
 
-### How to install this package
 
-The package is on CRAN, so just type
-
-```r
-install.packages('psidR')
-```
-
-Alternatively to get the up-t-date version from this repository,
-
-```r
-install.packages('devtools')
-install_github("psidR",username="floswald")
-```
 
 
 ### Example Usage
