@@ -805,6 +805,35 @@ getNamesPSID <- function(aname, cwf, years = NULL,file = NULL){
     }
     ovalue <- transpose(cwf[myvar[1], yearkeep, drop = FALSE])
     od = data.frame(year = ynames.labs, variable = ovalue$V1)
+    
+    # a quick and dirty fix here
+    #--------------------------------------------------------------------------------------------------
+    # The psid-cross-year-index crosswalk (cwf) has an issue with those all-year-individual-level vars 
+    # (e.g. SEX OF INDIVIDUAL ER32000), even though they are in fact included in every waves of the survey, in 
+    # this crosswalk, they are only put in the column corresponding with the most recent year. 
+    #
+    # Since the psid-cross-year-index crosswalk is what we for reference here, when we call this 
+    # function with these all year vars, we would get some empty cells. 
+    #
+    # As a solution, we would check if the given var is in the following all-year-individual-level var list, 
+    # and fill in the blanks if needed. 
+    #--------------------------------------------------------------------------------------------------
+    all_year_ind_var_li <- c('ER31987', 'ER31988', 'ER31989', 'ER31990', 'ER31991', 'ER31992',
+                             'ER31993', 'ER31994', 'ER31995', 'ER31996', 'ER31997', 'ER32000',
+                             'ER32001', 'ER32002', 'ER32003', 'ER32004', 'ER32005', 'ER32006',
+                             'ER32007', 'ER32008', 'ER32009', 'ER32010', 'ER32011', 'ER32012',
+                             'ER32013', 'ER32014', 'ER32015', 'ER32016', 'ER32017', 'ER32018',
+                             'ER32019', 'ER32020', 'ER32021', 'ER32022', 'ER32023', 'ER32024',
+                             'ER32025', 'ER32026', 'ER32027', 'ER32028', 'ER32029', 'ER32030',
+                             'ER32031', 'ER32032', 'ER32033', 'ER32034', 'ER32035', 'ER32036',
+                             'ER32037', 'ER32038', 'ER32039', 'ER32040', 'ER32041', 'ER32042',
+                             'ER32043', 'ER32044', 'ER32045', 'ER32046', 'ER32047', 'ER32048',
+                             'ER32049', 'ER32050', 'ER32051')
+    if (is.element(aname, all_year_ind_var_li)){
+      od$variable = aname
+    }
+    
+    # write to specified file
     if (!is.null(file)){
         write.table(od,file = file,row.names = FALSE)
     }
