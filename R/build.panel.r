@@ -367,7 +367,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 		flog.info('psidR: currently working on data for year %d',years[iy])
 		
  
-   		# keeping only relevant columns from individual file
+   	# keeping only relevant columns from individual file
 		# subset only if requested.
 		curr <- ids[list(years[iy])]
 		if (years[iy] == 1968){
@@ -391,7 +391,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 
 			# issue https://github.com/floswald/psidR/issues/4
 			# ------------------------------------------------
-			# check for NA in ind.vars: these are years when a certain variable isn not available in the individual index file.
+			# check for NA in ind.vars: these are years when a certain variable is not available in the individual index file.
 			# adjust for first year (1968) when `sequence` was not available
 			ind.notnas <- NULL
 			if (any(is.na(ind.vars.yr))){
@@ -786,11 +786,15 @@ build.psid <- function(datadr="~/datasets/psid/",small=TRUE){
 #' getNamesPSID("ER17013", cwf, years = NULL)
 #' getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
 getNamesPSID <- function(aname, cwf, years = NULL,file = NULL){
+    
+    # find the given var name in cwf
     myvar <- which(cwf == aname, arr.ind=TRUE)
-    ## variables that begin with Y
+    
+    # find the year cols in cwf (those with names that begin with Y)
     ynames.all <- grep("^Y", colnames(cwf))
     ynames.labs <- grep("^Y", colnames(cwf),value = TRUE)
 
+    # retrieve the year-specific var names from cwf
     if (is.null(years)){
         yearkeep <- ynames.all
     } else {
