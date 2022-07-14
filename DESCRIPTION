@@ -15,7 +15,8 @@ Description: Makes it easy to build panel data in wide format from Panel Survey
     waves. There are different panel data designs and sample subsetting criteria
     implemented ("SRC", "SEO", "immigrant" and "latino" samples).
 Depends: R (>= 3.5.0)
-URL: https://github.com/floswald/psidR
+URL: https://github.com/floswald/psidR,
+    http://floswald.github.io/psidR/
 Imports:
     data.table,
     RCurl,
