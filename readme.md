@@ -6,7 +6,7 @@
 
 | Build  | DOI  | Docs  |
 |---|---|---|
-|[![Build Status](https://travis-ci.org/floswald/psidR.svg)](https://travis-ci.org/floswald/psidR) | [![DOI](https://zenodo.org/badge/9247059.svg)](https://zenodo.org/badge/latestdoi/9247059) | [![DOCS](https://img.shields.io/badge/docs-Documentation-blue)](https://floswald.github.io/psidR)|
+[![R-CMD-check](https://github.com/floswald/psidR/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/floswald/psidR/actions/workflows/check-standard.yaml) | [![DOI](https://zenodo.org/badge/9247059.svg)](https://zenodo.org/badge/latestdoi/9247059) | [![DOCS](https://img.shields.io/badge/docs-Documentation-blue)](https://floswald.github.io/psidR)|
 
 
 This R package provides a function to easily build panel data from PSID raw data.
