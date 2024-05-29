@@ -1,9 +1,0 @@
-language: r
-
-warnings_are_errors: false 
-
-r_binary_packages:
- - testthat
- - data.table
- - RCurl
- - SAScii

@@ -1,8 +1,8 @@
 Package: psidR
 Type: Package
 Title: Build Panel Data Sets from PSID Raw Data
-Version: 2.1
-Date: 2021-05-06
+Version: 2.2
+Date: 2024-05-29
 Author: Florian Oswald
 Maintainer: Florian Oswald <florian.oswald@gmail.com>
 Description: Makes it easy to build panel data in wide format from Panel Survey
@@ -31,4 +31,4 @@ Collate:
     'psidR-package.r'
 Suggests:
     testthat
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3

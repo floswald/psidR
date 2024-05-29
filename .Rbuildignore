@@ -10,3 +10,5 @@ cookies.txt$
 \.Rhistory$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+.github
+_pkgdown.yml

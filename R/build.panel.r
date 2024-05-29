@@ -336,13 +336,31 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 	# convert fam.vars to data.table
 	stopifnot(is.data.frame(fam.vars))
 	fam.vars <- data.table(fam.vars)
+	
+	if (!all(c("year") %in% names(fam.vars))){
+	    stop("your fam.vars needs to contain column `year`")
+	}
+	
+	nlist = grepl(".year|.variable", names(fam.vars))
+	if (any(nlist)){
+	    flog.error("your `fam.vars` contains illegal names ", names(fam.vars)[nlist], capture = TRUE)
+	    stop()
+	}
 	fam.vars <- copy(fam.vars[,lapply(.SD,make.char)])
 	setkey(fam.vars,year)
 	
 	# convert ind.vars to data.table if not null
 	if (!is.null(ind.vars)){
 		stopifnot(is.data.frame(ind.vars))
+	    if (!all(c("year") %in% names(ind.vars))){
+	        stop("your ind.vars needs to contain columns `year`")
+	    }
 		ind.vars <- data.table(ind.vars)
+		nlist = grepl(".year|.variable", names(ind.vars))
+		if (any(nlist)){
+		    flog.error("your `ind.vars` contains illegal names ", names(ind.vars)[nlist], capture = TRUE)
+		    stop()
+		}
 		ind.vars <- copy(ind.vars[,lapply(.SD,make.char)])
 		setkey(ind.vars,year)
 	}
@@ -515,7 +533,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 		tmp             <- data.table(tmp)
 		
 		vs = ceiling(object.size(tmp)/1024^2)
-		flog.debug('loaded family file: ',fam.dat[iy])
+		flog.debug('loaded family file: %s',fam.dat[iy])
 		flog.debug('current memory load in MB: %d',vs)
 
 
@@ -668,8 +686,8 @@ medium.test.ind <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
  	educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
-	famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
-	indvars = data.frame(year=c(2003,2005,2007),educ=educ)
+	famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name$variable)
+	indvars = data.frame(year=c(2003,2005,2007),educ=educ$variable)
 	build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 }
 
@@ -680,7 +698,7 @@ medium.test.ind <- function(dd=NULL){
 medium.test.noind <- function(dd=NULL){
   cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
   head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
-  famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
+  famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name$variable)
   build.panel(fam.vars=famvars,datadir=dd)
 }
 
@@ -694,8 +712,8 @@ medium.test.ind.NA <- function(dd=NULL){
 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
  	educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
  	educ[2] = NA
-	famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
-	indvars = data.frame(year=c(2003,2005,2007),educ=educ)
+	famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name$variable)
+	indvars = data.frame(year=c(2003,2005,2007),educ=educ$variable)
 	build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd,loglevel = DEBUG)
 }
 

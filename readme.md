@@ -45,12 +45,38 @@ The [Panel Study of Income Dynamics](http://psidonline.isr.umich.edu/) is a publ
 This package attempts to help the task of building a panel dataset. The user directly downloads ASCII data from the PSID server into `R`, **without the need** for any other software like stata or sas. To build the panel, the user must then specify the variable names in each wave of the questionnaire in a data.frame `fam.vars`, as well as the variables from the individual index in `ind.vars`. The helper function `getNamesPSID` is helpful in finding different variable names across waves - see examples below.
 
 
-### Quick Start
+### Quick Start and `API`
+
+1. You must supply at least one data.frame with variables to read from the family file. Most of the time you will also supply a data.frame with variables from the individual files to read.
+2. Those dataframes **must** be in the following format. I.e. column `year` is an integer and indicates calendar year, the other columns are the _variable names which will appear in your panel_. 
+
+```R
+> head(i)  # individiual file example
+   year     age    educ empstat  weight
+1: 1968 ER30004 ER30010    <NA> ER30019
+2: 1969 ER30023    <NA>    <NA> ER30042        # NOTICE THE NA for educ HERE!!
+3: 1970 ER30046 ER30052    <NA> ER30066
+4: 1971 ER30070 ER30076    <NA> ER30090
+5: 1972 ER30094 ER30100    <NA> ER30116
+6: 1973 ER30120 ER30126    <NA> ER30137
+
+> head(f))  # family file example
+   year age_youngest_child debt empstat_ faminc hours hvalue ...
+1: 1968               V120 <NA>     V196    V81   V47     V5 ...
+2: 1969              V1013 <NA>     V639   V529  V465   V449 ...
+3: 1970              V1243 <NA>    V1278  V1514 V1138  V1122 ...
+4: 1971              V1946 <NA>    V1983  V2226 V1839  V1823 ...
+5: 1972              V2546 <NA>    V2581  V2852 V2439  V2423 ...
+6: 1973              V3099 <NA>    V3114  V3256 V3027  V3021 ...
+```
+
+Example usage:
+
 
 ```R
 > library(psidR)
 
-> build.psid(datadr = "~/data/PSID", small = TRUE)  # directory `datadr` must exist!
+> build.psid(datadir = "~/data/PSID", small = TRUE)  # directory `datadir` must exist!
 INFO [2021-07-13 10:34:26] Will download missing datasets now
 INFO [2021-07-13 10:34:26] will download family files: 2013, 2015
 INFO [2021-07-13 10:34:26] will download latest individual index: IND2019ER
@@ -133,7 +159,7 @@ i = fread(file.path(r,"psid-lists","indvars.txt"))
 613:     PSID Family-level 2017  ER66163  A52 LIKELIHOOD OF MOVING likelihood_move
 
 # alternatively, use `getNamesPSID`:
-# cwf <- read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
+# cwf <- openxlsx::read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
 # Suppose you know the name of the variable in a certain year, and it is
 # "ER17013". then get the correpsonding name in another year with
 # getNamesPSID("ER17013", cwf, years = 2001)  # 2001 only
@@ -182,7 +208,7 @@ Here are some tests:
 cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
 # create family vars data.frame
-famvars = data.frame(year=c(2003),age=head_age_var_name)
+famvars = data.frame(year=c(2003),variable=head_age_var_name$variable)
 # call function
 build.panel(fam.vars=famvars,datadir=dd)
 
@@ -192,8 +218,8 @@ build.panel(fam.vars=famvars,datadir=dd)
 cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
 educ = getNamesPSID("ER30323",cwf,years=2003)
-famvars = data.frame(year=c(2003),age=head_age_var_name)
-indvars = data.frame(year=c(2003),educ=educ)
+famvars = data.frame(year=c(2003),variable=head_age_var_name$variable)
+indvars = data.frame(year=c(2003),variable=educ$variable)
 build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 
 
@@ -202,9 +228,9 @@ build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 
 cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
-educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
-famvars = data.frame(year=c(2003,2005,2007),age=head_age_var_name)
-indvars = data.frame(year=c(2003,2005,2007),educ=educ)
+ educ = getNamesPSID("ER30323",cwf,years=c(2003,2005,2007))
+famvars = data.frame(year=c(2003,2005,2007),variable=head_age_var_name$variable)
+indvars = data.frame(year=c(2003,2005,2007),variable=educ$variable)
 build.panel(fam.vars=famvars,ind.vars=indvars,datadir=dd)
 
 # etc for
