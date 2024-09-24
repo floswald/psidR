@@ -7,7 +7,7 @@ present."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -21,7 +21,7 @@ present."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psidR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3</span>
       </span>
     </div>
 
@@ -32,20 +32,20 @@ present."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/floswald/psidR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>GetPSID variables names from various years</h1>
-    <small class="dont-index">Source: <a href="https://github.com/floswald/psidR/blob/HEAD/R/build.panel.r" class="external-link"><code>R/build.panel.r</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/floswald/psidR/blob/master/R/build.panel.r" class="external-link"><code>R/build.panel.r</code></a></small>
     <div class="hidden name"><code>getNamesPSID.Rd</code></div>
     </div>
 
@@ -63,34 +63,34 @@ present.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>aname</dt>
+
+
+<dl><dt id="arg-aname">aname<a class="anchor" aria-label="anchor" href="#arg-aname"></a></dt>
 <dd><p>A variable name in any of the PSID years</p></dd>
 
 
-<dt>cwf</dt>
+<dt id="arg-cwf">cwf<a class="anchor" aria-label="anchor" href="#arg-cwf"></a></dt>
 <dd><p>A data.frame representation of the cross-walk file,
 (the psid.xlsx file).</p></dd>
 
 
-<dt>years</dt>
+<dt id="arg-years">years<a class="anchor" aria-label="anchor" href="#arg-years"></a></dt>
 <dd><p>A vector of years. If NULL, all years in which that
 variable existed are returned</p></dd>
 
 
-<dt>file</dt>
+<dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
 <dd><p>optional file name to write csv</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A vector of names, one for each year.</p>
+    <p>A vector of names, one for each year.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
     <p>This uses the psid.xlsx crosswalk file from UMich, which is
-available at http://psidonline.isr.umich.edu/help/xyr/psid.xlsx. In the 
+available at http://psidonline.isr.umich.edu/help/xyr/psid.xlsx. In the
 example, the package openxlsx's read.xlsx is used to import the crosswalk
 file.</p>
 <p>Ask for one variable at a time.</p>
@@ -158,6 +158,8 @@ file.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 38 Y2013  ER53017</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 39 Y2015  ER60017</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 40 Y2017  ER66017</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 Y2019  ER72017</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42 Y2021  ER78017</span>
 <span class="r-in"><span><span class="fu">getNamesPSID</span><span class="op">(</span><span class="st">"ER17013"</span>, <span class="va">cwf</span>, years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2005</span>, <span class="fl">2007</span>, <span class="fl">2009</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    year variable</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 Y2005  ER25017</span>
@@ -177,15 +179,15 @@ file.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
