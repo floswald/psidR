@@ -1,8 +1,8 @@
 Package: psidR
 Type: Package
 Title: Build Panel Data Sets from PSID Raw Data
-Version: 2.2
-Date: 2024-05-29
+Version: 2.3
+Date: 2024-09-23
 Author: Florian Oswald
 Maintainer: Florian Oswald <florian.oswald@gmail.com>
 Description: Makes it easy to build panel data in wide format from Panel Survey
@@ -15,8 +15,7 @@ Description: Makes it easy to build panel data in wide format from Panel Survey
     waves. There are different panel data designs and sample subsetting criteria
     implemented ("SRC", "SEO", "immigrant" and "latino" samples).
 Depends: R (>= 3.5.0)
-URL: https://github.com/floswald/psidR,
-    http://floswald.github.io/psidR/
+URL: https://github.com/floswald/psidR
 Imports:
     data.table,
     RCurl,
@@ -25,10 +24,11 @@ Imports:
     openxlsx,
     futile.logger
 License: GPL-3
+Encoding: UTF-8
 Collate:
     'build.panel.r'
     'makeids.r'
     'psidR-package.r'
 Suggests:
     testthat
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

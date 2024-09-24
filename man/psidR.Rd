@@ -2,10 +2,18 @@
 % Please edit documentation in R/psidR-package.r
 \docType{package}
 \name{psidR}
+\alias{psidR-package}
 \alias{psidR}
 \title{psidR}
 \description{
 psidR is a package that helps the task of building longitudinal datasets from the Panel Study of Income Dynamics (PSID). 
 The user must supply the PSID variable names that correspond to the variables of interest in each desired wave. Data can be supplied via Stata, or directly downloaded from PSID servers without any need for STATA.
 data.frame.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/floswald/psidR}
+}
+
 }

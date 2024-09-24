@@ -100,12 +100,12 @@ makeids.wealth <- function(){
 	  
 #' get.psid connects to PSID database and downloads into Rda
 #'
-#' see \url{http://asdfree.com/} for other usage and \url{https://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
+#' see \url{https://asdfree.com/} for other usage and \url{https://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
 #' @author Anthony Damico <ajdamico@@gmail.com>
 #' @param file string psid file number
 #' @param name string of filename on disc
-#' @param params postForm{RCurl} parameters
-#' @param curl postForm{RCurl} curl handle
+#' @param params `postForm` (RCurl) parameters
+#' @param curl `postForm` (RCurl) curl handle
 get.psid <- function( file , name , params , curl ){
 
 		html = postForm('http://simba.isr.umich.edu/u/Login.aspx', .params = params, curl = curl)

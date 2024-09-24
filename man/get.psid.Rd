@@ -11,12 +11,12 @@ get.psid(file, name, params, curl)
 
 \item{name}{string of filename on disc}
 
-\item{params}{postForm{RCurl} parameters}
+\item{params}{`postForm` (RCurl) parameters}
 
-\item{curl}{postForm{RCurl} curl handle}
+\item{curl}{`postForm` (RCurl) curl handle}
 }
 \description{
-see \url{http://asdfree.com/} for other usage and \url{https://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
+see \url{https://asdfree.com/} for other usage and \url{https://stackoverflow.com/questions/15853204/how-to-login-and-then-download-a-file-from-aspx-web-pages-with-r}
 }
 \author{
 Anthony Damico <ajdamico@gmail.com>

@@ -13,7 +13,6 @@
 #' @importFrom openxlsx read.xlsx
 #' @importFrom stats rlnorm rnorm runif
 #' @importFrom utils object.size tail unzip head write.table
-#' @docType package
 #' @name psidR
 #' 
-NULL
+"_PACKAGE"

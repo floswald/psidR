@@ -3,8 +3,7 @@ citHeader("To cite the 'psidR' package in publications use:")
 year = sub('.*(2[[:digit:]]{3})-.*', '\\1', meta$Date, perl = TRUE)
 vers = paste('R package version', meta$Version)
 
-citEntry(
-  entry = 'manual',
+bibentry('manual',
   title = paste('psidR:', meta$Title),
   author = 'Florian Oswald',
   year = year,

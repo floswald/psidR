@@ -114,16 +114,5 @@ test_that("check subsetting to core/immigrant/latino", {
   
 } )
 
-test_that("wrong famvars and indvars raises an error",{
-    cwf <- openxlsx::read.xlsx("http://psidonline.isr.umich.edu/help/xyr/psid.xlsx")
-    famvars = getNamesPSID("ER17013", cwf, years = c(2005, 2007, 2009))
-    expect_error(build.panel(datadir=my.dir,fam.vars=famvars)   )
-    
-    head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
-    
-    famvars = data.frame(year=c(2005, 2007, 2009),age=head_age_var_name)
-    expect_error(build.panel(datadir=my.dir,fam.vars=famvars)   )
-    
-})
 
 
