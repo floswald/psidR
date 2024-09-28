@@ -10,6 +10,9 @@ medium.test.ind.NA(dd = NULL)
 \item{dd}{Data Dictionary location. If NULL, 
 use temp dir and force download}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 three year test, ind file and one NA variable
 }

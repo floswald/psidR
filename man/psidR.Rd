@@ -17,3 +17,7 @@ Useful links:
 }
 
 }
+\author{
+\strong{Maintainer}: Florian Oswald \email{florian.oswald@gmail.com}
+
+}

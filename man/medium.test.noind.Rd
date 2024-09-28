@@ -9,6 +9,9 @@ medium.test.noind(dd = NULL)
 \arguments{
 \item{dd}{Data Dictionary location}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 three year test, no ind file
 }

@@ -27,7 +27,8 @@
 #' @examples 
 #' \dontrun{
 #' # ################################################
-#' # Real-world example: not run because takes long.
+#' # Real-world example: not tested during
+#' # R CMD CHECK it because takes long.
 #' # Build panel with income, wage, age and education
 #' # optionally: add wealth supplements!
 #' # ################################################
@@ -35,7 +36,6 @@
 #' # The package is installed with a list of variables
 #' # Alternatively, search for names with \code{\link{getNamesPSID}}
 #' # This is the body of function build.psid()
-#' # (so why not call build.psid() and see what happens!)
 #' r = system.file(package="psidR")
 #' if (small){
 #'   f = fread(file.path(r,"psid-lists","famvars-small.txt"))
@@ -48,13 +48,14 @@
 #' setkey(f,"name")
 #' i = dcast(i[,list(year,name,variable)],year~name)
 #' f = dcast(f[,list(year,name,variable)],year~name)
+#' # executing this function will download data. takes long.
 #'   d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
 #'                  ind.vars=i, 
 #'                  heads.only =TRUE,sample="SRC",
 #'                  design="all")
 #'   save(d,file="~/psid.RData")
 #' }
-#'
+#' 
 #' # ######################################
 #' # reproducible example on artifical data. 
 #' # run this with example(build.panel).
@@ -656,6 +657,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 #' @param dd Data Dictionary location. If NULL, 
 #' use temp dir and force download
 #' @export
+#' @returns No return value, called for side effects
 small.test.noind <- function(dd=NULL){
  	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
  	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
@@ -668,6 +670,7 @@ small.test.noind <- function(dd=NULL){
 #' @param dd Data Dictionary location. If NULL, 
 #' use temp dir and force download
 #' @export
+#' @returns No return value, called for side effects
 small.test.ind <- function(dd=NULL){
  	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
  	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003))
@@ -682,6 +685,7 @@ small.test.ind <- function(dd=NULL){
 #' @param dd Data Dictionary location. If NULL, 
 #' use temp dir and force download
 #' @export
+#' @returns No return value, called for side effects
 medium.test.ind <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
@@ -695,6 +699,7 @@ medium.test.ind <- function(dd=NULL){
 #' 
 #' @param dd Data Dictionary location
 #' @export
+#' @returns No return value, called for side effects
 medium.test.noind <- function(dd=NULL){
   cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
   head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
@@ -707,6 +712,7 @@ medium.test.noind <- function(dd=NULL){
 #' @param dd Data Dictionary location. If NULL, 
 #' use temp dir and force download
 #' @export
+#' @returns No return value, called for side effects
 medium.test.ind.NA <- function(dd=NULL){
 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
 	head_age_var_name <- getNamesPSID("ER17013", cwf, years=c(2003,2005,2007))
@@ -722,6 +728,7 @@ medium.test.ind.NA <- function(dd=NULL){
 #' @param dd Data Dictionary location. If NULL, 
 #' use temp dir and force download
 #' @export
+#' @returns description No return value, called for side effects
 medium.test.ind.NA.wealth <- function(dd=NULL){
     flog.warn("this functionality is not implemented any more.")
 # 	cwf = openxlsx::read.xlsx(system.file(package="psidR","psid-lists","psid.xlsx"))
@@ -743,7 +750,7 @@ medium.test.ind.NA.wealth <- function(dd=NULL){
 #' @export
 #' @param datadr string of the data directory
 #' @param small logical TRUE if only use years 2013 and 2015.
-#' @return a data.table with panel data
+#' @returns a data.table with panel data
 build.psid <- function(datadr="~/datasets/psid/",small=TRUE){
   variable <- name <- NULL
   r = system.file(package="psidR")
