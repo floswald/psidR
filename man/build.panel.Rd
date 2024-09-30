@@ -81,7 +81,6 @@ f = dcast(f[,list(year,name,variable)],year~name)
                  ind.vars=i, 
                  heads.only =TRUE,sample="SRC",
                  design="all")
-  save(d,file="~/psid.RData")
 }
 
 # ######################################

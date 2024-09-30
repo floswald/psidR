@@ -53,7 +53,6 @@
 #'                  ind.vars=i, 
 #'                  heads.only =TRUE,sample="SRC",
 #'                  design="all")
-#'   save(d,file="~/psid.RData")
 #' }
 #' 
 #' # ######################################
@@ -131,6 +130,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 	# or R CMD CHECK complains.
 
 	interview <- headyes <- .SD <- fam.interview <- ind.interview <- ind.head <- ER30001 <- ind.head.num <- pid <- ID1968 <- pernum <- isna <- present <- always <- enough <- ind.seq <- name <- variable <- NULL
+	oldopts <- NULL
 
 	stopifnot(is.numeric(fam.vars$year))
 	years <- fam.vars$year
@@ -140,6 +140,8 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 	s <- .Platform$file.sep
 	if ( .Platform$OS.type != 'windows' ) {
 		# warning("I'm setting your encoding to windows now")
+	    oldopts <- options() # code line i
+	    on.exit(oldopts) # code line i + 1
 		options( encoding = "windows-1252" )		# # only macintosh and *nix users need this line
 	}
 	
@@ -767,8 +769,7 @@ build.psid <- function(datadr="~/datasets/psid/",small=TRUE){
   i = dcast(i[,list(year,name,variable)],year~name, value.var = "variable")
   f = dcast(f[,list(year,name,variable)],year~name, value.var = "variable")
   d = build.panel(datadir=datadr,fam.vars=f,ind.vars=i, heads.only = TRUE,sample="SRC",design="all")
-  save(d,file="~/psid_no_wealth.RData")
- 
+  
   return(d)
 }
 
