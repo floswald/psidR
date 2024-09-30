@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-09-28T08:58Z
+last_built: 2024-09-30T13:14Z
 urls:
   reference: http://floswald.github.io/psidR/reference
   article: http://floswald.github.io/psidR/articles
