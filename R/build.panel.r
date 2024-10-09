@@ -141,7 +141,7 @@ build.panel <- function(datadir=NULL,fam.vars,ind.vars=NULL,heads.only=FALSE,cur
 	if ( .Platform$OS.type != 'windows' ) {
 		# warning("I'm setting your encoding to windows now")
 	    oldopts <- options() # code line i
-	    on.exit(oldopts) # code line i + 1
+	    on.exit(options(oldopts)) # code line i + 1
 		options( encoding = "windows-1252" )		# # only macintosh and *nix users need this line
 	}
 	
