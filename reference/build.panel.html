@@ -41,7 +41,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>build.panel: Build PSID panel data set</h1>
-    <small class="dont-index">Source: <a href="https://github.com/floswald/psidR/blob/master/R/build.panel.r" class="external-link"><code>R/build.panel.r</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/floswald/psidR/blob/v2.3/R/build.panel.r" class="external-link"><code>R/build.panel.r</code></a></small>
     <div class="hidden name"><code>build.panel.Rd</code></div>
     </div>
 
@@ -164,19 +164,19 @@ the <code>interview number</code> variable of a given year in the individual fil
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">build.panel</span><span class="op">(</span>datadir<span class="op">=</span><span class="va">my.dir</span>,fam.vars<span class="op">=</span><span class="va">famvars</span>,</span></span>
 <span class="r-in"><span>                 ind.vars<span class="op">=</span><span class="va">indvars</span>,</span></span>
 <span class="r-in"><span>                 heads.only<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>  </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] found FAM1985ER.rda already downloaded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] found FAM1986ER.rda already downloaded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] Will download missing datasets now</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] will download latest individual index: IND2021ER</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] found FAM1985ER.rda already downloaded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] found FAM1986ER.rda already downloaded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] Will download missing datasets now</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] will download latest individual index: IND2021ER</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This can take several hours/days to download.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  want to go ahead? give me 'yes' or 'no'.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: Loading Family data from .rda files</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: loaded individual file: /tmp/RtmpChTsL3/IND2019ER.RData</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: total memory load in MB: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: currently working on data for year 1985</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: currently working on data for year 1986</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] balanced design reduces sample from 36 to 24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] End of build.panel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: Loading Family data from .rda files</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: loaded individual file: /tmp/RtmpMESR82/IND2019ER.RData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: total memory load in MB: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: currently working on data for year 1985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: currently working on data for year 1986</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] balanced design reduces sample from 36 to 24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] End of build.panel</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># see what happens if we drop non-heads</span></span></span>
 <span class="r-in"><span><span class="co"># only the ones who are heads in BOTH years </span></span></span>
@@ -184,21 +184,21 @@ the <code>interview number</code> variable of a given year in the individual fil
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">build.panel</span><span class="op">(</span>datadir<span class="op">=</span><span class="va">my.dir</span>,fam.vars<span class="op">=</span><span class="va">famvars</span>,</span></span>
 <span class="r-in"><span>                 ind.vars<span class="op">=</span><span class="va">indvars</span>,</span></span>
 <span class="r-in"><span>                 heads.only<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>  </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] found FAM1985ER.rda already downloaded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] found FAM1986ER.rda already downloaded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] Will download missing datasets now</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] will download latest individual index: IND2021ER</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] found FAM1985ER.rda already downloaded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] found FAM1986ER.rda already downloaded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] Will download missing datasets now</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] will download latest individual index: IND2021ER</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This can take several hours/days to download.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  want to go ahead? give me 'yes' or 'no'.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: Loading Family data from .rda files</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: loaded individual file: /tmp/RtmpChTsL3/IND2019ER.RData</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: total memory load in MB: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: currently working on data for year 1985</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] dropping non-heads leaves 10 obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: currently working on data for year 1986</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] dropping non-heads leaves 15 obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] balanced design reduces sample from 20 to 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] End of build.panel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: Loading Family data from .rda files</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: loaded individual file: /tmp/RtmpMESR82/IND2019ER.RData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: total memory load in MB: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: currently working on data for year 1985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] dropping non-heads leaves 10 obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] psidR: currently working on data for year 1986</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] dropping non-heads leaves 15 obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] balanced design reduces sample from 20 to 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:47] End of build.panel</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">pid</span><span class="op">)</span><span class="op">]</span>,nrow<span class="op">=</span><span class="cn">Inf</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       money   age interview ID1968 pernum sequence relation.head ind.weight</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;num&gt; &lt;int&gt;     &lt;int&gt;  &lt;int&gt;  &lt;int&gt;    &lt;num&gt;         &lt;num&gt;      &lt;num&gt;</span>
@@ -219,20 +219,20 @@ the <code>interview number</code> variable of a given year in the individual fil
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">build.panel</span><span class="op">(</span>datadir<span class="op">=</span><span class="va">my.dir</span>,fam.vars<span class="op">=</span><span class="va">famvars</span>,</span></span>
 <span class="r-in"><span>                 ind.vars<span class="op">=</span><span class="va">indvars</span>,heads.only<span class="op">=</span><span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                 design<span class="op">=</span><span class="st">"all"</span><span class="op">)</span>  </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] found FAM1985ER.rda already downloaded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] found FAM1986ER.rda already downloaded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] Will download missing datasets now</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] will download latest individual index: IND2021ER</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] found FAM1985ER.rda already downloaded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] found FAM1986ER.rda already downloaded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] Will download missing datasets now</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] will download latest individual index: IND2021ER</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This can take several hours/days to download.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  want to go ahead? give me 'yes' or 'no'.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: Loading Family data from .rda files</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: loaded individual file: /tmp/RtmpChTsL3/IND2019ER.RData</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: total memory load in MB: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: currently working on data for year 1985</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] dropping non-heads leaves 10 obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] psidR: currently working on data for year 1986</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] dropping non-heads leaves 15 obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:01:08] End of build.panel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] psidR: Loading Family data from .rda files</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] psidR: loaded individual file: /tmp/RtmpMESR82/IND2019ER.RData</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] psidR: total memory load in MB: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] psidR: currently working on data for year 1985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] dropping non-heads leaves 10 obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] psidR: currently working on data for year 1986</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] dropping non-heads leaves 15 obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> INFO [2024-11-07 16:02:48] End of build.panel</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">pid</span><span class="op">)</span><span class="op">]</span>,nrow<span class="op">=</span><span class="cn">Inf</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          money   age interview ID1968 pernum sequence relation.head ind.weight</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;num&gt; &lt;int&gt;     &lt;int&gt;  &lt;int&gt;  &lt;int&gt;    &lt;num&gt;         &lt;num&gt;      &lt;num&gt;</span>
