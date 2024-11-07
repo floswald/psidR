@@ -53,35 +53,6 @@ the \code{interview number} variable of a given year in the individual file. Run
 }
 
 \examples{
-\dontrun{
-# ################################################
-# Real-world example: not tested during
-# R CMD CHECK it because takes long.
-# Build panel with income, wage, age and education
-# optionally: add wealth supplements!
-# ################################################
-
-# The package is installed with a list of variables
-# Alternatively, search for names with \code{\link{getNamesPSID}}
-# This is the body of function build.psid()
-r = system.file(package="psidR")
-if (small){
-  f = fread(file.path(r,"psid-lists","famvars-small.txt"))
-  i = fread(file.path(r,"psid-lists","indvars-small.txt"))
-} else {
-  f = fread(file.path(r,"psid-lists","famvars.txt"))
-  i = fread(file.path(r,"psid-lists","indvars.txt"))
-}
-setkey(i,"name")
-setkey(f,"name")
-i = dcast(i[,list(year,name,variable)],year~name)
-f = dcast(f[,list(year,name,variable)],year~name)
-# executing this function will download data. takes long.
-  d = build.panel(datadir="~/datasets/psid/",fam.vars=f,
-                 ind.vars=i, 
-                 heads.only =TRUE,sample="SRC",
-                 design="all")
-}
 
 # ######################################
 # reproducible example on artifical data. 

@@ -2,7 +2,7 @@ Package: psidR
 Type: Package
 Title: Build Panel Data Sets from PSID Raw Data
 Version: 2.3
-Date: 2024-09-23
+Date: 2024-11-05
 Authors@R: person(given = "Florian",
                 family = "Oswald",
                 role = c("aut", "cre"),
